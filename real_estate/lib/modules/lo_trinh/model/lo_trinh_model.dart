@@ -7,18 +7,20 @@ import 'package:real_estate/modules/nha_cho_thue/model/nha_cho_thue_model.dart';
 class LoTrinhModel extends Equatable{
   final int id;
   final NhaChoThueModel info;
+  final String status;
 
-  LoTrinhModel({this.id, this.info});
+  LoTrinhModel({this.id, this.info, this.status});
 
   factory LoTrinhModel.fromJson(Map<dynamic, dynamic> json) {
     return LoTrinhModel(
       id: json['id'],
       info: NhaChoThueModel.fromJson(json['info']),
+      status: json['status'],
     );
   }
 
   @override
-  List<Object> get props => [id, info];
+  List<Object> get props => [id, info, status];
 }
 
 class LoTrinhListModel extends ListMixin<LoTrinhModel> {

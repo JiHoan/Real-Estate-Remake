@@ -16,4 +16,12 @@ class LoTrinhRepository {
   Future<bool> xoaLoTrinh ({@required String id}) async {
     return await _provider.xoaLoTrinh(id: id);
   }
+
+  Future<LoTrinhListModel> getDsLichSuLoTrinh ({@required DateTime date}) async {
+    return await _provider.getDsLichSuLoTrinh(date: date);
+  }
+
+  Future<bool> checkInLoTrinh ({@required String id, @required String type}) async {
+    return await _provider.checkInLoTrinh(id: id, type: type);
+  }
 }

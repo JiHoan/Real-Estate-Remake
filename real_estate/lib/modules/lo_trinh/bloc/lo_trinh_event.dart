@@ -25,3 +25,23 @@ class XoaLoTrinh extends LoTrinhEvent {
   @override
   List<Object> get props => [id];
 }
+
+
+class FetchDsLichSuLoTrinh extends LoTrinhEvent {
+  final DateTime date;
+
+  FetchDsLichSuLoTrinh({@required this.date});
+
+  @override
+  List<Object> get props => [date];
+}
+
+class CheckInLoTrinh extends LoTrinhEvent {
+  final String id;
+  final String type;
+
+  CheckInLoTrinh({@required this.id, @required this.type});
+
+  @override
+  List<Object> get props => [id, type];
+}

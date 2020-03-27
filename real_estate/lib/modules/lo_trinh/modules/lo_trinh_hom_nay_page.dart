@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:real_estate/modules/lo_trinh/bloc/lo_trinh.dart';
 import 'package:real_estate/modules/lo_trinh/model/lo_trinh_model.dart';
+import 'package:real_estate/modules/lo_trinh/modules/lich_su_lo_trinh_page.dart';
 import 'package:real_estate/utils/style.dart';
 
 class LoTrinhHomNayPage extends StatefulWidget {
@@ -46,7 +47,9 @@ class _LoTrinhHomNayPageState extends State<LoTrinhHomNayPage> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(5),
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LichSuLoTrinh()));
+              },
               borderRadius: BorderRadius.circular(5),
               child: Container(
                 alignment: Alignment.center,
@@ -106,26 +109,34 @@ class _LoTrinhHomNayPageState extends State<LoTrinhHomNayPage> {
                       return Slidable(
                         actionPane: SlidableBehindActionPane(),
                         actionExtentRatio: 0.25,
+                        actions: <Widget>[
+                          list[index].status == 'NOT_GO'
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(7),
+                                  child: IconSlideAction(
+                                    caption: 'Đã xong',
+                                    color: Colors.green,
+                                    icon: Icons.check,
+                                    onTap: () {
+                                      _loTrinhBloc.add(CheckInLoTrinh(id: list[index].info.id.toString(), type: 'ADD'));
+                                    },
+                                  ),
+                                )
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(7),
+                                  child: IconSlideAction(
+                                    caption: 'Hủy check',
+                                    color: Colors.red,
+                                    icon: Icons.delete,
+                                    onTap: () {
+                                      _loTrinhBloc.add(CheckInLoTrinh(id: list[index].info.id.toString(), type: 'REMOVE'));
+                                    },
+                                  ),
+                                ),
+                        ],
                         secondaryActions: <Widget>[
                           ClipRRect(
-                            borderRadius: new BorderRadius.only(
-                              topLeft: const Radius.circular(7),
-                              bottomLeft: const Radius.circular(7),
-                            ),
-                            child: IconSlideAction(
-                              caption: 'Done',
-                              color: Colors.green,
-                              icon: Icons.check,
-                              onTap: () {
-//                                _loTrinhBloc.add(XoaLoTrinh(id: list[index].info.id.toString()));
-                              },
-                            ),
-                          ),
-                          ClipRRect(
-                            borderRadius: new BorderRadius.only(
-                              topRight: const Radius.circular(7),
-                              bottomRight: const Radius.circular(7),
-                            ),
+                            borderRadius: BorderRadius.circular(7),
                             child: IconSlideAction(
                               caption: 'Xóa',
                               color: Colors.red,
@@ -217,17 +228,26 @@ class _LoTrinhHomNayPageState extends State<LoTrinhHomNayPage> {
                 ],
               ),
             ),
-            /*Positioned(
-              top: 10,
-              right: 10,
-              child: GestureDetector(
-                onTap: () {
-                  _loTrinhBloc.add(XoaLoTrinh(id: element.info.id.toString()));
-                  _loTrinhBloc.add(FetchDsLoTrinhHomNay());
-                },
-                child: Image.asset('assets/close.png'),
-              ),
-            ),*/
+            element.status == 'WENT'
+                ? Positioned(
+                    top: 10,
+                    right: 10,
+                    child: GestureDetector(
+                      onTap: () {
+                        _loTrinhBloc.add(XoaLoTrinh(id: element.info.id.toString()));
+                        _loTrinhBloc.add(FetchDsLoTrinhHomNay());
+                      },
+                      child: Image.asset(
+                        'assets/tick.png',
+                        width: 20,
+                      ),
+                    ),
+                  )
+                : Positioned(
+                    top: 10,
+                    right: 10,
+                    child: SizedBox(),
+                  ),
             Positioned(
               bottom: 10,
               right: 10,

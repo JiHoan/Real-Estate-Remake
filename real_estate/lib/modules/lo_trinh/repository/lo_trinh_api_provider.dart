@@ -63,4 +63,54 @@ class LoTrinhApiProvider extends ApiProvider{
       throw _resp.data['message'];
     }
   }
+
+  Future<LoTrinhListModel> getDsLichSuLoTrinh ({@required DateTime date}) async {
+    final storage = new FlutterSecureStorage();
+    String token = await storage.read(key: 'token');
+
+    httpClient.options.headers.addAll({
+      'accept': 'application/json',
+      'authorization': 'Bearer ' + token,
+    });
+
+    final timestamp = date.millisecondsSinceEpoch~/1000;
+
+    Response _resp = await httpClient.get('info/lich-su-lo-trinh?date=$timestamp');
+
+    httpClient.options.headers.clear();
+
+    if(_resp.statusCode == 200){
+      return LoTrinhListModel.fromJson(_resp.data['data']);
+    } else{
+      throw _resp.data['message'];
+    }
+  }
+
+  Future<bool> checkInLoTrinh ({@required String id, @required String type}) async {
+    final storage = new FlutterSecureStorage();
+    String token = await storage.read(key: 'token');
+
+    httpClient.options.headers.addAll({
+      'accept': 'application/json',
+      'authorization': 'Bearer ' + token,
+    });
+
+
+    FormData _formData = new FormData.fromMap(
+      {
+        'type': type,
+        'id': id,
+      },
+    );
+
+    Response _resp = await httpClient.post('info/check-in', data: _formData);
+
+    httpClient.options.headers.clear();
+
+    if(_resp.statusCode == 200){
+      return true;
+    } else{
+      throw _resp.data['message'];
+    }
+  }
 }
