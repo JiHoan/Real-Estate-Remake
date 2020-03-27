@@ -64,6 +64,7 @@ class NhaChoThueDetailModel extends Equatable {
   final CommonModel nhaTheChap;
   final HinhAnhListModel hinhAnhNha;
   final List<File> hinhAnhNhaUpdate;
+  final String loTrinh;
 
   NhaChoThueDetailModel({
     this.id,
@@ -118,6 +119,7 @@ class NhaChoThueDetailModel extends Equatable {
     this.hinhAnhNhaUpdate,
     this.chuongNgaiVat,
     this.chuongNgaiVatKhac,
+    this.loTrinh,
   });
 
   factory NhaChoThueDetailModel.fromJson(Map<String, dynamic> json) {
@@ -172,10 +174,13 @@ class NhaChoThueDetailModel extends Equatable {
       chuNhaChoThue: json['chu_nha_cho_thue'] == null ? null : CommonModel.fromJson(json['chu_nha_cho_thue']),
       phiMoiGioi: json['phi_muoi_gioi'] == null ? 0 : json['phi_muoi_gioi'],
       nhaTheChap: json['nha_dang_the_chap'] == null ? null : CommonModel.fromJson(json['nha_dang_the_chap']),
-      chuongNgaiVat: json['chuong_ngai_vat_truoc_nha'] == null ? null : CheckListModel.fromJson(json['chuong_ngai_vat_truoc_nha']),
+      chuongNgaiVat:
+          json['chuong_ngai_vat_truoc_nha'] == null ? null : CheckListModel.fromJson(json['chuong_ngai_vat_truoc_nha']),
       chuongNgaiVatKhac: json['chuong_ngai_vat_khac'] == null ? null : json['chuong_ngai_vat_khac'],
 
       hinhAnhNha: json['hinh_anh'] == null ? null : HinhAnhListModel.fromJson(json['hinh_anh']),
+
+      loTrinh: json['lo_trinh'],
     );
   }
 
@@ -229,5 +234,6 @@ class NhaChoThueDetailModel extends Equatable {
         nhaTheChap,
         hinhAnhNha,
         hinhAnhNhaUpdate,
+        loTrinh,
       ];
 }

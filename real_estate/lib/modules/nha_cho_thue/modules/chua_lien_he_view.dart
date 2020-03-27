@@ -40,7 +40,7 @@ class _ChuaLienHeViewState extends State<ChuaLienHeView> {
     final currentScroll = _scrollController.position.pixels;
 
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _nhaChoThueBloc.add(LoadMoreDanhSachNhaChoThue());
+      _nhaChoThueBloc.add(LoadMoreDanhSachNhaChoThue(type: 'CHUA_LIEN_HE'));
     }
   }
 
@@ -70,7 +70,8 @@ class _ChuaLienHeViewState extends State<ChuaLienHeView> {
 
   ListView buildListNhaChoThue(NhaChoThueLoaded state) {
     return ListView.separated(
-      controller: _scrollController,
+      // 1 phân trang return 10 dòng, nếu trả ít hơn 11 thì k còn dữ liệu nên tắt scroll hạn chế spam event LoadMore
+      controller: state.nhaChoThueListModel.length < 11 ? null : _scrollController,
       physics: BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 15),
       itemCount: state.hasReachedMax ? state.nhaChoThueListModel.length : state.nhaChoThueListModel.length + 1,
@@ -88,11 +89,19 @@ class _ChuaLienHeViewState extends State<ChuaLienHeView> {
                 child: InkWell(
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => NhaChoThueDashboardPage(
-                                  nhaChoThueModelId: state.nhaChoThueListModel[index].id,
-                                )));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NhaChoThueDashboardPage(
+                          nhaChoThueModelId: state.nhaChoThueListModel[index].id,
+                        ),
+                      ),
+                    ).then(
+                          (value) {
+                        if (value == true) {
+                          _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'CHUA_LIEN_HE'));
+                        }
+                      },
+                    );
                   },
                   borderRadius: BorderRadius.circular(7),
                   child: Container(
@@ -115,7 +124,7 @@ class _ChuaLienHeViewState extends State<ChuaLienHeView> {
                         SizedBox(height: 4),
                         Row(
                           children: <Widget>[
-                            Text('Note: ', style: TextStyle(fontWeight: FontWeight.w500)),
+                            Text('Note: ', style: TextStyle(fontWeight: FontWeight.w600)),
                             Expanded(
                               child: Text(
                                 state.nhaChoThueListModel[index].ghiChu,

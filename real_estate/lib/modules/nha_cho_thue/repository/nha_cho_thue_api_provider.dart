@@ -4,7 +4,7 @@ import 'package:real_estate/api/api_provider.dart';
 import 'package:real_estate/modules/nha_cho_thue/model/nha_cho_thue_model.dart';
 
 class NhaChoThueApiProvider extends ApiProvider{
-  Future<NhaChoThueListModel> getNhaKhongXacDinh({@required String type, @required int page}) async {
+  Future<NhaChoThueListModel> getNhaChoThue({@required String type, @required int page}) async {
     final storage = new FlutterSecureStorage();
     String token = await storage.read(key: 'token');
 

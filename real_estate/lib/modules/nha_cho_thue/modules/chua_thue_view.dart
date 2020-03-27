@@ -7,7 +7,6 @@ import 'package:real_estate/utils/bottom_loading.dart';
 import 'package:real_estate/utils/style.dart';
 
 class ChuaThueView extends StatefulWidget {
-
   @override
   _ChuaThueViewState createState() => _ChuaThueViewState();
 }
@@ -26,6 +25,7 @@ class _ChuaThueViewState extends State<ChuaThueView> {
 
     _nhaChoThueBloc = NhaChoThueBloc();
     _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'CHUA_THUE'));
+
     _scrollController.addListener(_onScroll);
   }
 
@@ -41,7 +41,7 @@ class _ChuaThueViewState extends State<ChuaThueView> {
     final currentScroll = _scrollController.position.pixels;
 
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _nhaChoThueBloc.add(LoadMoreDanhSachNhaChoThue());
+      _nhaChoThueBloc.add(LoadMoreDanhSachNhaChoThue(type: 'CHUA_THUE'));
     }
   }
 
@@ -71,7 +71,8 @@ class _ChuaThueViewState extends State<ChuaThueView> {
 
   ListView buildListNhaChoThue(NhaChoThueLoaded state) {
     return ListView.separated(
-      controller: _scrollController,
+      // 1 phân trang return 10 dòng, nếu trả ít hơn 11 thì k còn dữ liệu nên tắt scroll hạn chế spam event LoadMore
+      controller: state.nhaChoThueListModel.length < 11 ? null : _scrollController,
       physics: BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 15),
       itemCount: state.hasReachedMax ? state.nhaChoThueListModel.length : state.nhaChoThueListModel.length + 1,
@@ -89,11 +90,19 @@ class _ChuaThueViewState extends State<ChuaThueView> {
                 child: InkWell(
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => NhaChoThueDashboardPage(
-                                  nhaChoThueModelId: state.nhaChoThueListModel[index].id,
-                                )));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NhaChoThueDashboardPage(
+                          nhaChoThueModelId: state.nhaChoThueListModel[index].id,
+                        ),
+                      ),
+                    ).then(
+                      (value) {
+                        if (value == true) {
+                          _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'CHUA_THUE'));
+                        }
+                      },
+                    );
                   },
                   borderRadius: BorderRadius.circular(7),
                   child: Container(
@@ -116,7 +125,7 @@ class _ChuaThueViewState extends State<ChuaThueView> {
                         SizedBox(height: 4),
                         Row(
                           children: <Widget>[
-                            Text('Note: ', style: TextStyle(fontWeight: FontWeight.w500)),
+                            Text('Note: ', style: TextStyle(fontWeight: FontWeight.w600)),
                             Expanded(
                               child: Text(
                                 state.nhaChoThueListModel[index].ghiChu,

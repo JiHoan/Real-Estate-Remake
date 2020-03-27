@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:real_estate/modules/authentication/bloc/authentication.dart';
 import 'package:real_estate/modules/home/bloc/home.dart';
+import 'package:real_estate/modules/lo_trinh/modules/lo_trinh_hom_nay_page.dart';
 import 'package:real_estate/modules/nha_cho_thue/nha_cho_thue_page.dart';
 import 'package:real_estate/modules/search/search_page.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/modules/thong_tin_lien_he/thong_tin_lien_he_next_page.dart';
@@ -121,7 +122,9 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: 10),
               Row(
                 children: <Widget>[
-                  buildItem('Lên lộ trình', 'assets/action.png', (){}),
+                  buildItem('Lên lộ trình', 'assets/action.png', (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LoTrinhHomNayPage()));
+                  }),
                   SizedBox(width: 10),
                   buildItem('Hệ thống', 'assets/settings.png', (){}),
                 ],

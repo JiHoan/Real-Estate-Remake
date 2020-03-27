@@ -6,7 +6,7 @@ import 'nha_cho_thue_api_provider.dart';
 class NhaChoThueRepository{
   NhaChoThueApiProvider _khongXacDinhApiProvider = NhaChoThueApiProvider();
 
-  Future<NhaChoThueListModel> getNhaKhongXacDinh({@required String type, @required int page}) async {
-    return await _khongXacDinhApiProvider.getNhaKhongXacDinh(type: type, page: page);
+  Future<NhaChoThueListModel> getNhaChoThue({@required String type, @required int page}) async {
+    return await _khongXacDinhApiProvider.getNhaChoThue(type: type, page: page);
   }
 }

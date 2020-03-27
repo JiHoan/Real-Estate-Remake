@@ -41,7 +41,7 @@ class NhaChoThueBloc extends Bloc<NhaChoThueEvent, NhaChoThueState> {
       temp = 1;
 
       try {
-        final _listNhaKhongXacDinh = await _nhaChoThueApiProvider.getNhaKhongXacDinh(type: event.type, page: temp);
+        final _listNhaKhongXacDinh = await _nhaChoThueApiProvider.getNhaChoThue(type: event.type, page: temp);
 
         if (_listNhaKhongXacDinh.isNotEmpty) {
           yield NhaChoThueLoaded(
@@ -62,7 +62,7 @@ class NhaChoThueBloc extends Bloc<NhaChoThueEvent, NhaChoThueState> {
     if (event is LoadMoreDanhSachNhaChoThue && _hasReachedMax(state)) {
       try {
         if (currentState is NhaChoThueInitial) {
-          final _listNhaKhongXacDinh = await _nhaChoThueApiProvider.getNhaKhongXacDinh(type: event.type, page: 1);
+          final _listNhaKhongXacDinh = await _nhaChoThueApiProvider.getNhaChoThue(type: event.type, page: 1);
 
           yield NhaChoThueLoaded(nhaChoThueListModel: _listNhaKhongXacDinh, hasReachedMax: false);
           return;
@@ -70,11 +70,9 @@ class NhaChoThueBloc extends Bloc<NhaChoThueEvent, NhaChoThueState> {
 
         if (currentState is NhaChoThueLoaded) {
           temp++;
-          final _listNhaKhongXacDinh = await _nhaChoThueApiProvider.getNhaKhongXacDinh(type: event.type, page: temp);
+          final _listNhaKhongXacDinh = await _nhaChoThueApiProvider.getNhaChoThue(type: event.type, page: temp);
 
           final copyListNhaKhongXacDinh = NhaChoThueListModel.fromJson(currentState.nhaChoThueListModel.toJson());
-
-          print(copyListNhaKhongXacDinh);
 
           yield _listNhaKhongXacDinh.isEmpty
               ? currentState.copyWith(hasReachedMax: true)

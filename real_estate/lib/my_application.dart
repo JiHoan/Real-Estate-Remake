@@ -30,6 +30,7 @@ class _MyApplicationState extends State<MyApplication> {
     Dio dio = new Dio();
 
     apiProvider = BaseApiProvider(dio);
+
     apiProvider.httpClient.interceptors.add(
       InterceptorsWrapper(
         onRequest: (RequestOptions options) async {

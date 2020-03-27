@@ -10,6 +10,7 @@ class NhaChoThueState extends Equatable {
 class NhaChoThueInitial extends NhaChoThueState {}
 
 class NhaChoThueLoading extends NhaChoThueState {}
+class NhaChoThueLoading1 extends NhaChoThueState {}
 
 class NhaChoThueLoaded extends NhaChoThueState {
   final NhaChoThueListModel nhaChoThueListModel;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:real_estate/modules/lo_trinh/bloc/lo_trinh.dart';
 import 'package:real_estate/utils/style.dart';
 
 import 'cap_nhat_thong_tin_nang_cao/modules/chuong_ngai_vat_update_page.dart';
@@ -32,47 +33,63 @@ class NhaChoThueDashboardPage extends StatefulWidget {
 
 class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
   CapNhatTtcbBloc _choThueDetailBloc;
+  LoTrinhBloc _loTrinhBloc;
+
+  bool _isUpdateHienTrang = false;
 
   @override
   void initState() {
     super.initState();
     _choThueDetailBloc = CapNhatTtcbBloc();
-
     _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
+    _loTrinhBloc = LoTrinhBloc();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _choThueDetailBloc.close();
+    _loTrinhBloc.close();
+  }
+
+  Future<bool> _willPopCallback() async {
+    Navigator.pop(context, _isUpdateHienTrang);
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: BlocBuilder(
-          bloc: _choThueDetailBloc,
-          builder: (BuildContext context, CapNhatTtcbState state) {
-            print(state);
-            if (state is FetchLoading) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (state is FetchEmpty) {
-              return Center(
-                child: Text('Không có dữ liệu.'),
-              );
-            }
-            if (state is FetchLoaded) {
-              return buildDanhSachThongTin(context, state);
-            }
-            return Container();
-          },
+    return WillPopScope(
+      onWillPop: _willPopCallback,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: BlocBuilder(
+            bloc: _choThueDetailBloc,
+            builder: (BuildContext context, CapNhatTtcbState state) {
+              print(state);
+              if (state is FetchLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state is FetchEmpty) {
+                return Center(
+                  child: Text('Không có dữ liệu.'),
+                );
+              }
+              if (state is FetchLoaded) {
+                return buildDanhSachThongTin(context, state);
+              }
+              return Container();
+            },
+          ),
         ),
       ),
     );
   }
 
   Column buildDanhSachThongTin(BuildContext context, FetchLoaded state) {
-    print(state.model.hinhAnhNha);
-
     return Column(
       children: <Widget>[
         Stack(
@@ -138,7 +155,7 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                       color: Color(0xffF8A200),
                     ),
                     onPressed: () {
-                      Navigator.pop(context);
+                      _willPopCallback();
                     },
                   ),
                   Text('Nhà cho thuê'.toUpperCase(), style: TextStyle(fontSize: 16, color: Color(0xffF8A200))),
@@ -203,17 +220,58 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                   ),
                 ],
               ),
-              Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 7,
-                children: <Widget>[
-                  Image.asset('assets/more.png'),
-                  Text(
-                    'Thêm vào lộ trình',
-                    style: TextStyle(color: Color(0xff3FBF55), fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
+              state.model.loTrinh == 'KHONG_CO_TRONG_LO_TRINH'
+                  ? BlocBuilder(
+                      bloc: _loTrinhBloc,
+                      builder: (context, state) {
+                        print(state);
+                        if (state is LoTrinhLoading) {
+                          /*return CircularProgressIndicator(
+                            strokeWidth: 1,
+                          );*/
+                        }
+                        if (state is LoTrinhSuccess) {
+                          return Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 7,
+                            children: <Widget>[
+                              Image.asset('assets/more.png'),
+                              Text(
+                                'Đã thêm vào lộ trình',
+                                style: TextStyle(color: Color(0xff3FBF55), fontSize: 16, fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          );
+                        }
+                        return GestureDetector(
+                          onTap: () {
+                            _loTrinhBloc.add(ThemLoTrinh(id: widget.nhaChoThueModelId));
+                          },
+                          child: Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 7,
+                            children: <Widget>[
+                              Image.asset('assets/more.png'),
+                              Text(
+                                'Thêm vào lộ trình',
+                                style: TextStyle(color: Color(0xff3FBF55), fontSize: 16, fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    )
+                  : Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 7,
+                      children: <Widget>[
+                        Image.asset('assets/more.png'),
+                        Text(
+                          'Đã thêm vào lộ trình',
+                          style: TextStyle(color: Color(0xff3FBF55), fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
             ],
           ),
         ),
@@ -245,6 +303,8 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                       ).then(
                         (value) {
                           if (value == true) {
+                            _isUpdateHienTrang = true;
+
                             _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
                           }
                         },
@@ -261,6 +321,8 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                       ).then(
                         (value) {
                           if (value == true) {
+                              _isUpdateHienTrang = true;
+
                             _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
                           }
                         },
@@ -277,7 +339,7 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                           child: Text(
                             state.model.hienTrang.value == 'CHUA_LIEN_HE'
                                 ? 'Chưa liên hệ'
-                                : state.model.hienTrang.value == 'CHUA_THUE' ? 'Chưa thuê' : 'Khác',
+                                : state.model.hienTrang.value == 'CHUA_THUE' ? 'Chưa thuê' : 'Đã thuê',
                             style: TextStyle(color: Color(0xffA00000), fontWeight: FontWeight.bold),
                             overflow: TextOverflow.ellipsis,
                           ),
