@@ -101,3 +101,14 @@ class UpdateDiaChi extends CapNhatTtcbEvent {
   @override
   List<Object> get props => [id, thanhPho, quanHuyen, phuongXa, soNha, tenDuong];
 }
+
+class UpdateAndRemove extends CapNhatTtcbEvent{
+  final NhaChoThueDetailModel model;
+  final List<int> banVeId;
+  final int id;
+
+  UpdateAndRemove({@required this.model, @required this.banVeId, @required this.id});
+
+  @override
+  List<Object> get props => [model,banVeId, id];
+}

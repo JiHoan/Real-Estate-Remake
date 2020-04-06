@@ -157,7 +157,7 @@ class _VATUpdatePageState extends State<VATUpdatePage> {
                       child: MyButton(
                         color: Color(0xff3FBF55),
                         text: Text(
-                          'Tiếp tục',
+                          'Lưu',
                           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                         ),
                         event: () {

@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:real_estate/modules/khach_tim_mb/bloc/khach_tim_mb.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
-import '../dia_chi/dia_chi_next_page.dart';
+import 'muc_dich_thue_next_page.dart';
 
 class ThongTinLienHeNextPage extends StatefulWidget {
-  final String type;
+  final String moTa;
 
-  const ThongTinLienHeNextPage({Key key, @required this.type}) : super(key: key);
+  const ThongTinLienHeNextPage({Key key, @required this.moTa}) : super(key: key);
 
   @override
   _ThongTinLienHeNextPageState createState() => _ThongTinLienHeNextPageState();
 }
 
 class _ThongTinLienHeNextPageState extends State<ThongTinLienHeNextPage> {
-  var ctlSdtNguoiNhan = new MaskedTextController(mask: '0000000000');
-  TextEditingController ctlTenNguoiNhan = TextEditingController();
+  var ctlSdt = new MaskedTextController(mask: '0000000000');
+  TextEditingController ctlTen = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +52,7 @@ class _ThongTinLienHeNextPageState extends State<ThongTinLienHeNextPage> {
               physics: BouncingScrollPhysics(),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               children: <Widget>[
-                // body
+                //
                 MyTopTitle(text: 'Số điện thoại'),
                 Row(
                   children: <Widget>[
@@ -57,7 +61,7 @@ class _ThongTinLienHeNextPageState extends State<ThongTinLienHeNextPage> {
                         height: 45,
                         child: TextFormField(
                           style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
-                          controller: ctlSdtNguoiNhan,
+                          controller: ctlSdt,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
@@ -87,14 +91,14 @@ class _ThongTinLienHeNextPageState extends State<ThongTinLienHeNextPage> {
                   ],
                 ),
                 SizedBox(height: 20),
-                MyTopTitle(text: 'Người nhận'),
+                //
+                MyTopTitle(text: 'Tên'),
                 MyInput(
                   hintText: '',
                   color: Color(0xffEBEBEB),
                   lines: 1,
-                  controller: ctlTenNguoiNhan,
+                  controller: ctlTen,
                 ),
-                // bottom
               ],
             ),
           ),
@@ -104,26 +108,25 @@ class _ThongTinLienHeNextPageState extends State<ThongTinLienHeNextPage> {
               child: MyButton(
                 color: Color(0xff3FBF55),
                 text: Text(
-                  'Tiếp tục',
+                  'Lưu & Tiếp tục',
                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                 ),
                 event: () {
-                  if (ctlSdtNguoiNhan.text != '' && ctlTenNguoiNhan.text != '') {
+                  if (ctlTen.text != '' && ctlSdt.text != null) {
                     Scaffold.of(context).removeCurrentSnackBar();
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DiaChiNextPage(
-                          sdtNguoiNhan: ctlSdtNguoiNhan.text,
-                          tenNguoiNhan: ctlTenNguoiNhan.text,
-                        ),
-                      ),
-                    );
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MucDichThueNextPage(
+                              moTa: widget.moTa,
+                              sdt: ctlSdt.text,
+                              ten: ctlTen.text,
+                            )));
                   } else {
                     Scaffold.of(context).removeCurrentSnackBar();
                     Scaffold.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Hãy nhập đầy đủ thông tin !'),
+                        content: Text('Hãy nhập đầy đủ thông tin.'),
                         backgroundColor: Colors.red,
                       ),
                     );

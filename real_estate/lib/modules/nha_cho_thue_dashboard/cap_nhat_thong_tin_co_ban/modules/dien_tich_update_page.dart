@@ -205,7 +205,6 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                 child: InkWell(
                   onTap: (){
                     setState(() {
-                      _onChanged = true;
                       _onChangedBanVe = true;
                       _hinhAnhListModel.removeAt(index);
                       _listIdBanVe.add(idBanVe);
@@ -329,6 +328,9 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
   @override
   void initState() {
     super.initState();
+
+    print('a');
+    print(widget.listHinhAnh);
 
     _nhaChoThueDetailBloc = CapNhatTtcbBloc();
 
@@ -549,7 +551,7 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                           if (ctlNgang.text != '' && ctlDai.text != '') {
                             _changed = true;
                             if(_onChanged == true && _onChangedBanVe == true){
-                              _nhaChoThueDetailBloc.add(
+                              /*_nhaChoThueDetailBloc.add(
                                 UpdateDienTichKetCauNoiThat(
                                   model: NhaChoThueDetailModel(
                                     ngang: double.parse(ctlNgang.text),
@@ -569,12 +571,32 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                                   id: widget.id,
                                 ),
                               );
-                              _nhaChoThueDetailBloc.add(RemoveHinhAnh(id: widget.id, banVeId: _listIdBanVe));
+                              _nhaChoThueDetailBloc.add(RemoveHinhAnh(id: widget.id, banVeId: _listIdBanVe));*/
+
+                              _nhaChoThueDetailBloc.add(UpdateAndRemove(
+                                model: NhaChoThueDetailModel(
+                                  ngang: double.parse(ctlNgang.text),
+                                  dai: double.parse(ctlDai.text),
+                                  lung: CommonModel(value: mezzanineValue, index: mezzanineGroup),
+                                  ham: CommonModel(value: basementValue, index: basementGroup),
+                                  sanThuong: CommonModel(value: terraceValue, index: terraceUpgratedGroup),
+                                  sanThuongCaiTao: CommonModel(value: terraceUpgratedValue, index: terraceUpgratedGroup),
+                                  soPhong: valRoomNum,
+                                  soWcr: valWcrNum,
+                                  soWcc: valWccNum,
+                                  banCong: CommonModel(value: balconyValue, index: balconyGroup),
+                                  cuaSo: CommonModel(value: windowValue, index: windowGroup),
+                                  soLau: valFloorNum,
+                                  hinhAnhBanVeUpdate: _listImg,
+                                ),
+                                banVeId: _listIdBanVe,
+                                id: widget.id,
+                              ));
                             }
                             else if(_onChangedBanVe == true){
                               _nhaChoThueDetailBloc.add(RemoveHinhAnh(id: widget.id, banVeId: _listIdBanVe));
                             } else {
-                              UpdateDienTichKetCauNoiThat(
+                              _nhaChoThueDetailBloc.add(UpdateDienTichKetCauNoiThat(
                                 model: NhaChoThueDetailModel(
                                   ngang: double.parse(ctlNgang.text),
                                   dai: double.parse(ctlDai.text),
@@ -591,7 +613,7 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                                   hinhAnhBanVeUpdate: _listImg,
                                 ),
                                 id: widget.id,
-                              );
+                              ));
                             }
                           } else {
                             Scaffold.of(context).removeCurrentSnackBar();

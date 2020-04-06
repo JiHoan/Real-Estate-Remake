@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:real_estate/modules/authentication/bloc/authentication.dart';
 import 'package:real_estate/modules/home/bloc/home.dart';
+import 'package:real_estate/modules/khach_tim_mb/modules/danh_sach_khach_tim_mb_page.dart';
+import 'package:real_estate/modules/khach_tim_mb/modules/them_khach_tim_mb/tinh_trang_next_page.dart';
 import 'package:real_estate/modules/lo_trinh/modules/lo_trinh_hom_nay_page.dart';
 import 'package:real_estate/modules/nha_cho_thue/nha_cho_thue_page.dart';
-import 'package:real_estate/modules/search/search_page.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/modules/thong_tin_lien_he/thong_tin_lien_he_next_page.dart';
+import 'package:real_estate/modules/tim_kiem_nha_cho_thue/modules/chon_loai_nha_can_tim_page.dart';
+import 'package:real_estate/utils/my_radio_button.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -43,8 +45,8 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: BlocBuilder(
                       bloc: _homeBloc,
-                      builder: (BuildContext context, HomeState state){
-                        if(state is HomeSuccess){
+                      builder: (BuildContext context, HomeState state) {
+                        if (state is HomeSuccess) {
                           return Text(
                             state.userModel.username,
                             style: TextStyle(
@@ -60,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       _authenticationBloc.add(LoggedOut());
                     },
                     child: Text(
@@ -79,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.circular(10),
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ChonLoaiNhaCanTimPage()));
                   },
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
@@ -102,31 +104,60 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: 20),
               Row(
                 children: <Widget>[
-                  buildItem('Nhà cho thuê', 'assets/home.png', (){
+                  buildItem('Nhà cho thuê', 'assets/home.png', () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => NhaChoThuePage()));
                   }),
                   SizedBox(width: 10),
-                  buildItem('Thêm nhà cho thuê', 'assets/add1.png', (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ThongTinLienHeNextPage(type: 'NHA_CHO_THUE',)));
-                  },),
+                  buildItem(
+                    'Thêm nhà cho thuê',
+                    'assets/add1.png',
+                    () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ThongTinLienHeNextPage(
+                                    type: 'NHA_CHO_THUE',
+                                  )));
+                    },
+                  ),
                 ],
               ),
               SizedBox(height: 10),
               Row(
                 children: <Widget>[
-                  buildItem('Khách tìm MB', 'assets/map.png', (){}),
+                  buildItem('Khách tìm MB', 'assets/map.png', () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => DanhSachKhachTimMbPage()));
+                  }),
                   SizedBox(width: 10),
-                  buildItem('Thêm khách tìm MB', 'assets/add.png', (){}),
+                  buildItem('Thêm khách tìm MB', 'assets/add.png', () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TinhTrangNextPage(
+                                  rdMoTaList: [
+                                    MyRadioList(
+                                      index: 0,
+                                      title: 'Bình thường',
+                                      value: 'BINH_THUONG',
+                                    ),
+                                    MyRadioList(
+                                      index: 1,
+                                      title: 'Cần gấp',
+                                      value: 'CAN_GAP',
+                                    ),
+                                  ],
+                                )));
+                  }),
                 ],
               ),
               SizedBox(height: 10),
               Row(
                 children: <Widget>[
-                  buildItem('Lên lộ trình', 'assets/action.png', (){
+                  buildItem('Lên lộ trình', 'assets/action.png', () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => LoTrinhHomNayPage()));
                   }),
                   SizedBox(width: 10),
-                  buildItem('Hệ thống', 'assets/settings.png', (){}),
+                  buildItem('Hệ thống', 'assets/settings.png', () {}),
                 ],
               ),
             ],

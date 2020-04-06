@@ -16,6 +16,8 @@ class HemHayMatTienUpdatePage extends StatefulWidget {
   final CommonModel loaiHem;
   final double hemBaoNhieuMet;
 
+  final int type;
+
   const HemHayMatTienUpdatePage({
     Key key,
     @required this.id,
@@ -26,6 +28,7 @@ class HemHayMatTienUpdatePage extends StatefulWidget {
     @required this.kichThuocHem,
     @required this.loaiHem,
     @required this.hemBaoNhieuMet,
+    @required this.type,
   }) : super(key: key);
 
   @override
@@ -33,7 +36,7 @@ class HemHayMatTienUpdatePage extends StatefulWidget {
 }
 
 class _HemHayMatTienUpdatePageState extends State<HemHayMatTienUpdatePage> {
-  int currentSegment = 0;
+  int currentSegment;
 
   final tab = <int, Widget>{
     0: Text('Nhà mặt tiền'),
@@ -51,6 +54,8 @@ class _HemHayMatTienUpdatePageState extends State<HemHayMatTienUpdatePage> {
   @override
   void initState() {
     super.initState();
+
+    currentSegment = widget.type;
 
     view = <int, Widget>{
       0: NhaMatTienTabView(

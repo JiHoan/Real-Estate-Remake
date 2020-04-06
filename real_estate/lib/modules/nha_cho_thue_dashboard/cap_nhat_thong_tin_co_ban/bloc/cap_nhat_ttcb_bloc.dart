@@ -182,5 +182,31 @@ class CapNhatTtcbBloc extends Bloc<CapNhatTtcbEvent, CapNhatTtcbState> {
         yield UpdateFailure(error: e);
       }
     }
+
+    if (event is UpdateAndRemove) {
+      yield UpdateLoading();
+
+      try {
+        final _isUpdated = await _nhaChoThueDetailRepository.updateDienTichKetCauNoiThat(
+          model: event.model,
+          id: event.id,
+        );
+
+        final _isRemove = await _nhaChoThueDetailRepository.removeHinhAnh(
+          banVeId: event.banVeId,
+          id: event.id,
+        );
+
+        if (_isUpdated == true && _isRemove == true) {
+          yield UpdateSuccess();
+        } else {
+          yield UpdateFailure();
+        }
+      } catch (e, s) {
+        print(e);
+        print(s);
+        yield UpdateFailure(error: e);
+      }
+    }
   }
 }

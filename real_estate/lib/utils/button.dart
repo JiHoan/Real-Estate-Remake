@@ -82,3 +82,21 @@ class _MyRowButtonState extends State<MyRowButton> {
     );
   }
 }
+
+class MyButtonDisable extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+      child: MyButton(
+        color: Colors.black26,
+        text: Text(
+          'Lưu',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
+        event: null,
+      ),
+    );
+  }
+}
+

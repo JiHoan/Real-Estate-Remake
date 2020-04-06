@@ -36,9 +36,3 @@ abstract class ApiProvider {
     }
   }
 }
-
-class BaseApiProvider extends ApiProvider {
-  BaseApiProvider(Dio httpClient) : assert(httpClient != null);
-
-  BaseApiProvider.from(ApiProvider apiProvider) : assert(apiProvider != null);
-}

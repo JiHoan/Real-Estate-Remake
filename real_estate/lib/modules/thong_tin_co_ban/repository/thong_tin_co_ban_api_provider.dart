@@ -13,6 +13,8 @@ class ThongTinCoBanApiProvider extends ApiProvider {
       'authorization': 'Bearer ' + token,
     });
 
+    print(model.roomNumber);
+
     Map<String, dynamic> _requestBody = {
       'chu_nha_sdt': model.sdtNguoiNhan,
       'chu_nha_ten': model.tenNguoiNhan,
@@ -21,7 +23,7 @@ class ThongTinCoBanApiProvider extends ApiProvider {
       'xa_phuong_thi_tran': model.phuongXaId,
       'so_nha': model.soNha,
       'ten_duong': model.tenDuong,
-      'chieu_ngang_bao_nhieu': 21.45,
+      'chieu_ngang_bao_nhieu': model.ngang,
       'chieu_dai_bao_nhieu': model.dai,
       'co_ham_khong': model.basement,
       'co_san_thuong_khong': model.terrace,

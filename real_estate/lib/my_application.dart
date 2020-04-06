@@ -27,11 +27,7 @@ class _MyApplicationState extends State<MyApplication> {
   void initState() {
     super.initState();
 
-    Dio dio = new Dio();
-
-    apiProvider = BaseApiProvider(dio);
-
-    apiProvider.httpClient.interceptors.add(
+    ApiProvider.addInterceptor(
       InterceptorsWrapper(
         onRequest: (RequestOptions options) async {
           try {
@@ -45,8 +41,8 @@ class _MyApplicationState extends State<MyApplication> {
         },
         onResponse: (Response resp) {
           if (resp.statusCode == 401) {
-            print('==== 401');
-            _authenticationBloc.add(LoggedOut());
+            print('Shut down: 401');
+            _authenticationBloc.add(ShutDown());
           }
         },
       ),
@@ -89,27 +85,30 @@ class _MyApplicationState extends State<MyApplication> {
           listener: (BuildContext context, AuthenticationState state) {
             if (state is AuthenticationUnauthenticated) {
               /*Navigator.popUntil(context, ModalRoute.withName('/'));*/
-              showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text('Thông báo'),
-                      content: Text('Phiên đăng nhập đã kết thúc. Vui lòng đăng nhập lại !'),
-                      actions: <Widget>[
-                        FlatButton(
-                          onPressed: () {
-                            Navigator.popUntil(context, ModalRoute.withName('/'));
-                          },
-                          child: Text('Đồng ý'),
-                        )
-                      ],
-                    );
-                  }).then((_) {
-                if (mounted) {
-                  Navigator.popUntil(context, ModalRoute.withName('/'));
-                }
-              });
+              // type != 0 ? ShutDown :
+              if(state.type != 0){
+                showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('Thông báo'),
+                        content: Text('Phiên đăng nhập đã kết thúc. Vui lòng đăng nhập lại !'),
+                        actions: <Widget>[
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.popUntil(context, ModalRoute.withName('/'));
+                            },
+                            child: Text('Đồng ý'),
+                          )
+                        ],
+                      );
+                    }).then((_) {
+                  if (mounted) {
+                    Navigator.popUntil(context, ModalRoute.withName('/'));
+                  }
+                });
+              }
             }
           },
           child: BlocBuilder(
@@ -120,6 +119,7 @@ class _MyApplicationState extends State<MyApplication> {
                 return LoginPage();
               }
               if (state is AuthenticationAuthenticated) {
+                ApiProvider.setBearerAuth(state.token);
                 return HomePage();
               }
               return Container(//todo

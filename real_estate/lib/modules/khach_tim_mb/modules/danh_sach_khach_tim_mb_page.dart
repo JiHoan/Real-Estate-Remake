@@ -1,39 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:real_estate/modules/nha_cho_thue/bloc/nha_cho_thue.dart';
-import 'package:real_estate/modules/nha_cho_thue_dashboard/nha_cho_thue_dashboard_page.dart';
+import 'package:real_estate/modules/khach_tim_mb/bloc/khach_tim_mb.dart';
 import 'package:real_estate/utils/bottom_loading.dart';
 import 'package:real_estate/utils/style.dart';
 
-class NhaChoThuePage extends StatefulWidget {
+import 'khach_tim_mb_dashboard_page.dart';
+
+class DanhSachKhachTimMbPage extends StatefulWidget {
   @override
-  _NhaChoThuePageState createState() => _NhaChoThuePageState();
+  _DanhSachKhachTimMbPageState createState() => _DanhSachKhachTimMbPageState();
 }
 
-class _NhaChoThuePageState extends State<NhaChoThuePage> {
-  String radioItem = 'Chưa có thông tin nâng cao';
+class _DanhSachKhachTimMbPageState extends State<DanhSachKhachTimMbPage> {
+  String radioItem = 'Tất cả';
   int id = 1;
-  String type = 'KHONG_CO_THONG_TIN_NANG_CAO';
+  String type = '';
   List<FilterList> fList = [
     FilterList(
       index: 1,
-      name: "Chưa có thông tin nâng cao",
-      type: 'KHONG_CO_THONG_TIN_NANG_CAO',
+      name: "Tất cả",
+      type: '',
     ),
     FilterList(
       index: 2,
-      name: "Chưa thuê",
-      type: 'CHUA_THUE',
+      name: "Bình thường",
+      type: 'BINH_THUONG',
     ),
     FilterList(
       index: 3,
-      name: "Đã thuê",
-      type: 'DA_THUE',
+      name: "Cần gấp",
+      type: 'CAN_GAP',
     ),
   ];
 
-  NhaChoThueBloc _nhaChoThueBloc;
+//  NhaChoThueBloc _nhaChoThueBloc;
+  KhachTimMbBloc _khachTimMbBloc;
 
   final f = DateFormat('dd/MM/yyyy');
 
@@ -57,12 +59,12 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
                             id = data.index;
                             type = data.type;
 
-                            if (data.name == 'Chưa có thông tin nâng cao') {
-                              _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'KHONG_CO_THONG_TIN_NANG_CAO'));
-                            } else if (data.name == 'Chưa thuê') {
-                              _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'CHUA_THUE'));
+                            if (data.name == 'Tất cả') {
+                              _khachTimMbBloc.add(FetchDsKhachTimMb(type: ''));
+                            } else if (data.name == 'Bình thường') {
+                              _khachTimMbBloc.add(FetchDsKhachTimMb(type: 'BINH_THUONG'));
                             } else {
-                              _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'DA_THUE'));
+                              _khachTimMbBloc.add(FetchDsKhachTimMb(type: 'CAN_GAP'));
                             }
                           },
                         );
@@ -124,22 +126,22 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
     final currentScroll = _scrollController.position.pixels;
 
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _nhaChoThueBloc.add(LoadMoreDanhSachNhaChoThue(type: type));
+      _khachTimMbBloc.add(LoadMoreDsKhachTimMb(type: type));
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _nhaChoThueBloc = NhaChoThueBloc();
-    _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: type));
+    _khachTimMbBloc = KhachTimMbBloc();
+    _khachTimMbBloc.add(FetchDsKhachTimMb(type: type));
 
     _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
-    _nhaChoThueBloc.close();
+    _khachTimMbBloc.close();
     _scrollController.dispose();
     super.dispose();
   }
@@ -165,10 +167,10 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
             child: Row(
               children: <Widget>[
                 BlocBuilder(
-                  bloc: _nhaChoThueBloc,
-                  builder: (context, state){
-                    if(state is NhaChoThueLoaded){
-                      final length = state.nhaChoThueListModel.length;
+                  bloc: _khachTimMbBloc,
+                  builder: (context, state) {
+                    if (state is KhachTimMbLoaded) {
+                      final length = state.khachTimMbListModel.length;
                       return Text('Kết quả: $length');
                     }
                     return Text('Kết quả: 0');
@@ -193,21 +195,21 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
           ),
           Expanded(
             child: BlocBuilder(
-              bloc: _nhaChoThueBloc,
-              builder: (BuildContext context, NhaChoThueState state) {
+              bloc: _khachTimMbBloc,
+              builder: (context, state) {
                 print(state);
-                if (state is NhaChoThueLoading) {
+                if (state is KhachTimMbLoading) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 }
-                if (state is NhaChoThueEmpty){
+                if (state is KhachTimMbEmpty) {
                   return Center(
                     child: Text('Chưa có dữ liệu.'),
                   );
                 }
-                if (state is NhaChoThueLoaded) {
-                  return buildListNhaChoThue(state);
+                if (state is KhachTimMbLoaded) {
+                  return buildDanhSach(state);
                 }
                 return Container();
               },
@@ -218,20 +220,20 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
     );
   }
 
-  ListView buildListNhaChoThue(NhaChoThueLoaded state) {
+  ListView buildDanhSach(KhachTimMbLoaded state) {
     return ListView.separated(
       // 1 phân trang return 10 dòng, nếu trả ít hơn 11 thì k còn dữ liệu nên tắt scroll hạn chế spam event LoadMore
-      controller: state.nhaChoThueListModel.length < 11 ? null : _scrollController,
+      controller: state.khachTimMbListModel.length < 10 ? null : _scrollController,
       physics: BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      itemCount: state.hasReachedMax ? state.nhaChoThueListModel.length : state.nhaChoThueListModel.length + 1,
+      itemCount: state.hasReachedMax ? state.khachTimMbListModel.length : state.khachTimMbListModel.length + 1,
       separatorBuilder: (BuildContext context, int index) {
         return SizedBox(
           height: 8,
         );
       },
       itemBuilder: (context, index) {
-        return index >= state.nhaChoThueListModel.length
+        return index >= state.khachTimMbListModel.length
             ? BottomLoader()
             : Material(
                 color: Color(0xffEDEDED),
@@ -241,59 +243,57 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => NhaChoThueDashboardPage(
-                          nhaChoThueModelId: state.nhaChoThueListModel[index].id,
+                        builder: (context) => KhachTimMbDashboardPage(
+                          id: state.khachTimMbListModel[index].id,
                         ),
                       ),
                     ).then(
-                      (value) {
+                          (value) {
                         if (value == true) {
-                          _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: type));
+                          _khachTimMbBloc.add(FetchDsKhachTimMb(type: type));
                         }
                       },
                     );
                   },
                   borderRadius: BorderRadius.circular(7),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          state.nhaChoThueListModel[index].diaChi,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          state.nhaChoThueListModel[index].ketCau,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        SizedBox(height: 4),
-                        Row(
+                  child: Stack(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text('Note: ', style: TextStyle(fontWeight: FontWeight.w600)),
-                            Expanded(
-                              child: Text(
-                                state.nhaChoThueListModel[index].ghiChu,
-                                style: TextStyle(color: Colors.green),
-                                overflow: TextOverflow.ellipsis,
+                            Text(
+                              state.khachTimMbListModel[index].nguoiNhan,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
                               ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              state.khachTimMbListModel[index].id.toString(),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: 8),
+                            Text(state.khachTimMbListModel[index].giaCanThue.toString(), style: MyAppStyle.price),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Text(f.format(state.khachTimMbListModel[index].createdAt)),
+                              ],
                             ),
                           ],
                         ),
-                        SizedBox(height: 8),
-                        Text(state.nhaChoThueListModel[index].gia.toString(), style: MyAppStyle.price),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-//                      Text(f.format(state.nhaChoThueListModel[index].createdAt)),
-                          ],
-                        ),
-                      ],
-                    ),
+                      ),
+                      state.khachTimMbListModel[index].tinhTrang.value == 'CAN_GAP'
+                          ? Positioned(
+                              top: 10,
+                              right: 15,
+                              child: Image.asset('assets/star (2).png'),
+                            )
+                          : SizedBox()
+                    ],
                   ),
                 ),
               );

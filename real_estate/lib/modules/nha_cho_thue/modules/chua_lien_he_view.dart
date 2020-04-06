@@ -24,7 +24,7 @@ class _ChuaLienHeViewState extends State<ChuaLienHeView> {
     super.initState();
 
     _nhaChoThueBloc = NhaChoThueBloc();
-    _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'CHUA_LIEN_HE'));
+    _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'KHONG_CO_THONG_TIN_NANG_CAO'));
     _scrollController.addListener(_onScroll);
   }
 

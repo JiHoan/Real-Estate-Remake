@@ -25,3 +25,8 @@ class LoggedOut extends AuthenticationEvent {
   @override
   String toString() => 'Logged Out';
 }
+
+class ShutDown extends AuthenticationEvent {
+  @override
+  String toString() => 'Shut Down';
+}

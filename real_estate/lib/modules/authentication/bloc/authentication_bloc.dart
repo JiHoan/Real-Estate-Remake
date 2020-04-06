@@ -19,7 +19,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         final token = await authenticationRepository.getToken();
 
         if (token != null) {
-          yield AuthenticationAuthenticated();
+          yield AuthenticationAuthenticated(token: token);
         } else {
           yield AuthenticationUnauthenticated();
         }
@@ -31,12 +31,17 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
     if (event is LoggedIn) {
       await authenticationRepository.persistToken(event.token);
-      yield AuthenticationAuthenticated();
+      yield AuthenticationAuthenticated(token: event.token);
     }
 
     if (event is LoggedOut) {
       await authenticationRepository.deleteToken();
       yield AuthenticationUnauthenticated();
+    }
+
+    if (event is ShutDown) {
+      await authenticationRepository.deleteToken();
+      yield AuthenticationUnauthenticated(type: 1);
     }
   }
 }

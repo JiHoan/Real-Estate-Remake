@@ -13,8 +13,9 @@ class HienTrangUpdatePage extends StatefulWidget {
   final CommonModel hienTrang;
   final String sdt;
   final String ten;
+  final List<MyRadioList> list;
 
-  const HienTrangUpdatePage({Key key, @required this.id, @required this.hienTrang, this.sdt, this.ten}) : super(key: key);
+  const HienTrangUpdatePage({Key key, @required this.id, @required this.hienTrang, this.sdt, this.ten, @required this.list}) : super(key: key);
 
   @override
   _HienTrangUpdatePageState createState() => _HienTrangUpdatePageState();
@@ -32,15 +33,15 @@ class _HienTrangUpdatePageState extends State<HienTrangUpdatePage> {
   bool _onChanged = false;
   bool _changed = false;
 
-  List<MyRadioList> radioList = [
+  /*List<MyRadioList> radioList = [
     MyRadioList(
-      index: 1,
-      title: 'Chưa liên hệ',
-      value: 'CHUA_LIEN_HE',
+      index: 4,
+      title: 'Chưa có thông tin nâng cao',
+      value: 'KHONG_CO_THONG_TIN_NANG_CAO',
     ),
     MyRadioList(
       index: 2,
-      title: 'Chưa thuê',
+      title: 'Đã có thông tin nâng cao (chưa thuê)',
       value: 'CHUA_THUE',
     ),
     MyRadioList(
@@ -48,17 +49,20 @@ class _HienTrangUpdatePageState extends State<HienTrangUpdatePage> {
       title: 'Đã thuê',
       value: 'DA_THUE',
     ),
-  ];
+  ];*/
 
   @override
   void initState() {
     super.initState();
+    print(widget.hienTrang.value);
+    print(widget.list);
+
     _nhaChoThueDetailBloc = CapNhatTtcbBloc();
 
     radioValue = widget.hienTrang.value;
     radioGroup = widget.hienTrang.index;
 
-    if(widget.sdt != null && widget.ten != null){
+    if (widget.sdt != null && widget.ten != null) {
       ctlSdtNguoiNhan.text = widget.sdt;
       ctlTenNguoiNhan.text = widget.ten;
     }
@@ -93,7 +97,7 @@ class _HienTrangUpdatePageState extends State<HienTrangUpdatePage> {
               physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               children: <Widget>[
-                MyTopTitle(text: 'Người nhận'), buildRow(), SizedBox(height: 20), //
+                MyTopTitle(text: 'Hiện trạng'), buildRow(), SizedBox(height: 20), //
                 radioValue == 'DA_THUE'
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,10 +188,13 @@ class _HienTrangUpdatePageState extends State<HienTrangUpdatePage> {
     );
   }
 
-  Row buildRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: radioList
+  Widget buildRow() {
+    return Wrap(
+      spacing: 40,
+      runSpacing: 20,
+      runAlignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: widget.list
           .map(
             (data) => Row(
               children: <Widget>[

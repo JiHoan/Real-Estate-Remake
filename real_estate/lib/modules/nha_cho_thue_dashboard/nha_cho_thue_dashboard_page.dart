@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:real_estate/modules/lo_trinh/bloc/lo_trinh.dart';
+import 'package:real_estate/utils/my_radio_button.dart';
 import 'package:real_estate/utils/style.dart';
 
 import 'cap_nhat_thong_tin_nang_cao/modules/chuong_ngai_vat_update_page.dart';
@@ -289,7 +290,7 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                 color: Colors.white,
                 child: InkWell(
                   onTap: () {
-                    if (state.model.nguoiThue != null) {
+                    /*if (state.model.nguoiThue != null) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -316,18 +317,95 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                           builder: (context) => HienTrangUpdatePage(
                             id: widget.nhaChoThueModelId,
                             hienTrang: state.model.hienTrang,
+                            list: state.model.hienTrang.value == 'KHONG_CO_THONG_TIN_NANG_CAO'
+                                ? [
+                                    MyRadioList(
+                                      index: 4,
+                                      title: 'Chưa có thông tin nâng cao',
+                                      value: 'KHONG_CO_THONG_TIN_NANG_CAO',
+                                    ),
+                                    MyRadioList(
+                                      index: 2,
+                                      title: 'Đã có thông tin nâng cao (chưa thuê)',
+                                      value: 'CHUA_THUE',
+                                    ),
+                                    MyRadioList(
+                                      index: 3,
+                                      title: 'Đã thuê',
+                                      value: 'DA_THUE',
+                                    ),
+                                  ]
+                                : [
+                                    MyRadioList(
+                                      index: 2,
+                                      title: 'Đã có thông tin nâng cao (chưa thuê)',
+                                      value: 'CHUA_THUE',
+                                    ),
+                                    MyRadioList(
+                                      index: 3,
+                                      title: 'Đã thuê',
+                                      value: 'DA_THUE',
+                                    ),
+                                  ],
                           ),
                         ),
                       ).then(
                         (value) {
                           if (value == true) {
-                              _isUpdateHienTrang = true;
+                            _isUpdateHienTrang = true;
 
                             _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
                           }
                         },
                       );
-                    }
+                    }*/
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HienTrangUpdatePage(
+                          id: widget.nhaChoThueModelId,
+                          hienTrang: state.model.hienTrang,
+                          list: state.model.hienTrang.value == 'KHONG_CO_THONG_TIN_NANG_CAO'
+                              ? [
+                            MyRadioList(
+                              index: 4,
+                              title: 'Chưa có thông tin nâng cao',
+                              value: 'KHONG_CO_THONG_TIN_NANG_CAO',
+                            ),
+                            MyRadioList(
+                              index: 2,
+                              title: 'Đã có thông tin nâng cao (chưa thuê)',
+                              value: 'CHUA_THUE',
+                            ),
+                            MyRadioList(
+                              index: 3,
+                              title: 'Đã thuê',
+                              value: 'DA_THUE',
+                            ),
+                          ]
+                              : [
+                            MyRadioList(
+                              index: 2,
+                              title: 'Đã có thông tin nâng cao (chưa thuê)',
+                              value: 'CHUA_THUE',
+                            ),
+                            MyRadioList(
+                              index: 3,
+                              title: 'Đã thuê',
+                              value: 'DA_THUE',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ).then(
+                          (value) {
+                        if (value == true) {
+                          _isUpdateHienTrang = true;
+
+                          _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
+                        }
+                      },
+                    );
                   },
                   child: Container(
                     height: 30,
@@ -337,8 +415,8 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                         Text('Hiện trạng: ', style: MyAppStyle.text),
                         Expanded(
                           child: Text(
-                            state.model.hienTrang.value == 'CHUA_LIEN_HE'
-                                ? 'Chưa liên hệ'
+                            state.model.hienTrang.value == 'KHONG_CO_THONG_TIN_NANG_CAO'
+                                ? 'Chưa có thông tin nâng cao'
                                 : state.model.hienTrang.value == 'CHUA_THUE' ? 'Chưa thuê' : 'Đã thuê',
                             style: TextStyle(color: Color(0xffA00000), fontWeight: FontWeight.bold),
                             overflow: TextOverflow.ellipsis,
@@ -519,6 +597,7 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                       loaiHem: state.model.loaiHem,
                       kichThuocHem: state.model.kichThuocHem,
                       soXet: state.model.soXet,
+                      type: state.model.matTien.value == 'NHA_MAT_TIEN' ? 0 : 1,
                     ),
                   ),
                 ).then(
@@ -537,7 +616,7 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                     builder: (context) => ChuongNgaiVatUpdatePage(
                       id: widget.nhaChoThueModelId,
                       chuongNgaiVat: state.model.chuongNgaiVat,
-                      chungNgaiVatKhac: state.model.chuongNgaiVatKhac,
+                      chungNgaiVatKhac: state.model.chuongNgaiVatKhac == 'KHONG_XAC_DINH' ? '' : state.model.chuongNgaiVatKhac,
                     ),
                   ),
                 ).then(
