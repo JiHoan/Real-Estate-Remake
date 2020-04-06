@@ -56,7 +56,7 @@ class KhachTimMbBloc extends Bloc<KhachTimMbEvent, KhachTimMbState> {
       }
     }
 
-    if(event is FetchDetail){
+    if (event is FetchDetail) {
       yield KhachTimMbLoading();
 
       try {
@@ -127,80 +127,195 @@ class KhachTimMbBloc extends Bloc<KhachTimMbEvent, KhachTimMbState> {
       }
     }
 
-    if(event is UpdateTinhTrang){
+    if (event is UpdateTinhTrang) {
       yield KhachTimMbLoading();
-      try{
+      try {
         bool isSuccess = await _repository.updateTinhTrang(id: event.id, tinhTrang: event.tinhTrang);
-        if(isSuccess == true){
+        if (isSuccess == true) {
           yield KhachTimMbSuccess();
         } else {
           yield KhachTimMbFailure();
         }
-      }catch(e, s){
+      } catch (e, s) {
         print(e);
         print(s);
         yield KhachTimMbFailure();
       }
     }
 
-    if(event is UpdateThongTinLienHe){
+    if (event is UpdateThongTinLienHe) {
       yield KhachTimMbLoading();
-      try{
+      try {
         bool isSuccess = await _repository.updateThongTinLienHe(id: event.id, sdt: event.sdt, ten: event.ten);
-        if(isSuccess == true){
+        if (isSuccess == true) {
           yield KhachTimMbSuccess();
         } else {
           yield KhachTimMbFailure();
         }
-      }catch(e, s){
+      } catch (e, s) {
         print(e);
         print(s);
         yield KhachTimMbFailure();
       }
     }
 
-    if(event is UpdateMucDichThue){
+    if (event is UpdateMucDichThue) {
       yield KhachTimMbLoading();
-      try{
+      try {
         bool isSuccess = await _repository.updateMucDichThue(id: event.id, mucDich: event.mucDich);
-        if(isSuccess == true){
+        if (isSuccess == true) {
           yield KhachTimMbSuccess();
         } else {
           yield KhachTimMbFailure();
         }
-      }catch(e, s){
+      } catch (e, s) {
         print(e);
         print(s);
         yield KhachTimMbFailure();
       }
     }
 
-    if(event is UpdateKetCauNhaCanThue){
+    if (event is UpdateKetCauNhaCanThue) {
       yield KhachTimMbLoading();
-      try{
+      try {
         bool isSuccess = await _repository.updateKetCauNhaCanThue(id: event.id, model: event.model);
-        if(isSuccess == true){
+        if (isSuccess == true) {
           yield KhachTimMbSuccess();
         } else {
           yield KhachTimMbFailure();
         }
-      }catch(e, s){
+      } catch (e, s) {
         print(e);
         print(s);
         yield KhachTimMbFailure();
       }
     }
 
-    if(event is UpdateGiaCanThue){
+    if (event is UpdateGiaCanThue) {
       yield KhachTimMbLoading();
-      try{
+      try {
         bool isSuccess = await _repository.updateGiaCanThue(id: event.id, giaMin: event.giaMin, giaMax: event.giaMax);
-        if(isSuccess == true){
+        if (isSuccess == true) {
           yield KhachTimMbSuccess();
         } else {
           yield KhachTimMbFailure();
         }
-      }catch(e, s){
+      } catch (e, s) {
+        print(e);
+        print(s);
+        yield KhachTimMbFailure();
+      }
+    }
+
+    if (event is UpdateThoiGianThue) {
+      yield KhachTimMbLoading();
+      try {
+        bool isSuccess = await _repository.updateThoiGianThue(id: event.id, thoiGianThue: event.thoiGianThue);
+        if (isSuccess == true) {
+          yield KhachTimMbSuccess();
+        } else {
+          yield KhachTimMbFailure();
+        }
+      } catch (e, s) {
+        print(e);
+        print(s);
+        yield KhachTimMbFailure();
+      }
+    }
+
+    if (event is UpdateKhachLauNam) {
+      yield KhachTimMbLoading();
+      try {
+        bool isSuccess =
+            await _repository.updateKhachLauNam(id: event.id, khachLauNam: event.khachLauNam, loaiHinh: event.loaiHinh);
+        if (isSuccess == true) {
+          yield KhachTimMbSuccess();
+        } else {
+          yield KhachTimMbFailure();
+        }
+      } catch (e, s) {
+        print(e);
+        print(s);
+        yield KhachTimMbFailure();
+      }
+    }
+
+    if (event is UpdateLoaiKhachHang) {
+      yield KhachTimMbLoading();
+      try {
+        bool isSuccess = await _repository.updateLoaiKhachHang(
+            id: event.id, loaiKhachHang: event.loaiKhach, tenThuongHieu: event.tenThuongHieu);
+        if (isSuccess == true) {
+          yield KhachTimMbSuccess();
+        } else {
+          yield KhachTimMbFailure();
+        }
+      } catch (e, s) {
+        print(e);
+        print(s);
+        yield KhachTimMbFailure();
+      }
+    }
+
+    if (event is UpdateMoTaKhac) {
+      yield KhachTimMbLoading();
+      try {
+        bool isSuccess = await _repository.updateMoTaKhac(id: event.id, moTaKhac: event.moTaKhac);
+        if (isSuccess == true) {
+          yield KhachTimMbSuccess();
+        } else {
+          yield KhachTimMbFailure();
+        }
+      } catch (e, s) {
+        print(e);
+        print(s);
+        yield KhachTimMbFailure();
+      }
+    }
+
+    if (event is UpdateKhuVucCanThue) {
+      yield KhachTimMbLoading();
+      try {
+        bool isSuccess = await _repository.updateKhuVucCanThue(
+            id: event.id, thanhPho: event.thanhPho, quan: event.quan, phuong: event.phuong, tenDuong: event.tenDuong);
+        if (isSuccess == true) {
+          yield KhachTimMbSuccess();
+        } else {
+          yield KhachTimMbFailure();
+        }
+      } catch (e, s) {
+        print(e);
+        print(s);
+        yield KhachTimMbFailure();
+      }
+    }
+
+    if (event is UploadHinhAnh) {
+      yield KhachTimMbLoading();
+      try {
+        bool isSuccess = await _repository.uploadHinhAnh(id: event.id, hinhAnh: event.hinhAnh);
+        if (isSuccess == true) {
+          yield KhachTimMbSuccess();
+        } else {
+          yield KhachTimMbFailure();
+        }
+      } catch (e, s) {
+        print(e);
+        print(s);
+        yield KhachTimMbFailure();
+      }
+    }
+
+    if (event is RemoveHinhAnh) {
+      yield KhachTimMbLoading();
+      try {
+        bool isSuccess = await _repository.removeHinhAnh(id: event.id, idHinhAnh: event.hinhAnhId);
+        if (isSuccess == true) {
+          yield KhachTimMbSuccess();
+        } else {
+          yield KhachTimMbFailure();
+        }
+      } catch (e, s) {
         print(e);
         print(s);
         yield KhachTimMbFailure();

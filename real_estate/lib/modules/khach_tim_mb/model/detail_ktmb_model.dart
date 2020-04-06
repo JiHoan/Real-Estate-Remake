@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
+import 'package:real_estate/models/hinh_anh_model.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/common_model.dart';
+import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/dia_chi_common_model.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/thong_tin_lien_he_model.dart';
 
 class DetailKtmbModel extends Equatable{
@@ -24,6 +28,18 @@ class DetailKtmbModel extends Equatable{
   final CommonModel huongNha;
   final int giaMin;
   final int giaMax;
+  final int thoiGianThue;
+  final CommonModel khachLauNam;
+  final CommonModel loaiHinh;
+  final CommonModel loaiKhachHang;
+  final String tenThuongHieu;
+  final String moTaKhac;
+  final DiaChiCommonModel thanhPho;
+  final DiaChiCommonModel quanHuyen;
+  final DiaChiCommonModel phuongXa;
+  final String tenDuong;
+  final HinhAnhListModel hinhAnh;
+  final List<File> hinhAnhUpdate;
 
   factory DetailKtmbModel.fromJson(Map<String, dynamic> json){
     return DetailKtmbModel(
@@ -48,11 +64,22 @@ class DetailKtmbModel extends Equatable{
       huongNha: CommonModel.fromJson(json['nha_huong_gi']),
       giaMin: json['gia_can_thue_min'],
       giaMax: json['gia_can_thue_max'],
+      thoiGianThue: json['thoi_gian_thue'],
+      khachLauNam: CommonModel.fromJson(json['khach_lau_nam']),
+      loaiHinh: CommonModel.fromJson(json['loai_hinh']),
+      loaiKhachHang: CommonModel.fromJson(json['loai_khach']),
+      tenThuongHieu: json['ten_thuong_hieu'],
+      moTaKhac: json['mo_ta_khac'],
+      thanhPho: DiaChiCommonModel.fromJson(json['tinh_thanh_pho']),
+      quanHuyen: DiaChiCommonModel.fromJson(json['quan_huyen']),
+      phuongXa: DiaChiCommonModel.fromJson(json['xa_phuong_thi_tran']),
+      tenDuong: json['ten_duong'],
+      hinhAnh: json['hinh_anh'] == null ? null : HinhAnhListModel.fromJson(json['hinh_anh']),
     );
   }
 
-  DetailKtmbModel({this.giaMax, this.giaMin, this.id, this.tinhTrang, this.khachHang, this.mucDich, this.dienTich, this.soLau, this.lung, this.ham, this.sanThuong, this.sanThuongCaiTao, this.soPhong, this.soWCR, this.soWCC, this.banCong, this.cuaSo, this.viTriThangBo, this.soThangThoatHiem, this.soThangMay, this.huongNha,});
+  DetailKtmbModel({this.hinhAnh, this.hinhAnhUpdate, this.thanhPho, this.quanHuyen, this.phuongXa ,this.tenDuong, this.moTaKhac, this.tenThuongHieu, this.loaiKhachHang, this.khachLauNam, this.loaiHinh, this.thoiGianThue, this.giaMax, this.giaMin, this.id, this.tinhTrang, this.khachHang, this.mucDich, this.dienTich, this.soLau, this.lung, this.ham, this.sanThuong, this.sanThuongCaiTao, this.soPhong, this.soWCR, this.soWCC, this.banCong, this.cuaSo, this.viTriThangBo, this.soThangThoatHiem, this.soThangMay, this.huongNha,});
 
   @override
-  List<Object> get props => [giaMax, giaMin, id, tinhTrang, khachHang, mucDich, dienTich, soLau, lung, ham,sanThuong, sanThuongCaiTao, soPhong, soWCR, soWCC, banCong, cuaSo, viTriThangBo, soThangThoatHiem, soThangMay, huongNha,];
+  List<Object> get props => [hinhAnh, hinhAnhUpdate, thanhPho, quanHuyen, phuongXa ,tenDuong, moTaKhac, tenThuongHieu, loaiKhachHang, khachLauNam, loaiHinh, thoiGianThue, giaMax, giaMin, id, tinhTrang, khachHang, mucDich, dienTich, soLau, lung, ham,sanThuong, sanThuongCaiTao, soPhong, soWCR, soWCC, banCong, cuaSo, viTriThangBo, soThangThoatHiem, soThangMay, huongNha,];
 }

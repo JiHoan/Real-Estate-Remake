@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:real_estate/modules/khach_tim_mb/model/detail_ktmb_model.dart';
 import 'package:real_estate/modules/khach_tim_mb/model/khach_tim_mb_model.dart';
@@ -36,5 +38,33 @@ class KhachTimMbRepository {
 
   Future<bool> updateGiaCanThue({@required int id, @required int giaMin, @required int giaMax}) async {
     return await _apiProvider.updateGiaCanThue(id: id, giaMin: giaMin, giaMax: giaMax);
+  }
+
+  Future<bool> updateThoiGianThue({@required int id, @required int thoiGianThue}) async {
+    return await _apiProvider.updateThoiGianThue(id: id, thoiGianThue: thoiGianThue);
+  }
+
+  Future<bool> updateKhachLauNam({@required int id, @required String khachLauNam, @required String loaiHinh}) async {
+    return await _apiProvider.updateKhachLauNam(id: id, khachLauNam: khachLauNam, loaiHinh: loaiHinh);
+  }
+
+  Future<bool> updateLoaiKhachHang({@required int id, @required String loaiKhachHang, @required String tenThuongHieu}) async {
+    return await _apiProvider.updateLoaiKhachHang(id: id, loaiKhachHang: loaiKhachHang, tenThuongHieu: tenThuongHieu);
+  }
+
+  Future<bool> updateMoTaKhac({@required int id, @required String moTaKhac}) async {
+    return await _apiProvider.updateMoTaKhac(id: id, moTaKhac: moTaKhac);
+  }
+
+  Future<bool> updateKhuVucCanThue({@required int id, @required String thanhPho, @required String quan, @required String phuong, @required String tenDuong}) async {
+    return await _apiProvider.updateKhuVucCanThue(id: id, thanhPho: thanhPho, quan: quan, phuong: phuong, tenDuong: tenDuong);
+  }
+
+  Future<bool> uploadHinhAnh({@required int id, @required List<File> hinhAnh}) async {
+    return await _apiProvider.uploadHinhAnh(id: id, hinhAnh: hinhAnh);
+  }
+
+  Future<bool> removeHinhAnh({@required int id, @required List<int> idHinhAnh}) async {
+    return await _apiProvider.removeHinhAnh(id: id, idHinhAnh: idHinhAnh);
   }
 }

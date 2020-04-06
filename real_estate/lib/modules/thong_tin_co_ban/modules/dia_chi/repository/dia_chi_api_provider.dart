@@ -7,18 +7,8 @@ import 'package:real_estate/modules/thong_tin_co_ban/modules/dia_chi/model/tinh_
 
 class TinhThanhPhoApiProvider extends ApiProvider {
   Future<TinhThanhPhoListModel> getTinhThanhPho({@required String type, @required String id}) async {
-    final storage = new FlutterSecureStorage();
-    String token = await storage.read(key: 'token');
-
-    httpClient.options.headers.addAll({
-      'accept': 'application/json',
-      'authorization': 'Bearer ' + token,
-    });
-
     Map<String, String> _requestBody = {'type': type, 'id': id};
     Response _resp = await httpClient.post('dia-chi/search', data: _requestBody);
-
-    httpClient.options.headers.clear();
 
     if (_resp.statusCode == 200) {
       return TinhThanhPhoListModel.fromJson(_resp.data['data']);
@@ -28,18 +18,8 @@ class TinhThanhPhoApiProvider extends ApiProvider {
   }
 
   Future<QuanHuyenListModel> getQuanHuyen({@required String type, @required String id}) async {
-    final storage = new FlutterSecureStorage();
-    String token = await storage.read(key: 'token');
-
-    httpClient.options.headers.addAll({
-      'accept': 'application/json',
-      'authorization': 'Bearer ' + token,
-    });
-
     Map<String, String> _requestBody = {'type': type, 'id': id};
     Response _resp = await httpClient.post('dia-chi/search', data: _requestBody);
-
-    httpClient.options.headers.clear();
 
     if (_resp.statusCode == 200) {
       return QuanHuyenListModel.fromJson(_resp.data['data']);
@@ -49,20 +29,8 @@ class TinhThanhPhoApiProvider extends ApiProvider {
   }
 
   Future<PhuongXaListModel> getPhuongXa({@required String type, @required String id}) async {
-    final storage = new FlutterSecureStorage();
-    String token = await storage.read(key: 'token');
-
-    httpClient.options.headers.addAll({
-      'accept': 'application/json',
-      'authorization': 'Bearer ' + token,
-    });
-
     Map<String, String> _requestBody = {'type': type, 'id': id};
     Response _resp = await httpClient.post('dia-chi/search', data: _requestBody);
-
-    httpClient.options.headers.clear();
-
-    print(PhuongXaListModel.fromJson(_resp.data['data']));
 
     if (_resp.statusCode == 200) {
       return PhuongXaListModel.fromJson(_resp.data['data']);

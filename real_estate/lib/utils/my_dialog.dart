@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Dialogs {
   /*static Future<void> showLoadingDialog(BuildContext context, GlobalKey key) async {
@@ -68,6 +69,42 @@ class Dialogs {
           ),
         );
       }
+    );
+  }
+
+  static showSuccessToast() {
+    return Fluttertoast.showToast(
+      msg: "Đã cập nhật thành công.",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black54,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
+  static showFailureToast() {
+    return Fluttertoast.showToast(
+      msg: "Đã có lỗi xảy ra.",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black54,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
+  static showMissInfoToast() {
+    return Fluttertoast.showToast(
+      msg: "Thông tin chưa đầy đủ.",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black54,
+      textColor: Colors.white,
+      fontSize: 16.0,
     );
   }
 }

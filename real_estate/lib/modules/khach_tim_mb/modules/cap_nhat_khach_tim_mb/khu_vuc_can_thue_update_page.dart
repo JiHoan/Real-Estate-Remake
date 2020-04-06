@@ -1,23 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:real_estate/modules/khach_tim_mb/bloc/khach_tim_mb.dart';
+import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/bloc/cap_nhat_ttcb.dart';
+import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/dia_chi_common_model.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/modules/dia_chi/bloc/dia_chi.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/modules/dia_chi/model/tinh_thanh_pho_model.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/modules/dia_chi/tinh_thanh_pho_search_page.dart';
-import 'package:real_estate/modules/tim_kiem_nha_cho_thue/bloc/tim_nha_cho_thue.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
-import '../them_khach_tim_mb/ket_cau_nha_can_thue_next_page.dart';
-
-
 class KhuVucCanThueUpdatePage extends StatefulWidget {
-  final String moTa;
-  final String sdt;
-  final String ten;
-  final String mucDich;
+  final int id;
+  final DiaChiCommonModel thanhPho;
+  final DiaChiCommonModel quanHuyen;
+  final DiaChiCommonModel phuongXa;
+  final String tenDuong;
 
-  const KhuVucCanThueUpdatePage({Key key, this.moTa, this.sdt, this.ten, this.mucDich}) : super(key: key);
+  const KhuVucCanThueUpdatePage(
+      {Key key,
+      @required this.id,
+      @required this.thanhPho,
+      @required this.quanHuyen,
+      @required this.phuongXa,
+      @required this.tenDuong})
+      : super(key: key);
 
   @override
   _KhuVucCanThueUpdatePageState createState() => _KhuVucCanThueUpdatePageState();
@@ -25,31 +34,62 @@ class KhuVucCanThueUpdatePage extends StatefulWidget {
 
 class _KhuVucCanThueUpdatePageState extends State<KhuVucCanThueUpdatePage> {
   TinhThanhPhoModel _tinhTpModel;
-  TinhThanhPhoBloc _tinhThanhPhoBloc;
-  PhuongXaBloc _phuongXaBloc;
-
   String _quanHuyenSelection;
   String _phuongXaSelection;
 
+  KhachTimMbBloc _khachTimMbBloc;
+  TinhThanhPhoBloc _tinhThanhPhoBloc;
+  PhuongXaBloc _phuongXaBloc;
+
   TextEditingController ctlTenDuong = TextEditingController();
 
-  TimNhaChoThueBloc _timNhaChoThueBloc;
+  String _tenThanhPho = '';
+  String _idThanhPho;
+
+  bool _quanHuyenUpdated = false;
+  bool _phuongXaUpdated = false;
+
+  bool _onChanged = false;
+  bool _changed = false;
+
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      _khachTimMbBloc.add(
+        UpdateKhuVucCanThue(
+          id: widget.id,
+          thanhPho: _idThanhPho,
+          quan: _quanHuyenSelection,
+          phuong: _phuongXaSelection,
+          tenDuong: ctlTenDuong.text,
+        ),
+      );
+    } catch (error) {
+      print(error);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-
+    _khachTimMbBloc = KhachTimMbBloc();
     _tinhThanhPhoBloc = TinhThanhPhoBloc();
     _phuongXaBloc = PhuongXaBloc();
-    _timNhaChoThueBloc = TimNhaChoThueBloc();
+
+    _tenThanhPho = widget.thanhPho.name; // fetch ten tp => dien vao UI
+    _idThanhPho = widget.thanhPho.id;
+    _tinhThanhPhoBloc.add(QuanHuyenFetch(id: widget.thanhPho.id)); // fetch quan theo tp => du lieu vao dropdown
+
+    ctlTenDuong.text = widget.tenDuong;
   }
 
   @override
   void dispose() {
     super.dispose();
-    _timNhaChoThueBloc.close();
+    _khachTimMbBloc.close();
+    _tinhThanhPhoBloc.close();
     _phuongXaBloc.close();
-    _timNhaChoThueBloc.close();
   }
 
   @override
@@ -87,15 +127,16 @@ class _KhuVucCanThueUpdatePageState extends State<KhuVucCanThueUpdatePage> {
                   borderRadius: BorderRadius.circular(7),
                   child: InkWell(
                     onTap: () async {
+                      // chuyen sang page tim kiem tp
                       _tinhTpModel = await Navigator.push(context, MaterialPageRoute(builder: (context) => TimTinhTpPage()));
 
-                      print(_tinhTpModel);
-
                       if (_tinhTpModel != null) {
-                        _tinhThanhPhoBloc.add(QuanHuyenFetch(id: _tinhTpModel.id)); //fetch quận/huyện mới theo tỉnh/tp
-                      } else{
-                        _quanHuyenSelection = null;
-                        _phuongXaSelection = null;
+                        _tenThanhPho = _tinhTpModel.name;
+                        _idThanhPho = _tinhTpModel.id;
+                        _quanHuyenUpdated = true; // state quan huyen duoc cap nhat khi chon tp khac
+                        _onChanged = true;
+
+                        _tinhThanhPhoBloc.add(QuanHuyenFetch(id: _tinhTpModel.id)); //fetch quan theo tp moi chon
                       }
                     },
                     borderRadius: BorderRadius.circular(7),
@@ -104,7 +145,7 @@ class _KhuVucCanThueUpdatePageState extends State<KhuVucCanThueUpdatePage> {
                       padding: const EdgeInsets.only(left: 15, right: 15),
                       child: Row(
                         children: <Widget>[
-                          _tinhTpModel != null ? Text(_tinhTpModel.name) : Text(''),
+                          Text(_tenThanhPho),
                           Spacer(),
                           Icon(Icons.arrow_drop_down),
                         ],
@@ -118,16 +159,26 @@ class _KhuVucCanThueUpdatePageState extends State<KhuVucCanThueUpdatePage> {
                   bloc: _tinhThanhPhoBloc,
                   listener: (BuildContext context, TinhThanhPhoState state) {
                     if (state is QuanHuyenSuccess) {
-                      _quanHuyenSelection =
-                          state.quanHuyenListModel.elementAt(0).id; //reset value mặc định(row đầu tiên) cho dropdown quận/huyện
-                      _phuongXaBloc.add(PhuongXaFetch(id: state.quanHuyenListModel.elementAt(0).id)); //fetch data phường/xã
+                      if (widget.quanHuyen != null && _quanHuyenUpdated == false) {
+                        // khi moi vao trang update && chua chon tp khac
+                        // fetch du lieu quan/huyen vao dropdown
+                        _quanHuyenSelection = widget.quanHuyen.id;
+                        _phuongXaBloc.add(PhuongXaFetch(id: widget.quanHuyen.id)); // fetch du lieu phuong/xa theo quan
+                      } else {
+                        // khi da chon tp khac
+                        // fetch lai quan/huyen theo tp khac
+                        // gia tri mac dinh cua dropdown index[0]
+                        _quanHuyenSelection = state.quanHuyenListModel.elementAt(0).id;
+                        _phuongXaUpdated = true; // state da cap nhat quan/huyen
+                        _phuongXaBloc.add(PhuongXaFetch(id: state.quanHuyenListModel.elementAt(0).id));
+                      }
                     }
                   },
                   child: BlocBuilder(
                     bloc: _tinhThanhPhoBloc,
                     builder: (BuildContext context, TinhThanhPhoState state) {
                       print(state);
-                      if (state is QuanHuyenSuccess && _tinhTpModel != null) {
+                      if (state is QuanHuyenSuccess) {
                         return buildQuanHuyenSuccess(state);
                       }
                       return Material(
@@ -164,14 +215,21 @@ class _KhuVucCanThueUpdatePageState extends State<KhuVucCanThueUpdatePage> {
                   bloc: _phuongXaBloc,
                   listener: (BuildContext context, PhuongXaState state) {
                     if (state is PhuongXaSuccess) {
-                      _phuongXaSelection = null;
+                      if (widget.phuongXa != null && _phuongXaUpdated == false) {
+                        // khi moi vao & chua update gi
+                        _phuongXaSelection = widget.phuongXa.id;
+                      } else {
+                        // da update quan huyen khac
+                        // reset mac dinh la null
+                        _phuongXaSelection = null;
+                      }
                     }
                   },
                   child: BlocBuilder(
                     bloc: _phuongXaBloc,
                     builder: (BuildContext context, PhuongXaState state) {
                       print(state);
-                      if (state is PhuongXaSuccess && _tinhTpModel != null) {
+                      if (state is PhuongXaSuccess) {
                         return buildPhuongXaSuccess(state);
                       }
                       if (state is PhuongXaFailure) {
@@ -236,48 +294,49 @@ class _KhuVucCanThueUpdatePageState extends State<KhuVucCanThueUpdatePage> {
                   color: Color(0xffEBEBEB),
                   lines: 1,
                   controller: ctlTenDuong,
+                  onChanged: (value) {
+                    setState(() {
+                      _onChanged = true;
+                    });
+                  },
                 ),
               ],
             ),
           ),
-          Builder(
-            builder: (context) => Padding(
-              padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-              child: MyButton(
-                color: Color(0xff3FBF55),
-                text: Text(
-                  'Lưu & Tiếp tục',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                ),
-                event: () {
-                  if (ctlTenDuong.text != '' && _phuongXaSelection != null) {
-                    Scaffold.of(context).removeCurrentSnackBar();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => KetCauNhaCanThueNextPage(
-                              moTa: widget.moTa,
-                              sdt: widget.sdt,
-                              ten: widget.ten,
-                              mucDich: widget.mucDich,
-                              thanhPho: _tinhTpModel.id,
-                              quan: _quanHuyenSelection,
-                              phuong: _phuongXaSelection,
-                              tenDuong: ctlTenDuong.text,
-                            )));
-                  } else {
-                    Scaffold.of(context).removeCurrentSnackBar();
-                    Scaffold.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Hãy nhập đầy đủ thông tin.'),
-                        backgroundColor: Colors.red,
+          _onChanged == false
+              ? MyButtonDisable()
+              : BlocListener(
+                  bloc: _khachTimMbBloc,
+                  listener: (context, state) {
+                    if (state is KhachTimMbSuccess) {
+                      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                      Navigator.pop(context, _changed); // pop về dashboard
+                      Dialogs.showSuccessToast();
+                    }
+                    if (state is KhachTimMbFailure) {
+                      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                      Dialogs.showFailureToast();
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                    child: MyButton(
+                      color: Color(0xff3FBF55),
+                      text: Text(
+                        'Lưu',
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                       ),
-                    );
-                  }
-                },
-              ),
-            ),
-          ),
+                      event: () {
+                        if(_idThanhPho != null && _quanHuyenSelection != null && _phuongXaSelection != null && ctlTenDuong.text != ''){
+                          _changed = true;
+                          _handleSubmit(context);
+                        } else {
+                          Dialogs.showMissInfoToast();
+                        }
+                      },
+                    ),
+                  ),
+                ),
         ],
       ),
     );
@@ -298,6 +357,9 @@ class _KhuVucCanThueUpdatePageState extends State<KhuVucCanThueUpdatePage> {
         onChanged: (newVal) {
           setState(() {
             _quanHuyenSelection = newVal;
+            _phuongXaUpdated = true;
+
+            _onChanged = true;
           });
           _phuongXaBloc.add(PhuongXaFetch(id: newVal));
         },
@@ -327,6 +389,8 @@ class _KhuVucCanThueUpdatePageState extends State<KhuVucCanThueUpdatePage> {
         onChanged: (newVal) {
           setState(() {
             _phuongXaSelection = newVal;
+
+            _onChanged = true;
           });
         },
         value: _phuongXaSelection,

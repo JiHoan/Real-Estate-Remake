@@ -170,27 +170,11 @@ class _GiaCanThueUpdatePageState extends State<GiaCanThueUpdatePage> {
                     if (state is KhachTimMbSuccess) {
                       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
                       Navigator.pop(context, _changed); // pop về dashboard
-                      Fluttertoast.showToast(
-                        msg: "Đã cập nhật thành công.",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.black54,
-                        textColor: Colors.white,
-                        fontSize: 16.0,
-                      );
+                      Dialogs.showSuccessToast();
                     }
                     if (state is KhachTimMbFailure) {
                       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
-                      Fluttertoast.showToast(
-                        msg: "Đã có lỗi xảy ra.",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.black54,
-                        textColor: Colors.white,
-                        fontSize: 16.0,
-                      );
+                      Dialogs.showFailureToast();
                     }
                   },
                   child: Padding(

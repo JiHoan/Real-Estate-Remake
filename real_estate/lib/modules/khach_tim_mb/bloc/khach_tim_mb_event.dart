@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:real_estate/modules/khach_tim_mb/model/khach_tim_mb_model.dart';
@@ -94,4 +96,80 @@ class UpdateGiaCanThue extends KhachTimMbEvent {
 
   @override
   List<Object> get props => [id, giaMin, giaMax];
+}
+
+class UpdateThoiGianThue extends KhachTimMbEvent {
+  final int id;
+  final int thoiGianThue;
+
+  UpdateThoiGianThue({@required this.id, @required this.thoiGianThue});
+
+  @override
+  List<Object> get props => [id, thoiGianThue];
+}
+
+class UpdateKhachLauNam extends KhachTimMbEvent {
+  final int id;
+  final String khachLauNam;
+  final String loaiHinh;
+
+  UpdateKhachLauNam({@required this.id, @required this.khachLauNam, @required this.loaiHinh});
+
+  @override
+  List<Object> get props => [id, khachLauNam, loaiHinh];
+}
+
+class UpdateLoaiKhachHang extends KhachTimMbEvent {
+  final int id;
+  final String loaiKhach;
+  final String tenThuongHieu;
+
+  UpdateLoaiKhachHang({@required this.id, @required this.loaiKhach, @required this.tenThuongHieu});
+
+  @override
+  List<Object> get props => [id, loaiKhach, tenThuongHieu];
+}
+
+class UpdateMoTaKhac extends KhachTimMbEvent {
+  final int id;
+  final String moTaKhac;
+
+  UpdateMoTaKhac({@required this.id, @required this.moTaKhac});
+
+  @override
+  List<Object> get props => [id, moTaKhac];
+}
+
+class UpdateKhuVucCanThue extends KhachTimMbEvent {
+  final int id;
+  final String thanhPho;
+  final String quan;
+  final String phuong;
+  final String tenDuong;
+
+  UpdateKhuVucCanThue({@required this.id, @required this.thanhPho, @required this.quan, @required this.phuong, @required this.tenDuong});
+
+  @override
+  List<Object> get props => [id, thanhPho, quan, phuong, tenDuong];
+}
+
+class UploadHinhAnh extends KhachTimMbEvent {
+  final int id;
+  final List<File> hinhAnh;
+
+  UploadHinhAnh({@required this.id, @required this.hinhAnh});
+
+  @override
+  List<Object> get props => [id, hinhAnh];
+}
+
+
+class RemoveHinhAnh extends KhachTimMbEvent {
+  final int id;
+  final List<int> hinhAnhId;
+
+  RemoveHinhAnh({@required this.id, @required this.hinhAnhId});
+
+  @override
+  List<Object> get props => [id, hinhAnhId];
 }

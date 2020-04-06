@@ -1,5 +1,7 @@
+import 'dart:io';
+
+import 'package:path/path.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:real_estate/api/api_provider.dart';
 import 'package:real_estate/modules/khach_tim_mb/model/detail_ktmb_model.dart';
 import 'package:real_estate/modules/khach_tim_mb/model/khach_tim_mb_model.dart';
@@ -170,6 +172,152 @@ class KhachTimMbApiProvider extends ApiProvider {
 
     if (_resp.statusCode == 200) {
       print(_resp.data['data']);
+      return true;
+    } else {
+      throw _resp.data['message'];
+    }
+  }
+
+  Future<bool> updateThoiGianThue({@required int id, @required int thoiGianThue}) async {
+    FormData _formData = FormData.fromMap({
+      'request_id': id,
+      'thoi_gian_thue': thoiGianThue,
+    });
+
+    Response _resp = await httpClient.post(
+      'request/thoi-gian-thue',
+      data: _formData,
+    );
+
+    if (_resp.statusCode == 200) {
+      print(_resp.data['data']);
+      return true;
+    } else {
+      throw _resp.data['message'];
+    }
+  }
+
+  Future<bool> updateKhachLauNam({@required int id, @required String khachLauNam, @required String loaiHinh}) async {
+    FormData _formData = FormData.fromMap({
+      'request_id': id,
+      'khach_lau_nam': khachLauNam,
+      'loai_hinh': loaiHinh,
+    });
+
+    Response _resp = await httpClient.post(
+      'request/khach-lau-khach-moi',
+      data: _formData,
+    );
+
+    if (_resp.statusCode == 200) {
+      print(_resp.data['data']);
+      return true;
+    } else {
+      throw _resp.data['message'];
+    }
+  }
+
+  Future<bool> updateLoaiKhachHang({@required int id, @required String loaiKhachHang, @required String tenThuongHieu}) async {
+    FormData _formData = FormData.fromMap({
+      'request_id': id,
+      'loai_khach': loaiKhachHang,
+      'ten_thuong_hieu': tenThuongHieu,
+    });
+
+    Response _resp = await httpClient.post(
+      'request/loai-khach',
+      data: _formData,
+    );
+
+    if (_resp.statusCode == 200) {
+      print(_resp.data['data']);
+      return true;
+    } else {
+      throw _resp.data['message'];
+    }
+  }
+
+  Future<bool> updateMoTaKhac({@required int id, @required String moTaKhac}) async {
+    FormData _formData = FormData.fromMap({
+      'request_id': id,
+      'mo_ta_khac': moTaKhac,
+    });
+
+    Response _resp = await httpClient.post(
+      'request/mo-ta-khac',
+      data: _formData,
+    );
+
+    if (_resp.statusCode == 200) {
+      print(_resp.data['data']);
+      return true;
+    } else {
+      throw _resp.data['message'];
+    }
+  }
+
+  Future<bool> updateKhuVucCanThue({@required int id, @required String thanhPho, @required String quan, @required String phuong, @required String tenDuong}) async {
+    FormData _formData = FormData.fromMap({
+      'request_id': id,
+      'tinh_thanh_pho': thanhPho,
+      'quan_huyen': quan,
+      'xa_phuong_thi_tran': phuong,
+      'ten_duong': tenDuong,
+    });
+
+    Response _resp = await httpClient.post(
+      'request/khu-vuc-can-thue',
+      data: _formData,
+    );
+
+    if (_resp.statusCode == 200) {
+      print(_resp.data['data']);
+      return true;
+    } else {
+      throw _resp.data['message'];
+    }
+  }
+
+  Future<bool> uploadHinhAnh({@required int id, @required List<File> hinhAnh}) async {
+    print('run 1');
+    FormData _formData = new FormData.fromMap(
+      {
+        'request_id': id,
+        'hinh_anh': hinhAnh == null
+            ? null
+            : hinhAnh.map(
+              (item) {
+            return MultipartFile.fromFileSync(
+              item?.path,
+              filename: basename(item?.path),
+            );
+          },
+        ).toList(),
+      },
+    );
+
+    print('run 2');
+    Response _resp = await httpClient.post('request/upload-hinh', data: _formData);
+
+    if (_resp.statusCode == 200) {
+      return true;
+    } else {
+      throw _resp.data['message'];
+    }
+  }
+
+
+  Future<bool> removeHinhAnh({@required int id, @required List<int> idHinhAnh}) async {
+    FormData _formData = new FormData.fromMap(
+      {
+        'request_id': id,
+        'image_id': idHinhAnh,
+      },
+    );
+
+    Response _resp = await httpClient.post('request/delete-hinh', data: _formData);
+
+    if (_resp.statusCode == 200) {
       return true;
     } else {
       throw _resp.data['message'];

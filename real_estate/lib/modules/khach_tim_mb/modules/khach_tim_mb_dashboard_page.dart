@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:real_estate/modules/khach_tim_mb/bloc/khach_tim_mb.dart';
 import 'package:real_estate/modules/khach_tim_mb/model/detail_ktmb_model.dart';
 import 'package:real_estate/modules/khach_tim_mb/model/khach_tim_mb_model.dart';
@@ -9,11 +10,16 @@ import 'package:real_estate/utils/my_radio_button.dart';
 import 'package:real_estate/utils/style.dart';
 
 import 'cap_nhat_khach_tim_mb/gia_can_thue_update_page.dart';
+import 'cap_nhat_khach_tim_mb/hinh_anh_ktmb_page.dart';
+import 'cap_nhat_khach_tim_mb/hinh_anh_ktmb_upload_page.dart';
 import 'cap_nhat_khach_tim_mb/ket_cau_nha_can_thue_update_page.dart';
+import 'cap_nhat_khach_tim_mb/khach_lau_nam_hay_moi_update_page.dart';
+import 'cap_nhat_khach_tim_mb/khu_vuc_can_thue_update_page.dart';
+import 'cap_nhat_khach_tim_mb/loai_khach_update_page.dart';
+import 'cap_nhat_khach_tim_mb/mo_ta_khac_update_page.dart';
 import 'cap_nhat_khach_tim_mb/muc_dich_thue_update_page.dart';
 import 'cap_nhat_khach_tim_mb/thoi_gian_thue_update_page.dart';
 import 'cap_nhat_khach_tim_mb/tinh_trang_update_page.dart';
-import 'them_khach_tim_mb/tinh_trang_next_page.dart';
 
 class KhachTimMbDashboardPage extends StatefulWidget {
   final int id;
@@ -82,7 +88,7 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
   Column _buildDanhSachChiTiet(BuildContext context, DetailKtmbModel model) {
     return Column(
       children: <Widget>[
-        _buildHinhAnh(context),
+        _buildHinhAnh(context, model),
         Flexible(
           child: ListView(
             physics: BouncingScrollPhysics(),
@@ -194,7 +200,26 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
                   );
                 },
               ),
-              _buildItemRow('Khu vực cần thuê', () {}),
+              _buildItemRow('Khu vực cần thuê', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => KhuVucCanThueUpdatePage(
+                      id: widget.id,
+                      thanhPho: model.thanhPho,
+                      quanHuyen: model.quanHuyen,
+                      phuongXa: model.phuongXa,
+                      tenDuong: model.tenDuong,
+                    ),
+                  ),
+                ).then(
+                  (value) {
+                    if (value == true) {
+                      _khachTimMbBloc.add(FetchDetail(id: widget.id));
+                    }
+                  },
+                );
+              }),
               _buildItemRow('Kết cấu nhà cần thuê', () {
                 Navigator.push(
                   context,
@@ -237,7 +262,7 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
                     ),
                   ),
                 ).then(
-                      (value) {
+                  (value) {
                     if (value == true) {
                       _khachTimMbBloc.add(FetchDetail(id: widget.id));
                     }
@@ -249,19 +274,71 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ThoiGianThueUpdatePage(
+                      id: widget.id,
+                      thoiGianThue: model.thoiGianThue,
                     ),
                   ),
                 ).then(
-                      (value) {
+                  (value) {
                     if (value == true) {
                       _khachTimMbBloc.add(FetchDetail(id: widget.id));
                     }
                   },
                 );
               }),
-              _buildItemRow('Khách lâu năm hay khách mới', () {}),
-              _buildItemRow('Loại khách hàng', () {}),
-              _buildItemRow('Mô tả khác', () {}),
+              _buildItemRow('Khách lâu năm hay khách mới', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => KhachLauNamHayMoiUpdatePage(
+                      id: widget.id,
+                      khachLauNam: model.khachLauNam,
+                      loaiHinh: model.loaiHinh,
+                    ),
+                  ),
+                ).then(
+                  (value) {
+                    if (value == true) {
+                      _khachTimMbBloc.add(FetchDetail(id: widget.id));
+                    }
+                  },
+                );
+              }),
+              _buildItemRow('Loại khách hàng', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoaiKhachUpdatePage(
+                      id: widget.id,
+                      loaiKhachHang: model.loaiKhachHang,
+                      tenThuongHieu: model.tenThuongHieu,
+                    ),
+                  ),
+                ).then(
+                  (value) {
+                    if (value == true) {
+                      _khachTimMbBloc.add(FetchDetail(id: widget.id));
+                    }
+                  },
+                );
+              }),
+              _buildItemRow('Mô tả khác', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MoTaKhacUpdatePage(
+                      id: widget.id,
+                      moTaKhac: model.moTaKhac,
+                    ),
+                  ),
+                ).then(
+                  (value) {
+                    if (value == true) {
+                      _khachTimMbBloc.add(FetchDetail(id: widget.id));
+                    }
+                  },
+                );
+              }),
             ],
           ),
         ),
@@ -269,19 +346,58 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
     );
   }
 
-  Stack _buildHinhAnh(BuildContext context) {
+  Stack _buildHinhAnh(BuildContext context, DetailKtmbModel model) {
     return Stack(
       children: <Widget>[
         Container(
-          color: const Color(0xffE9E9E9),
-          height: 170,
-          width: double.infinity,
-          padding: const EdgeInsets.only(top: 30, bottom: 20),
-          child: Image.asset(
-            'assets/no-image.png',
-            fit: BoxFit.contain,
-          ),
-        ),
+            color: const Color(0xffE9E9E9),
+            height: 170,
+            width: double.infinity,
+            child: model.hinhAnh.isEmpty
+                ? Image.asset(
+                    'assets/no-image.png',
+                    fit: BoxFit.contain,
+                  )
+                : Swiper(
+                    itemCount: model.hinhAnh.length,
+                    pagination: model.hinhAnh.length > 1
+                        ? SwiperPagination(
+                            builder: SwiperPagination.dots,
+                          )
+                        : SwiperCustomPagination(builder: (BuildContext context, SwiperPluginConfig config) {
+                            return SizedBox();
+                          }),
+                    loop: model.hinhAnh.length > 1 ? true : false,
+                    autoplay: model.hinhAnh.length > 1 ? true : false,
+                    autoplayDelay: 5000,
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HinhAnhKtmbPage(
+                                id: widget.id,
+                                listHinhAnh: model.hinhAnh,
+                              ),
+                            ),
+                          ).then(
+                            (value) {
+                              if (value == true) {
+                                _khachTimMbBloc.add(FetchDetail(id: widget.id));
+                              }
+                            },
+                          );
+                        },
+                        child: Image.network(
+                          'http://nhadat.imark.vn/' + model.hinhAnh[index].url,
+                          height: 60,
+                          width: 60,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
+                  )),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5),
           child: Row(
@@ -297,11 +413,11 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
                   _willPopCallback();
                 },
               ),
-              Text('Khách tìm mặt bằng'.toUpperCase(), style: TextStyle(fontSize: 16)),
+              Text('Khách tìm mặt bằng'.toUpperCase(), style: TextStyle(fontSize: 16, color: Color(0xffF8A200))),
               IconButton(
                 icon: Icon(
                   Icons.arrow_back,
-                  color: Color(0xffE9E9E9),
+                  color: Colors.transparent,
                 ),
                 onPressed: null,
               ),
@@ -315,7 +431,22 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
             color: Color(0xff41BC00),
             borderRadius: BorderRadius.circular(20),
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HinhAnhKtmbUploadPage(
+                      id: widget.id,
+                    ),
+                  ),
+                ).then(
+                  (value) {
+                    if (value == true) {
+                      _khachTimMbBloc.add(FetchDetail(id: widget.id));
+                    }
+                  },
+                );
+              },
               borderRadius: BorderRadius.circular(20),
               child: Container(
                 height: 40,
