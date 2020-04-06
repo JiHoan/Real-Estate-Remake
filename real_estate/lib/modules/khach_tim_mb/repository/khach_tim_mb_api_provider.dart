@@ -164,7 +164,7 @@ class KhachTimMbApiProvider extends ApiProvider {
     });
 
     Response _resp = await httpClient.post(
-      'request/ket-cau-nha-can-thue',
+      'request/gia-can-thue',
       data: _formData,
     );
 

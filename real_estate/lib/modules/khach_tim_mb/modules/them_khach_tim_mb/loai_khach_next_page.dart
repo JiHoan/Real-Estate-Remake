@@ -89,6 +89,12 @@ class _LoaiKhachNextPageState extends State<LoaiKhachNextPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    rdLoaiKhachValue = rdLoaiKhachList[0].value;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -143,6 +149,7 @@ class _LoaiKhachNextPageState extends State<LoaiKhachNextPage> {
                 ),
                 event: () {
                   if (ctlTenThuongHieu.text != '') {
+                    print(rdLoaiKhachValue);
                     Scaffold.of(context).removeCurrentSnackBar();
                     Navigator.push(
                         context,
