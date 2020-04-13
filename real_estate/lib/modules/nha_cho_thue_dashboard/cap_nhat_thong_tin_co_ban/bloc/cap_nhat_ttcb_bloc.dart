@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/call_model.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/repository/nha_cho_thue_detail_repository.dart';
 import 'cap_nhat_ttcb.dart';
 
@@ -203,6 +204,24 @@ class CapNhatTtcbBloc extends Bloc<CapNhatTtcbEvent, CapNhatTtcbState> {
           yield UpdateFailure();
         }
       } catch (e, s) {
+        print(e);
+        print(s);
+        yield UpdateFailure(error: e);
+      }
+    }
+
+    if (event is CapNhaCall){
+      yield UpdateLoading();
+
+      try{
+        bool isSuccess = await _nhaChoThueDetailRepository.capNhatCall(id: event.id, status: event.status, note: event.note);
+
+        if(isSuccess == true){
+          yield UpdateSuccess();
+        } else {
+          yield UpdateFailure();
+        }
+      }catch(e, s){
         print(e);
         print(s);
         yield UpdateFailure(error: e);

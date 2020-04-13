@@ -1,23 +1,13 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:real_estate/api/api_provider.dart';
+import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/call_model.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/nha_cho_thue_detail_model.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/thong_tin_lien_he_model.dart';
 import 'package:path/path.dart';
 
 class NhaChoThueDetailApiProvider extends ApiProvider {
   Future<NhaChoThueDetailModel> getNhaChoThueDetail({@required int id}) async {
-    final storage = new FlutterSecureStorage();
-    String token = await storage.read(key: 'token');
-
-    httpClient.options.headers.addAll({
-      'accept': 'application/json',
-      'authorization': 'Bearer ' + token,
-    });
-
     Response _resp = await httpClient.get('info/view?id=$id');
-
-    httpClient.options.headers.clear();
 
     if (_resp.statusCode == 200) {
       return NhaChoThueDetailModel.fromJson(_resp.data['data']);
@@ -27,14 +17,6 @@ class NhaChoThueDetailApiProvider extends ApiProvider {
   }
 
   Future<bool> updateHienTrang({@required int id, @required String hienTrang, @required String sdt, @required String ten}) async {
-    final storage = new FlutterSecureStorage();
-    String token = await storage.read(key: 'token');
-
-    httpClient.options.headers.addAll({
-      'accept': 'application/json',
-      'authorization': 'Bearer ' + token,
-    });
-
     FormData _formData = new FormData.fromMap(
       {
         'info_id': id,
@@ -46,8 +28,6 @@ class NhaChoThueDetailApiProvider extends ApiProvider {
 
     Response _resp = await httpClient.post('info/hien-trang', data: _formData);
 
-    httpClient.options.headers.clear();
-
     if (_resp.statusCode == 200) {
       return true;
     } else {
@@ -56,17 +36,8 @@ class NhaChoThueDetailApiProvider extends ApiProvider {
   }
 
   Future<bool> updateRow({@required String type, @required String obType, @required int id, @required String text}) async {
-    final storage = new FlutterSecureStorage();
-    String token = await storage.read(key: 'token');
-
-    httpClient.options.headers.addAll({
-      'accept': 'application/json',
-      'authorization': 'Bearer ' + token,
-    });
     Map<String, dynamic> _requestBody = {'info_id': id, '$obType': text};
     Response _resp = await httpClient.post('info/$type', data: _requestBody);
-
-    httpClient.options.headers.clear();
 
     if (_resp.statusCode == 200) {
       return true;
@@ -76,22 +47,12 @@ class NhaChoThueDetailApiProvider extends ApiProvider {
   }
 
   Future<bool> updateThongTinLienHe({@required ThongTinLienHeModel model, @required int id}) async {
-    final storage = new FlutterSecureStorage();
-    String token = await storage.read(key: 'token');
-
-    httpClient.options.headers.addAll({
-      'accept': 'application/json',
-      'authorization': 'Bearer ' + token,
-    });
-
     Map<String, dynamic> _requestBody = {
       'info_id': id,
       'chu_nha_sdt': model.phone,
       'chu_nha_ten': model.name,
     };
     Response _resp = await httpClient.post('info/thong-tin-lien-he', data: _requestBody);
-
-    httpClient.options.headers.clear();
 
     if (_resp.statusCode == 200) {
       return true;
@@ -101,17 +62,6 @@ class NhaChoThueDetailApiProvider extends ApiProvider {
   }
 
   Future<bool> updateDienTichKetCauNoiThat({@required NhaChoThueDetailModel model, @required int id}) async {
-    final storage = new FlutterSecureStorage();
-    String token = await storage.read(key: 'token');
-
-    print('==========================');
-    print(model.hinhAnhBanVeUpdate.length);
-
-    httpClient.options.headers.addAll({
-      'accept': 'application/json',
-      'authorization': 'Bearer ' + token,
-    });
-
     FormData _formData = new FormData.fromMap(
       {
         'info_id': id,
@@ -142,8 +92,6 @@ class NhaChoThueDetailApiProvider extends ApiProvider {
 
     Response _resp = await httpClient.post('info/ket-cau-noi-that', data: _formData);
 
-    httpClient.options.headers.clear();
-
     if (_resp.statusCode == 200) {
       return true;
     } else {
@@ -152,14 +100,6 @@ class NhaChoThueDetailApiProvider extends ApiProvider {
   }
 
   Future<bool> updateVAT({@required NhaChoThueDetailModel model, @required int id}) async {
-    final storage = new FlutterSecureStorage();
-    String token = await storage.read(key: 'token');
-
-    httpClient.options.headers.addAll({
-      'accept': 'application/json',
-      'authorization': 'Bearer ' + token,
-    });
-
     Map<String, dynamic> _requestBody = {
       'info_id': id,
       'gia': model.gia,
@@ -167,8 +107,6 @@ class NhaChoThueDetailApiProvider extends ApiProvider {
       'vat': model.vat,
     };
     Response _resp = await httpClient.post('info/hoa-hong', data: _requestBody);
-
-    httpClient.options.headers.clear();
 
     if (_resp.statusCode == 200) {
       return true;
@@ -178,16 +116,6 @@ class NhaChoThueDetailApiProvider extends ApiProvider {
   }
 
   Future<bool> removeHinhAnh({@required int id, @required List<int> banVeId}) async {
-    final storage = new FlutterSecureStorage();
-    String token = await storage.read(key: 'token');
-
-    httpClient.options.headers.addAll({
-      'accept': 'application/json',
-      'authorization': 'Bearer ' + token,
-    });
-
-    print(banVeId);
-
     FormData _formData = new FormData.fromMap(
       {
         'info_id': id,
@@ -197,8 +125,6 @@ class NhaChoThueDetailApiProvider extends ApiProvider {
 
     Response _resp = await httpClient.post('info/delete-ban-ve', data: _formData);
 
-    httpClient.options.headers.clear();
-
     if (_resp.statusCode == 200) {
       return true;
     } else {
@@ -207,14 +133,6 @@ class NhaChoThueDetailApiProvider extends ApiProvider {
   }
 
   Future<bool> updateDiaChi({@required int id, @required String thanhPho, @required String quanHuyen, @required String phuongXa, @required String soNha, @required String tenDuong}) async {
-    final storage = new FlutterSecureStorage();
-    String token = await storage.read(key: 'token');
-
-    httpClient.options.headers.addAll({
-      'accept': 'application/json',
-      'authorization': 'Bearer ' + token,
-    });
-
     FormData _formData = new FormData.fromMap(
       {
         'info_id': id,
@@ -228,10 +146,36 @@ class NhaChoThueDetailApiProvider extends ApiProvider {
 
     Response _resp = await httpClient.post('info/dia-chi', data: _formData);
 
-    httpClient.options.headers.clear();
+    if (_resp.statusCode == 200) {
+      return true;
+    } else {
+      throw _resp.data['message'];
+    }
+  }
+
+  Future<bool> capNhatCall({@required int id, @required String status, @required String note}) async {
+    FormData _formData = FormData.fromMap(
+        {
+          'info_id' : id,
+          'status' : status,
+          'note' : note,
+        }
+    );
+
+    Response _resp = await httpClient.post('info/call', data: _formData);
 
     if (_resp.statusCode == 200) {
       return true;
+    } else {
+      throw _resp.data['message'];
+    }
+  }
+
+  Future<CallLogsListModel> getCallLogs({@required int id}) async {
+    Response _resp = await httpClient.get('info/call-logs?id=$id');
+
+    if (_resp.statusCode == 200) {
+      return CallLogsListModel.fromJson(_resp.data['data']);
     } else {
       throw _resp.data['message'];
     }

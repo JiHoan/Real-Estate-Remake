@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:intl/intl.dart';
 import 'package:real_estate/modules/lo_trinh/bloc/lo_trinh.dart';
 import 'package:real_estate/utils/my_radio_button.dart';
 import 'package:real_estate/utils/style.dart';
 
+import 'cap_nhat_thong_tin_co_ban/bloc/call_logs.dart';
+import 'cap_nhat_thong_tin_co_ban/modules/kiem_tra_lien_lac_page.dart';
 import 'cap_nhat_thong_tin_nang_cao/modules/chuong_ngai_vat_update_page.dart';
 import 'cap_nhat_thong_tin_nang_cao/modules/coc_update_page.dart';
 import 'cap_nhat_thong_tin_nang_cao/modules/gia_chao_chot_update_page.dart';
@@ -35,6 +38,7 @@ class NhaChoThueDashboardPage extends StatefulWidget {
 class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
   CapNhatTtcbBloc _choThueDetailBloc;
   LoTrinhBloc _loTrinhBloc;
+  CallLogsBloc _callLogsBloc;
 
   bool _isUpdateHienTrang = false;
 
@@ -44,6 +48,8 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
     _choThueDetailBloc = CapNhatTtcbBloc();
     _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
     _loTrinhBloc = LoTrinhBloc();
+    _callLogsBloc = CallLogsBloc();
+    _callLogsBloc.add(GetCallLogs(id: widget.nhaChoThueModelId));
   }
 
   @override
@@ -51,6 +57,7 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
     super.dispose();
     _choThueDetailBloc.close();
     _loTrinhBloc.close();
+    _callLogsBloc.close();
   }
 
   Future<bool> _willPopCallback() async {
@@ -485,6 +492,56 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                     },
                   );
                 },
+              ),
+              Material(
+                color: Colors.white,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> KiemTraLienLac(id: widget.nhaChoThueModelId, phone: state.model.thongTinLienHe.phone,))).then(
+                          (value) {
+                        if (value == true) {
+                          _callLogsBloc.add(GetCallLogs(id: widget.nhaChoThueModelId));
+                        }
+                      },
+                    );
+                  },
+                  child: Container(
+                    height: 30,
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
+                      children: <Widget>[
+                        Text('Liên lạc với chủ nhà: ', style: MyAppStyle.text),
+                        Expanded(
+                          child: BlocBuilder(
+                            bloc: _callLogsBloc,
+                            builder: (context, state){
+                              if (state is CallLogsLoading){
+                                return Text(
+                                  'Đang cập nhật',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
+                                );
+                              }
+                              if (state is CallLogsLoaded){
+                                int lastIndex = state.callLogsListModel.length - 1;
+                                return Text(
+                                  '(' + DateFormat("dd/MM/yyyy hh:mm").format(state.callLogsListModel[lastIndex].createdAt) + ')',
+                                  overflow: TextOverflow.ellipsis,
+                                );
+                              }
+                              return Text(
+                                'Chưa có dữ liệu',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                                overflow: TextOverflow.ellipsis,
+                              );
+                            },
+                          ),
+                        ),
+                        const Icon(Icons.navigate_next),
+                      ],
+                    ),
+                  ),
+                ),
               ),
               _buildItemRow(
                 'Địa chỉ',

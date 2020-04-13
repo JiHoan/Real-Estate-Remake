@@ -10,7 +10,6 @@ class NhaChoThueState extends Equatable {
 class NhaChoThueInitial extends NhaChoThueState {}
 
 class NhaChoThueLoading extends NhaChoThueState {}
-class NhaChoThueLoading1 extends NhaChoThueState {}
 
 class NhaChoThueLoaded extends NhaChoThueState {
   final NhaChoThueListModel nhaChoThueListModel;
@@ -31,6 +30,8 @@ class NhaChoThueLoaded extends NhaChoThueState {
   @override
   List<Object> get props => [nhaChoThueListModel, hasReachedMax];
 }
+
+class NhaChoThueSuccess extends NhaChoThueState {}
 
 class NhaChoThueEmpty extends NhaChoThueState {}
 

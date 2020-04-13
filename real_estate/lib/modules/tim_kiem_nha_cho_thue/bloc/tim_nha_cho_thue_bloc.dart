@@ -10,7 +10,7 @@ class TimNhaChoThueBloc extends Bloc<TimNhaChoThueEvent, TimNhaChoThueState> {
 
   @override
   Stream<TimNhaChoThueState> mapEventToState(TimNhaChoThueEvent event) async* {
-    if (event is TimNhaChoThueCoBan) {
+    if (event is TimNhaChoThue) {
       yield TimNhaChoThueLoading();
 
       print(event.giaMin);
@@ -23,6 +23,16 @@ class TimNhaChoThueBloc extends Bloc<TimNhaChoThueEvent, TimNhaChoThueState> {
           min: event.giaMin,
           max: event.giaMax,
           thanhPho: event.thanhPho,
+          soLau: event.soLau,
+          lung: event.lung,
+          ham: event.ham,
+          sanThuong: event.sanThuong,
+          soPhong: event.soPhong,
+          soWCR: event.soWCR,
+          soWCC: event.soWCC,
+          thangMay: event.thangMay,
+          thoatHiem: event.thoatHiem,
+          huongNha: event.huongNha,
         );
 
         if (danhSach.isNotEmpty) {

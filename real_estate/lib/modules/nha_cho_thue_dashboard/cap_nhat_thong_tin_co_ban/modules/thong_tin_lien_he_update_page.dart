@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/modules/kiem_tra_lien_lac_page.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/bloc/cap_nhat_ttcb.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/thong_tin_lien_he_model.dart';
 import 'package:real_estate/utils/button.dart';
@@ -106,7 +107,8 @@ class _ThongTinLienHeUpdatePageState extends State<ThongTinLienHeUpdatePage> {
                       color: Color(0xffEBEBEB),
                       borderRadius: BorderRadius.only(bottomRight: Radius.circular(7), topRight: Radius.circular(7)),
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                        },
                         borderRadius: BorderRadius.only(bottomRight: Radius.circular(7), topRight: Radius.circular(7)),
                         child: Container(
                           width: 45,

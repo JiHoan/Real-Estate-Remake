@@ -31,6 +31,11 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
       name: "Đã thuê",
       type: 'DA_THUE',
     ),
+    FilterList(
+      index: 4,
+      name: "7 ngày chưa liên hệ",
+      type: 'CHUA_CALL',
+    ),
   ];
 
   NhaChoThueBloc _nhaChoThueBloc;
@@ -61,8 +66,10 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
                               _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'KHONG_CO_THONG_TIN_NANG_CAO'));
                             } else if (data.name == 'Chưa thuê') {
                               _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'CHUA_THUE'));
-                            } else {
+                            } else if (data.name == 'Đã thuê') {
                               _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'DA_THUE'));
+                            } else {
+                              _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'CHUA_CALL'));
                             }
                           },
                         );

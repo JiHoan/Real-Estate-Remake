@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/call_model.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/nha_cho_thue_detail_model.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/thong_tin_lien_he_model.dart';
 
@@ -37,5 +38,13 @@ class NhaChoThueDetailRepository {
 
   Future<bool> updateDiaChi({@required int id, @required String thanhPho, @required String quanHuyen, @required String phuongXa, @required String soNha, @required String tenDuong}) async {
     return await _apiProvider.updateDiaChi(id: id, thanhPho: thanhPho, quanHuyen: quanHuyen, phuongXa: phuongXa, soNha: soNha, tenDuong: tenDuong);
+  }
+
+  Future<bool> capNhatCall({@required int id, @required String status, @required String note}) async {
+    return await _apiProvider.capNhatCall(id: id, status: status, note: note);
+  }
+
+  Future<CallLogsListModel> getCallLogs({@required int id}) async {
+    return await _apiProvider.getCallLogs(id: id);
   }
 }

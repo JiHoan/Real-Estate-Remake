@@ -112,3 +112,14 @@ class UpdateAndRemove extends CapNhatTtcbEvent{
   @override
   List<Object> get props => [model,banVeId, id];
 }
+
+class CapNhaCall extends CapNhatTtcbEvent {
+  final int id;
+  final String status;
+  final String note;
+
+  CapNhaCall({@required this.status, @required this.id, @required this.note});
+
+  @override
+  List<Object> get props => [status, id, note];
+}

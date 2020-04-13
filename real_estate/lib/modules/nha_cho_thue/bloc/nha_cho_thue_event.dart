@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 
 class NhaChoThueEvent extends Equatable {
   @override
@@ -15,7 +16,7 @@ class FetchDanhSachNhaChoThue extends NhaChoThueEvent {
   List<Object> get props => [type, page];
 }
 
-class LoadMoreDanhSachNhaChoThue extends NhaChoThueEvent{
+class LoadMoreDanhSachNhaChoThue extends NhaChoThueEvent {
   final String type;
   final int page;
 
@@ -24,3 +25,4 @@ class LoadMoreDanhSachNhaChoThue extends NhaChoThueEvent{
   @override
   List<Object> get props => [type, page];
 }
+
