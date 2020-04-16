@@ -166,7 +166,7 @@ class _LichSuLoTrinhState extends State<LichSuLoTrinh> {
             child: Stack(
               children: <Widget>[
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -212,10 +212,7 @@ class _LichSuLoTrinhState extends State<LichSuLoTrinh> {
                         ],
                       ),
                       SizedBox(height: 3),
-                      Text(
-                        element.info.gia.toString(),
-                        style: MyAppStyle.price,
-                      ),
+                      Text('${NumberFormat.currency(locale: 'vi', symbol: 'vnđ').format(element.info.gia)}' , style: MyAppStyle.price1),
                     ],
                   ),
                 ),

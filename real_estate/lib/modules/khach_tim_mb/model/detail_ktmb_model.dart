@@ -72,7 +72,7 @@ class DetailKtmbModel extends Equatable{
       moTaKhac: json['mo_ta_khac'],
       thanhPho: DiaChiCommonModel.fromJson(json['tinh_thanh_pho']),
       quanHuyen: DiaChiCommonModel.fromJson(json['quan_huyen']),
-      phuongXa: DiaChiCommonModel.fromJson(json['xa_phuong_thi_tran']),
+      phuongXa: json['xa_phuong_thi_tran'] == null ? null : DiaChiCommonModel.fromJson(json['xa_phuong_thi_tran']),
       tenDuong: json['ten_duong'],
       hinhAnh: json['hinh_anh'] == null ? null : HinhAnhListModel.fromJson(json['hinh_anh']),
     );

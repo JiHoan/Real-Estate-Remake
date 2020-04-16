@@ -25,12 +25,18 @@ class MyAppStyle {
   );
 
   static final TextStyle price = TextStyle(
-    fontSize: 15.0,
+    fontSize: 16.0,
     color: Color(0xffF8A200),
     fontWeight: FontWeight.w600,
   );
 
+  static final TextStyle price1 = TextStyle(
+    fontSize: 16.0,
+    color: Color(0xffF8A200),
+    fontFamily: 'helveticaneue-medium'
+  );
+
   static final TextStyle text = TextStyle(
-    fontSize: 14.0,
+    fontSize: 16.0,
   );
 }

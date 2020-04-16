@@ -30,11 +30,12 @@ class KhachLauNamTabView extends StatefulWidget {
   final int soThangThoatHiem;
   final int soThangMay;
   final String huongNha;
-  final String giaThue;
+  final String giaMin;
+  final String giaMax;
   final String thoiGianThue;
   final int currentSegment;
 
-  const KhachLauNamTabView({Key key, this.moTa, this.sdt, this.ten, this.mucDich, this.thanhPho, this.quan, this.phuong, this.tenDuong, this.dienTich, this.soLau, this.lung, this.ham, this.sanThuong, this.sanThuongCaiTao, this.soPhong, this.soWCR, this.soWCC, this.banCong, this.cuaSo, this.thangBo, this.soThangThoatHiem, this.soThangMay, this.huongNha, this.giaThue, this.thoiGianThue, this.currentSegment}) : super(key: key);
+  const KhachLauNamTabView({Key key, this.giaMax, this.moTa, this.sdt, this.ten, this.mucDich, this.thanhPho, this.quan, this.phuong, this.tenDuong, this.dienTich, this.soLau, this.lung, this.ham, this.sanThuong, this.sanThuongCaiTao, this.soPhong, this.soWCR, this.soWCC, this.banCong, this.cuaSo, this.thangBo, this.soThangThoatHiem, this.soThangMay, this.huongNha, this.giaMin, this.thoiGianThue, this.currentSegment}) : super(key: key);
 
   @override
   _KhachLauNamTabViewState createState() => _KhachLauNamTabViewState();
@@ -113,7 +114,8 @@ class _KhachLauNamTabViewState extends State<KhachLauNamTabView> {
                         soThangThoatHiem: widget.soThangThoatHiem,
                         soThangMay: widget.soThangMay,
                         huongNha: widget.huongNha,
-                        giaThue: widget.giaThue,
+                        giaMin: widget.giaMin,
+                        giaMax: widget.giaMax,
                         thoiGianThue: widget.thoiGianThue,
                         loaiHinh: radioValue,
                         currentSegment: widget.currentSegment,
@@ -127,41 +129,43 @@ class _KhachLauNamTabViewState extends State<KhachLauNamTabView> {
 
   Widget buildRow() {
     return Row(
-      children: <Widget>[
-        Wrap(
-          spacing: 60,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: radioList
+          .map(
+            (data) => Wrap(
+          spacing: 7,
           crossAxisAlignment: WrapCrossAlignment.center,
-          children: radioList
-              .map(
-                (data) => Wrap(
-              spacing: 7,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: Radio(
-                    groupValue: radioGroup,
-                    value: data.index,
-                    activeColor: Color(0xff3FBF55),
-                    onChanged: (val) {
-                      setState(
-                            () {
-                          radioValue = data.value;
-                          radioGroup = data.index;
-                        },
-                      );
-                      print(radioValue);
+          children: <Widget>[
+            SizedBox(
+              height: 20,
+              width: 20,
+              child: Radio(
+                groupValue: radioGroup,
+                value: data.index,
+                activeColor: Color(0xff3FBF55),
+                onChanged: (val) {
+                  setState(
+                        () {
+                      radioValue = data.value;
+                      radioGroup = data.index;
                     },
-                  ),
-                ),
-                Text(data.title),
-              ],
+                  );
+                },
+              ),
             ),
-          )
-              .toList(),
+            GestureDetector(
+              onTap: (){
+                setState(() {
+                  radioValue = data.value;
+                  radioGroup = data.index;
+                });
+              },
+              child: Text(data.title),
+            ),
+          ],
         ),
-      ],
+      )
+          .toList(),
     );
   }
 }

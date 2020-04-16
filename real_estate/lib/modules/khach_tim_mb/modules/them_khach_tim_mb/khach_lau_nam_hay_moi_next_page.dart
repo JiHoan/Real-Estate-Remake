@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 
 import 'khach_lau_nam_tabview.dart';
 import 'khach_moi_tabview.dart';
@@ -28,10 +29,11 @@ class KhachLauNamHayMoiNextPage extends StatefulWidget {
   final int soThangThoatHiem;
   final int soThangMay;
   final String huongNha;
-  final String giaThue;
+  final String giaMin;
+  final String giaMax;
   final String thoiGianThue;
 
-  const KhachLauNamHayMoiNextPage({Key key, this.moTa, this.sdt, this.ten, this.mucDich, this.thanhPho, this.quan, this.phuong, this.tenDuong, this.dienTich, this.soLau, this.lung, this.ham, this.sanThuong, this.sanThuongCaiTao, this.soPhong, this.soWCR, this.soWCC, this.banCong, this.cuaSo, this.thangBo, this.soThangThoatHiem, this.soThangMay, this.huongNha, this.giaThue, this.thoiGianThue}) : super(key: key);
+  const KhachLauNamHayMoiNextPage({Key key, this.giaMax, this.moTa, this.sdt, this.ten, this.mucDich, this.thanhPho, this.quan, this.phuong, this.tenDuong, this.dienTich, this.soLau, this.lung, this.ham, this.sanThuong, this.sanThuongCaiTao, this.soPhong, this.soWCR, this.soWCC, this.banCong, this.cuaSo, this.thangBo, this.soThangThoatHiem, this.soThangMay, this.huongNha, this.giaMin, this.thoiGianThue}) : super(key: key);
 
   @override
   _KhachLauNamHayMoiNextPageState createState() => _KhachLauNamHayMoiNextPageState();
@@ -81,7 +83,8 @@ class _KhachLauNamHayMoiNextPageState extends State<KhachLauNamHayMoiNextPage> {
         soThangThoatHiem: widget.soThangThoatHiem,
         soThangMay: widget.soThangMay,
         huongNha: widget.huongNha,
-        giaThue: widget.giaThue,
+        giaMin: widget.giaMin,
+        giaMax: widget.giaMax,
         thoiGianThue: widget.thoiGianThue,
         currentSegment: 0,
       ),
@@ -109,7 +112,8 @@ class _KhachLauNamHayMoiNextPageState extends State<KhachLauNamHayMoiNextPage> {
         soThangThoatHiem: widget.soThangThoatHiem,
         soThangMay: widget.soThangMay,
         huongNha: widget.huongNha,
-        giaThue: widget.giaThue,
+        giaMin: widget.giaMin,
+        giaMax: widget.giaMax,
         thoiGianThue: widget.thoiGianThue,
         currentSegment: 1,
       ),
@@ -130,11 +134,16 @@ class _KhachLauNamHayMoiNextPageState extends State<KhachLauNamHayMoiNextPage> {
           },
         ),
         actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
+          Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: (){
+                Dialogs.showBackHomeDialog(context);
+              },
+              child: Container(
+                child: Image.asset('assets/group.png'),
+              ),
+            ),
           ),
         ],
       ),

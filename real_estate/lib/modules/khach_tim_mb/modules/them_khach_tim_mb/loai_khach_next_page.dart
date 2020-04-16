@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_radio_button.dart';
 import 'package:real_estate/utils/my_text.dart';
 
@@ -31,13 +32,15 @@ class LoaiKhachNextPage extends StatefulWidget {
   final int soThangThoatHiem;
   final int soThangMay;
   final String huongNha;
-  final String giaThue;
+  final String giaMin;
+  final String giaMax;
   final String thoiGianThue;
   final String loaiHinh;
   final int currentSegment;
 
   const LoaiKhachNextPage(
       {Key key,
+      this.giaMax,
       this.moTa,
       this.sdt,
       this.ten,
@@ -61,7 +64,7 @@ class LoaiKhachNextPage extends StatefulWidget {
       this.soThangThoatHiem,
       this.soThangMay,
       this.huongNha,
-      this.giaThue,
+      this.giaMin,
       this.thoiGianThue,
       this.loaiHinh, this.currentSegment})
       : super(key: key);
@@ -91,6 +94,8 @@ class _LoaiKhachNextPageState extends State<LoaiKhachNextPage> {
   @override
   void initState() {
     super.initState();
+    print(widget.currentSegment);
+    print(widget.loaiHinh);
     rdLoaiKhachValue = rdLoaiKhachList[0].value;
   }
 
@@ -108,11 +113,16 @@ class _LoaiKhachNextPageState extends State<LoaiKhachNextPage> {
           },
         ),
         actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
+          Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: (){
+                Dialogs.showBackHomeDialog(context);
+              },
+              child: Container(
+                child: Image.asset('assets/group.png'),
+              ),
+            ),
           ),
         ],
       ),
@@ -128,11 +138,22 @@ class _LoaiKhachNextPageState extends State<LoaiKhachNextPage> {
                 buildRowNguoiChoThue(),
                 const SizedBox(height: 20),
                 MyTopTitle(text: 'Tên thương hiệu'),
-                MyInput(
-                  hintText: '',
-                  color: Color(0xffEBEBEB),
-                  lines: 1,
-                  controller: ctlTenThuongHieu,
+                Container(
+                  height: 45,
+                  child: TextFormField(
+                    textCapitalization: TextCapitalization.words,
+                    style: TextStyle(color: Colors.black87),
+                    controller: ctlTenThuongHieu,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                      filled: true,
+                      fillColor: Color(0xffEBEBEB),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
                 ),
                 // bottom
               ],
@@ -178,7 +199,8 @@ class _LoaiKhachNextPageState extends State<LoaiKhachNextPage> {
                               soThangThoatHiem: widget.soThangThoatHiem,
                               soThangMay: widget.soThangMay,
                               huongNha: widget.huongNha,
-                              giaThue: widget.giaThue,
+                              giaMin: widget.giaMin,
+                              giaMax: widget.giaMax,
                               thoiGianThue: widget.thoiGianThue,
                               loaiHinh: widget.loaiHinh,
                               loaiKhach: rdLoaiKhachValue,
@@ -235,7 +257,15 @@ class _LoaiKhachNextPageState extends State<LoaiKhachNextPage> {
                       },
                     ),
                   ),
-                  Text(data.title),
+                  GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        rdLoaiKhachValue = data.value;
+                        rdLoaiKhacGroup = data.index;
+                      });
+                    },
+                    child: Text(data.title),
+                  ),
                 ],
               ),
             ),

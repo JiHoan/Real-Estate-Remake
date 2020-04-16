@@ -6,6 +6,7 @@ import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/thong_tin_lien_he_model.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
 class ThongTinLienHeUpdatePage extends StatefulWidget {
@@ -28,16 +29,25 @@ class _ThongTinLienHeUpdatePageState extends State<ThongTinLienHeUpdatePage> {
   bool _onChanged = false;
   bool _changed = false;
 
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      ThongTinLienHeModel _model = ThongTinLienHeModel(name: ctlTenNguoiNhan.text, phone: ctlSdtNguoiNhan.text);
+      _nhaChoThueDetailBloc.add(UpdateThongTinLienHe(model: _model, id: widget.id));
+    } catch (error) {
+      print(error);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
     _nhaChoThueDetailBloc = CapNhatTtcbBloc();
 
-    if(widget.thongTinLienHe != null){
-      ctlSdtNguoiNhan.text = widget.thongTinLienHe.phone;
-      ctlTenNguoiNhan.text = widget.thongTinLienHe.name;
-    }
+    ctlSdtNguoiNhan.text = widget.thongTinLienHe.phone;
+    ctlTenNguoiNhan.text = widget.thongTinLienHe.name;
   }
 
   @override
@@ -59,14 +69,6 @@ class _ThongTinLienHeUpdatePageState extends State<ThongTinLienHeUpdatePage> {
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -77,114 +79,90 @@ class _ThongTinLienHeUpdatePageState extends State<ThongTinLienHeUpdatePage> {
               children: <Widget>[
                 // body
                 MyTopTitle(text: 'Số điện thoại'),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        height: 45,
-                        child: TextFormField(
-                          style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
-                          controller: ctlSdtNguoiNhan,
-                          keyboardType: TextInputType.number,
-                          onChanged: (value) {
-                            setState(() {
-                              _onChanged = true;
-                            });
-                          },
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-                            filled: true,
-                            fillColor: Color(0xffEBEBEB),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(7), topLeft: Radius.circular(7)),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Material(
-                      color: Color(0xffEBEBEB),
-                      borderRadius: BorderRadius.only(bottomRight: Radius.circular(7), topRight: Radius.circular(7)),
-                      child: InkWell(
-                        onTap: () {
-                        },
-                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(7), topRight: Radius.circular(7)),
-                        child: Container(
-                          width: 45,
-                          height: 45,
-                          child: Image.asset('assets/phone.png'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                MyTopTitle(text: 'Người nhận'),
                 MyInput(
                   hintText: '',
                   color: Color(0xffEBEBEB),
                   lines: 1,
-                  controller: ctlTenNguoiNhan,
+                  controller: ctlSdtNguoiNhan,
+                  type: TextInputType.number,
                   onChanged: (value) {
                     setState(() {
                       _onChanged = true;
                     });
                   },
                 ),
+                SizedBox(height: 20),
+                MyTopTitle(text: 'Người nhận'),
+                Container(
+                  height: 45,
+                  child: TextFormField(
+                    textCapitalization: TextCapitalization.words,
+                    style: TextStyle(color: Colors.black87),
+                    controller: ctlTenNguoiNhan,
+                    onChanged: (value) {
+                      setState(() {
+                        _onChanged = true;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                      filled: true,
+                      fillColor: Color(0xffEBEBEB),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                ),
                 // bottom
               ],
             ),
           ),
           _onChanged == false
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                  child: MyButton(
-                    color: Colors.black26,
-                    text: Text(
-                      'Lưu',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                    ),
-                    event: null,
-                  ),
-                )
+              ? MyButtonDisable()
               : BlocListener(
-                  bloc: _nhaChoThueDetailBloc,
-                  listener: (context, state) {
-                    if (state is UpdateSuccess) {
-                      Navigator.pop(context, _changed);
-                    }
-                  },
-                  child: Builder(
-                    builder: (context) => Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                      child: MyButton(
-                        color: Color(0xff3FBF55),
-                        text: Text(
-                          'Lưu',
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                        ),
-                        event: () {
-                          if (ctlSdtNguoiNhan.text != '' && ctlTenNguoiNhan.text != '') {
-                            _changed = true;
-                            ThongTinLienHeModel _model =
-                                ThongTinLienHeModel(name: ctlTenNguoiNhan.text, phone: ctlSdtNguoiNhan.text);
-
-                            _nhaChoThueDetailBloc.add(UpdateThongTinLienHe(model: _model, id: widget.id));
-                          } else {
-                            Scaffold.of(context).removeCurrentSnackBar();
-                            Scaffold.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Hãy nhập đầy đủ thông tin !'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        },
+            bloc: _nhaChoThueDetailBloc,
+            listener: (context, state) {
+              print(state);
+              if (state is UpdateSuccess) {
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                Navigator.pop(context, _changed); // pop về dashboard
+                Dialogs.showUpdateSuccessToast();
+              }
+              if (state is UpdateFailure) {
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                Dialogs.showFailureToast();
+              }
+            },
+            child: Builder(
+              builder: (context) =>
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                    child: MyButton(
+                      color: Color(0xff3FBF55),
+                      text: Text(
+                        'Lưu',
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                       ),
+                      event: () {
+                        if (ctlSdtNguoiNhan.text == '' || ctlTenNguoiNhan.text == '') {
+                          Scaffold.of(context).removeCurrentSnackBar();
+                          Scaffold.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Hãy nhập đầy đủ thông tin !'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        } else {
+                          _changed = true;
+                          _handleSubmit(context);
+                        }
+                      },
                     ),
                   ),
-                ),
+            ),
+          ),
         ],
       ),
     );

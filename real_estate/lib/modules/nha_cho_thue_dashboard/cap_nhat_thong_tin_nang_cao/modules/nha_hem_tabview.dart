@@ -4,6 +4,7 @@ import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_nang_cao/bloc/cap_nhat_ttnc.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_radio_button.dart';
 import 'package:real_estate/utils/my_text.dart';
 
@@ -94,6 +95,24 @@ class _NhaHemTabViewState extends State<NhaHemTabView> {
 
   TextEditingController ctlHemBaoNhieuMet = TextEditingController();
 
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      _capNhatTtncBloc.add(
+        UpdateHem(
+          id: widget.id,
+          baoNhieuMet: double.tryParse(ctlHemBaoNhieuMet.text),
+          kichThuocHem: radioValue1,
+          loaiHem: radioValue2,
+          soXet: int.parse(_soXetSelection),
+        ),
+      );
+    } catch (error) {
+      print(error);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -177,7 +196,13 @@ class _NhaHemTabViewState extends State<NhaHemTabView> {
                 bloc: _capNhatTtncBloc,
                 listener: (context, state) {
                   if (state is UpdateSuccess) {
-                    Navigator.pop(context, _changed);
+                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                    Navigator.pop(context, _changed); // pop về dashboard
+                    Dialogs.showUpdateSuccessToast();
+                  }
+                  if (state is UpdateFailure) {
+                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                    Dialogs.showFailureToast();
                   }
                 },
                 child: Padding(
@@ -191,15 +216,7 @@ class _NhaHemTabViewState extends State<NhaHemTabView> {
                     event: () {
                       if (ctlHemBaoNhieuMet.text != '') {
                         _changed = true;
-                        _capNhatTtncBloc.add(
-                          UpdateHem(
-                            id: widget.id,
-                            baoNhieuMet: double.tryParse(ctlHemBaoNhieuMet.text),
-                            kichThuocHem: radioValue1,
-                            loaiHem: radioValue2,
-                            soXet: int.parse(_soXetSelection),
-                          ),
-                        );
+                        _handleSubmit(context);
                       } else {
                         Scaffold.of(context).removeCurrentSnackBar();
                         Scaffold.of(context).showSnackBar(

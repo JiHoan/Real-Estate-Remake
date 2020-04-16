@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
 import 'khach_lau_nam_hay_moi_next_page.dart';
@@ -29,7 +30,8 @@ class ThoiGianThueNextPage extends StatefulWidget {
   final int soThangThoatHiem;
   final int soThangMay;
   final String huongNha;
-  final String giaThue;
+  final String giaMin;
+  final String giaMax;
 
   const ThoiGianThueNextPage(
       {Key key,
@@ -56,7 +58,8 @@ class ThoiGianThueNextPage extends StatefulWidget {
       this.soThangThoatHiem,
       this.soThangMay,
       this.huongNha,
-      this.giaThue})
+      this.giaMin,
+      this.giaMax})
       : super(key: key);
 
   @override
@@ -80,11 +83,16 @@ class _ThoiGianThueNextPageState extends State<ThoiGianThueNextPage> {
           },
         ),
         actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
+          Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: (){
+                Dialogs.showBackHomeDialog(context);
+              },
+              child: Container(
+                child: Image.asset('assets/group.png'),
+              ),
+            ),
           ),
         ],
       ),
@@ -145,7 +153,8 @@ class _ThoiGianThueNextPageState extends State<ThoiGianThueNextPage> {
                                   soThangThoatHiem: widget.soThangThoatHiem,
                                   soThangMay: widget.soThangMay,
                                   huongNha: widget.huongNha,
-                                  giaThue: widget.giaThue,
+                                  giaMin: widget.giaMin,
+                                  giaMax: widget.giaMax,
                                   thoiGianThue: ctlThoiGianThue.text,
                                 )));
                   } else {

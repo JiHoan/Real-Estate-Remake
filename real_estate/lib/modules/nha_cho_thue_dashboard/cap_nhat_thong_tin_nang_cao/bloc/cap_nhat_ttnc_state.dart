@@ -20,3 +20,21 @@ class UpdateFailure extends CapNhatTtncState {
   @override
   List<Object> get props => [error];
 }
+
+// DOWNLOAD
+class DownloadLoading extends CapNhatTtncState {}
+
+class DownloadSuccess extends CapNhatTtncState {
+  final String url;
+
+  DownloadSuccess({this.url});
+}
+
+class DownloadFailure extends CapNhatTtncState {
+  final String error;
+
+  DownloadFailure({this.error});
+
+  @override
+  List<Object> get props => [error];
+}

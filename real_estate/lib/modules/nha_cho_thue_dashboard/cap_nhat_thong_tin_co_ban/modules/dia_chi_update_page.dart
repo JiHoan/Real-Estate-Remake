@@ -7,6 +7,7 @@ import 'package:real_estate/modules/thong_tin_co_ban/modules/dia_chi/model/tinh_
 import 'package:real_estate/modules/thong_tin_co_ban/modules/dia_chi/tinh_thanh_pho_search_page.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
 class DiaChiUpdatePage extends StatefulWidget {
@@ -49,6 +50,25 @@ class _DiaChiUpdatePageState extends State<DiaChiUpdatePage> {
   bool _onChanged = false;
   bool _changed = false;
 
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      _nhaChoThueDetailBloc.add(
+        UpdateDiaChi(
+          id: widget.id,
+          thanhPho: _idThanhPho,
+          quanHuyen: _quanHuyenSelection,
+          phuongXa: _phuongXaSelection,
+          soNha: ctlSoNha.text,
+          tenDuong: ctlTenDuong.text,
+        ),
+      );
+    } catch (error) {
+      print(error);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -82,14 +102,6 @@ class _DiaChiUpdatePageState extends State<DiaChiUpdatePage> {
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -328,7 +340,13 @@ class _DiaChiUpdatePageState extends State<DiaChiUpdatePage> {
             bloc: _nhaChoThueDetailBloc,
             listener: (context, state) {
               if (state is UpdateSuccess) {
-                Navigator.pop(context, _changed);
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                Navigator.pop(context, _changed); // pop về dashboard
+                Dialogs.showUpdateSuccessToast();
+              }
+              if (state is UpdateFailure) {
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                Dialogs.showFailureToast();
               }
             },
             child: Builder(
@@ -355,21 +373,7 @@ class _DiaChiUpdatePageState extends State<DiaChiUpdatePage> {
                       );
                     } else {
                       _changed = true;
-
-                      _nhaChoThueDetailBloc.add(
-                          UpdateDiaChi(
-                            id: widget.id,
-                            thanhPho: _idThanhPho,
-                            quanHuyen: _quanHuyenSelection,
-                            phuongXa: _phuongXaSelection,
-                            soNha: ctlSoNha.text,
-                            tenDuong: ctlTenDuong.text,
-                          ),
-                      );
-                      /*ThongTinLienHeModel _model =
-                      ThongTinLienHeModel(name: ctlTenNguoiNhan.text, phone: ctlSdtNguoiNhan.text);
-
-                      _nhaChoThueDetailBloc.add(UpdateThongTinLienHe(model: _model, id: widget.id));*/
+                      _handleSubmit(context);
                     }
                   },
                 ),

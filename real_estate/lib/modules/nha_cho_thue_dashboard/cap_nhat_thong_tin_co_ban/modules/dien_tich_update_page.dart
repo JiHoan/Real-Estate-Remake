@@ -14,6 +14,7 @@ import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/nha_cho_thue_detail_model.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_radio_button.dart';
 import 'package:real_estate/utils/my_text.dart';
 
@@ -183,6 +184,66 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
     ),
   ];
 
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _updateAndRemove(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      _nhaChoThueDetailBloc.add(UpdateAndRemove(
+        model: NhaChoThueDetailModel(
+          ngang: double.parse(ctlNgang.text),
+          dai: double.parse(ctlDai.text),
+          lung: CommonModel(value: mezzanineValue, index: mezzanineGroup),
+          ham: CommonModel(value: basementValue, index: basementGroup),
+          sanThuong: CommonModel(value: terraceValue, index: terraceUpgratedGroup),
+          sanThuongCaiTao: CommonModel(value: terraceUpgratedValue, index: terraceUpgratedGroup),
+          soPhong: valRoomNum,
+          soWcr: valWcrNum,
+          soWcc: valWccNum,
+          banCong: CommonModel(value: balconyValue, index: balconyGroup),
+          cuaSo: CommonModel(value: windowValue, index: windowGroup),
+          soLau: valFloorNum,
+          hinhAnhBanVeUpdate: _listImg,
+        ),
+        banVeId: _listIdBanVe,
+        id: widget.id,
+      ));
+    } catch (error) {
+      print(error);
+    }
+  }
+  Future<void> _removeHinhAnh(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      _nhaChoThueDetailBloc.add(RemoveHinhAnh(id: widget.id, banVeId: _listIdBanVe));
+    } catch (error) {
+      print(error);
+    }
+  }
+  Future<void> _updateDienTich(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      _nhaChoThueDetailBloc.add(UpdateDienTichKetCauNoiThat(
+        model: NhaChoThueDetailModel(
+          ngang: double.parse(ctlNgang.text),
+          dai: double.parse(ctlDai.text),
+          lung: CommonModel(value: mezzanineValue, index: mezzanineGroup),
+          ham: CommonModel(value: basementValue, index: basementGroup),
+          sanThuong: CommonModel(value: terraceValue, index: terraceUpgratedGroup),
+          sanThuongCaiTao: CommonModel(value: terraceUpgratedValue, index: terraceUpgratedGroup),
+          soPhong: valRoomNum,
+          soWcr: valWcrNum,
+          soWcc: valWccNum,
+          banCong: CommonModel(value: balconyValue, index: balconyGroup),
+          cuaSo: CommonModel(value: windowValue, index: windowGroup),
+          soLau: valFloorNum,
+          hinhAnhBanVeUpdate: _listImg,
+        ),
+        id: widget.id,
+      ));
+    } catch (error) {
+      print(error);
+    }
+  }
 
   _viewThumb(String url, int index, int idBanVe) {
     return showDialog(
@@ -383,14 +444,6 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -464,8 +517,8 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                         },
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: const Icon(Icons.remove),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                         ),
                       ),
                     ),
@@ -486,8 +539,8 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                         },
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: const Icon(Icons.add),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                         ),
                       ),
                     ),
@@ -533,9 +586,14 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
               : BlocListener(
                   bloc: _nhaChoThueDetailBloc,
                   listener: (context, state) {
-                    print(state);
                     if (state is UpdateSuccess) {
-                      Navigator.pop(context, _changed);
+                      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                      Navigator.pop(context, _changed); // pop về dashboard
+                      Dialogs.showUpdateSuccessToast();
+                    }
+                    if (state is UpdateFailure) {
+                      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                      Dialogs.showFailureToast();
                     }
                   },
                   child: Builder(
@@ -551,69 +609,12 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                           if (ctlNgang.text != '' && ctlDai.text != '') {
                             _changed = true;
                             if(_onChanged == true && _onChangedBanVe == true){
-                              /*_nhaChoThueDetailBloc.add(
-                                UpdateDienTichKetCauNoiThat(
-                                  model: NhaChoThueDetailModel(
-                                    ngang: double.parse(ctlNgang.text),
-                                    dai: double.parse(ctlDai.text),
-                                    lung: CommonModel(value: mezzanineValue, index: mezzanineGroup),
-                                    ham: CommonModel(value: basementValue, index: basementGroup),
-                                    sanThuong: CommonModel(value: terraceValue, index: terraceUpgratedGroup),
-                                    sanThuongCaiTao: CommonModel(value: terraceUpgratedValue, index: terraceUpgratedGroup),
-                                    soPhong: valRoomNum,
-                                    soWcr: valWcrNum,
-                                    soWcc: valWccNum,
-                                    banCong: CommonModel(value: balconyValue, index: balconyGroup),
-                                    cuaSo: CommonModel(value: windowValue, index: windowGroup),
-                                    soLau: valFloorNum,
-                                    hinhAnhBanVeUpdate: _listImg,
-                                  ),
-                                  id: widget.id,
-                                ),
-                              );
-                              _nhaChoThueDetailBloc.add(RemoveHinhAnh(id: widget.id, banVeId: _listIdBanVe));*/
-
-                              _nhaChoThueDetailBloc.add(UpdateAndRemove(
-                                model: NhaChoThueDetailModel(
-                                  ngang: double.parse(ctlNgang.text),
-                                  dai: double.parse(ctlDai.text),
-                                  lung: CommonModel(value: mezzanineValue, index: mezzanineGroup),
-                                  ham: CommonModel(value: basementValue, index: basementGroup),
-                                  sanThuong: CommonModel(value: terraceValue, index: terraceUpgratedGroup),
-                                  sanThuongCaiTao: CommonModel(value: terraceUpgratedValue, index: terraceUpgratedGroup),
-                                  soPhong: valRoomNum,
-                                  soWcr: valWcrNum,
-                                  soWcc: valWccNum,
-                                  banCong: CommonModel(value: balconyValue, index: balconyGroup),
-                                  cuaSo: CommonModel(value: windowValue, index: windowGroup),
-                                  soLau: valFloorNum,
-                                  hinhAnhBanVeUpdate: _listImg,
-                                ),
-                                banVeId: _listIdBanVe,
-                                id: widget.id,
-                              ));
+                              _updateAndRemove(context);
                             }
                             else if(_onChangedBanVe == true){
-                              _nhaChoThueDetailBloc.add(RemoveHinhAnh(id: widget.id, banVeId: _listIdBanVe));
+                              _removeHinhAnh(context);
                             } else {
-                              _nhaChoThueDetailBloc.add(UpdateDienTichKetCauNoiThat(
-                                model: NhaChoThueDetailModel(
-                                  ngang: double.parse(ctlNgang.text),
-                                  dai: double.parse(ctlDai.text),
-                                  lung: CommonModel(value: mezzanineValue, index: mezzanineGroup),
-                                  ham: CommonModel(value: basementValue, index: basementGroup),
-                                  sanThuong: CommonModel(value: terraceValue, index: terraceUpgratedGroup),
-                                  sanThuongCaiTao: CommonModel(value: terraceUpgratedValue, index: terraceUpgratedGroup),
-                                  soPhong: valRoomNum,
-                                  soWcr: valWcrNum,
-                                  soWcc: valWccNum,
-                                  banCong: CommonModel(value: balconyValue, index: balconyGroup),
-                                  cuaSo: CommonModel(value: windowValue, index: windowGroup),
-                                  soLau: valFloorNum,
-                                  hinhAnhBanVeUpdate: _listImg,
-                                ),
-                                id: widget.id,
-                              ));
+                              _updateDienTich(context);
                             }
                           } else {
                             Scaffold.of(context).removeCurrentSnackBar();
@@ -653,7 +654,8 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                 child: Container(
                   height: 62,
                   width: 62,
-                  child: Image.asset('assets/camera1.png'),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Image.asset('assets/camera (1).png'),
                 ),
               ),
             ),
@@ -692,19 +694,13 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                 onTap: () {
                   _viewThumb(url, _hinhAnhListModel.indexOf(element), element.id);
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black12),
-                      borderRadius: BorderRadius.circular(7),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(7),
-                    child: Image.network(
-                      'http://nhadat.imark.vn/$url',
-                      height: 60,
-                      width: 60,
-                      fit: BoxFit.cover,
-                    ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(7),
+                  child: Image.network(
+                    'http://nhadat.imark.vn/$url',
+                    height: 60,
+                    width: 60,
+                    fit: BoxFit.cover,
                   ),
                 ),
               );
@@ -980,8 +976,8 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.remove),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -1004,8 +1000,8 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.add),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -1035,8 +1031,8 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.remove),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -1059,8 +1055,8 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.add),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -1088,8 +1084,8 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.remove),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -1110,8 +1106,8 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.add),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),

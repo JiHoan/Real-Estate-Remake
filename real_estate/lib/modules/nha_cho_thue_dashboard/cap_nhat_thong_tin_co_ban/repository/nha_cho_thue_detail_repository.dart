@@ -47,4 +47,5 @@ class NhaChoThueDetailRepository {
   Future<CallLogsListModel> getCallLogs({@required int id}) async {
     return await _apiProvider.getCallLogs(id: id);
   }
+
 }

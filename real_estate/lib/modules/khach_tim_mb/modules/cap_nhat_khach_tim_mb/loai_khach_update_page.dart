@@ -82,14 +82,6 @@ class _LoaiKhachUpdatePageState extends State<LoaiKhachUpdatePage> {
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -126,7 +118,7 @@ class _LoaiKhachUpdatePageState extends State<LoaiKhachUpdatePage> {
                     if (state is KhachTimMbSuccess) {
                       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
                       Navigator.pop(context, _changed); // pop về dashboard
-                      Dialogs.showSuccessToast();
+                      Dialogs.showUpdateSuccessToast();
                     }
                     if (state is KhachTimMbFailure) {
                       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog

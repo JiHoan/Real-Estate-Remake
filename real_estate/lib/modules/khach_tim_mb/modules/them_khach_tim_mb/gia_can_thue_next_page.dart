@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
 import 'thoi_gian_thue_next_page.dart';
@@ -62,7 +63,8 @@ class GiaCanThueNextPage extends StatefulWidget {
 }
 
 class _GiaCanThueNextPageState extends State<GiaCanThueNextPage> {
-  TextEditingController ctlGiaCanThue = TextEditingController();
+  TextEditingController ctlGiaMin = TextEditingController();
+  TextEditingController ctlGiaMax = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -78,11 +80,16 @@ class _GiaCanThueNextPageState extends State<GiaCanThueNextPage> {
           },
         ),
         actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
+          Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: (){
+                Dialogs.showBackHomeDialog(context);
+              },
+              child: Container(
+                child: Image.asset('assets/group.png'),
+              ),
+            ),
           ),
         ],
       ),
@@ -94,13 +101,38 @@ class _GiaCanThueNextPageState extends State<GiaCanThueNextPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               children: <Widget>[
                 MyTopTitle(text: 'Giá cần thuê'),
-                MyInput(
+                Row(
+                  children: <Widget>[
+                    Flexible(
+                      flex: 5,
+                      child: MyInput(
+                        hintText: 'Giá từ',
+                        color: Color(0xffEBEBEB),
+                        lines: 1,
+                        controller: ctlGiaMin,
+                        type: TextInputType.number,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Flexible(
+                      flex: 5,
+                      child: MyInput(
+                        hintText: 'Đến',
+                        color: Color(0xffEBEBEB),
+                        lines: 1,
+                        controller: ctlGiaMax,
+                        type: TextInputType.number,
+                      ),
+                    ),
+                  ],
+                ),
+                /*MyInput(
                   hintText: '',
                   color: Color(0xffEBEBEB),
                   lines: 1,
                   controller: ctlGiaCanThue,
                   type: TextInputType.number,
-                ),
+                ),*/
               ],
             ),
           ),
@@ -114,37 +146,49 @@ class _GiaCanThueNextPageState extends State<GiaCanThueNextPage> {
                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                 ),
                 event: () {
-                  if (ctlGiaCanThue.text != '') {
-                    Scaffold.of(context).removeCurrentSnackBar();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ThoiGianThueNextPage(
-                                  moTa: widget.moTa,
-                                  sdt: widget.sdt,
-                                  ten: widget.ten,
-                                  mucDich: widget.mucDich,
-                                  thanhPho: widget.thanhPho,
-                                  quan: widget.quan,
-                                  phuong: widget.phuong,
-                                  tenDuong: widget.tenDuong,
-                                  dienTich: widget.dienTich,
-                                  soLau: widget.soLau,
-                                  lung: widget.lung,
-                                  ham: widget.ham,
-                                  sanThuong: widget.sanThuong,
-                                  sanThuongCaiTao: widget.sanThuongCaiTao,
-                                  soPhong: widget.soPhong,
-                                  soWCR: widget.soWCR,
-                                  soWCC: widget.soWCC,
-                                  banCong: widget.banCong,
-                                  cuaSo: widget.cuaSo,
-                                  thangBo: widget.thangBo,
-                                  soThangThoatHiem: widget.soThangThoatHiem,
-                                  soThangMay: widget.soThangMay,
-                                  huongNha: widget.huongNha,
-                                  giaThue: ctlGiaCanThue.text,
-                                )));
+
+                  if (ctlGiaMin.text != '' && ctlGiaMax.text != '') {
+                    if(int.tryParse(ctlGiaMin.text) >= int.tryParse(ctlGiaMax.text)){
+                      Scaffold.of(context).removeCurrentSnackBar();
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Giá min phải thấp hơn giá max.'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    } else {
+                      Scaffold.of(context).removeCurrentSnackBar();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ThoiGianThueNextPage(
+                                moTa: widget.moTa,
+                                sdt: widget.sdt,
+                                ten: widget.ten,
+                                mucDich: widget.mucDich,
+                                thanhPho: widget.thanhPho,
+                                quan: widget.quan,
+                                phuong: widget.phuong,
+                                tenDuong: widget.tenDuong,
+                                dienTich: widget.dienTich,
+                                soLau: widget.soLau,
+                                lung: widget.lung,
+                                ham: widget.ham,
+                                sanThuong: widget.sanThuong,
+                                sanThuongCaiTao: widget.sanThuongCaiTao,
+                                soPhong: widget.soPhong,
+                                soWCR: widget.soWCR,
+                                soWCC: widget.soWCC,
+                                banCong: widget.banCong,
+                                cuaSo: widget.cuaSo,
+                                thangBo: widget.thangBo,
+                                soThangThoatHiem: widget.soThangThoatHiem,
+                                soThangMay: widget.soThangMay,
+                                huongNha: widget.huongNha,
+                                giaMin: ctlGiaMin.text,
+                                giaMax: ctlGiaMax.text,
+                              )));
+                    }
                   } else {
                     Scaffold.of(context).removeCurrentSnackBar();
                     Scaffold.of(context).showSnackBar(

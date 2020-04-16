@@ -60,14 +60,6 @@ class _MoTaKhacUpdatePageState extends State<MoTaKhacUpdatePage> {
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -79,7 +71,7 @@ class _MoTaKhacUpdatePageState extends State<MoTaKhacUpdatePage> {
                 MyTopTitle(text: 'Mô tả khác'),
                 Container(
                   child: TextFormField(
-                    style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+                    style: TextStyle(color: Colors.black87),
                     maxLines: 3,
                     controller: ctlMoTaKhac,
                     onChanged: (value){
@@ -110,7 +102,7 @@ class _MoTaKhacUpdatePageState extends State<MoTaKhacUpdatePage> {
               if (state is KhachTimMbSuccess) {
                 Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
                 Navigator.pop(context, _changed); // pop về dashboard
-                Dialogs.showSuccessToast();
+                Dialogs.showUpdateSuccessToast();
               }
               if (state is KhachTimMbFailure) {
                 Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog

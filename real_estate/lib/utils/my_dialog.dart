@@ -40,7 +40,7 @@ class Dialogs {
       barrierDismissible: false,
       builder: (BuildContext context){
         return WillPopScope(
-          onWillPop: () async => false,
+          onWillPop: () async => true,
           child: Dialog(
             key: key,
             shape: RoundedRectangleBorder(
@@ -72,7 +72,62 @@ class Dialogs {
     );
   }
 
-  static showSuccessToast() {
+  static Future<void> showBackHomeDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context){
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(7),
+          ),
+          elevation: 0.0,
+          backgroundColor: Colors.white,
+          child: Container(
+            height: 157,
+            width: 100,
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Thông báo",
+                  style: TextStyle(color: Colors.black87, fontSize: 18),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  "Hủy thao tác và quay về trang chủ?",
+                  style: TextStyle(color: Colors.black87, fontSize: 16),
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text("Đồng ý"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).popUntil((route) => route.isFirst);
+                      },
+                    ),
+                    FlatButton(
+                      child: Text("Hủy"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    );
+  }
+
+  static showUpdateSuccessToast() {
     return Fluttertoast.showToast(
       msg: "Đã cập nhật thành công.",
       toastLength: Toast.LENGTH_SHORT,
@@ -96,9 +151,9 @@ class Dialogs {
     );
   }
 
-  static showMissInfoToast() {
+  static showAddSuccessToast() {
     return Fluttertoast.showToast(
-      msg: "Thông tin chưa đầy đủ.",
+      msg: "Đã thêm thành công.",
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,

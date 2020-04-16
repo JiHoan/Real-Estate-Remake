@@ -3,19 +3,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/bloc/cap_nhat_ttcb.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/common_model.dart';
+import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/thong_tin_lien_he_model.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_radio_button.dart';
 import 'package:real_estate/utils/my_text.dart';
 
 class HienTrangUpdatePage extends StatefulWidget {
   final int id;
   final CommonModel hienTrang;
-  final String sdt;
-  final String ten;
+  final ThongTinLienHeModel nguoiThue;
   final List<MyRadioList> list;
 
-  const HienTrangUpdatePage({Key key, @required this.id, @required this.hienTrang, this.sdt, this.ten, @required this.list}) : super(key: key);
+  const HienTrangUpdatePage({Key key, @required this.id, @required this.hienTrang, this.nguoiThue, @required this.list}) : super(key: key);
 
   @override
   _HienTrangUpdatePageState createState() => _HienTrangUpdatePageState();
@@ -33,38 +34,29 @@ class _HienTrangUpdatePageState extends State<HienTrangUpdatePage> {
   bool _onChanged = false;
   bool _changed = false;
 
-  /*List<MyRadioList> radioList = [
-    MyRadioList(
-      index: 4,
-      title: 'Chưa có thông tin nâng cao',
-      value: 'KHONG_CO_THONG_TIN_NANG_CAO',
-    ),
-    MyRadioList(
-      index: 2,
-      title: 'Đã có thông tin nâng cao (chưa thuê)',
-      value: 'CHUA_THUE',
-    ),
-    MyRadioList(
-      index: 3,
-      title: 'Đã thuê',
-      value: 'DA_THUE',
-    ),
-  ];*/
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      _nhaChoThueDetailBloc.add(UpdateHienTrang(
+          id: widget.id, hienTrang: radioValue, sdt: ctlSdtNguoiNhan.text, ten: ctlTenNguoiNhan.text));
+    } catch (error) {
+      print(error);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    print(widget.hienTrang.value);
-    print(widget.list);
 
     _nhaChoThueDetailBloc = CapNhatTtcbBloc();
 
     radioValue = widget.hienTrang.value;
     radioGroup = widget.hienTrang.index;
 
-    if (widget.sdt != null && widget.ten != null) {
-      ctlSdtNguoiNhan.text = widget.sdt;
-      ctlTenNguoiNhan.text = widget.ten;
+    if(widget.hienTrang.value == 'DA_THUE'){
+      ctlSdtNguoiNhan.text = widget.nguoiThue.phone;
+      ctlTenNguoiNhan.text = widget.nguoiThue.name;
     }
   }
 
@@ -81,14 +73,6 @@ class _HienTrangUpdatePageState extends State<HienTrangUpdatePage> {
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -117,16 +101,27 @@ class _HienTrangUpdatePageState extends State<HienTrangUpdatePage> {
                           ),
                           SizedBox(height: 20),
                           MyTopTitle(text: 'Người nhận'),
-                          MyInput(
-                            hintText: '',
-                            color: Color(0xffEBEBEB),
-                            lines: 1,
-                            controller: ctlTenNguoiNhan,
-                            onChanged: (value) {
-                              setState(() {
-                                _onChanged = true;
-                              });
-                            },
+                          Container(
+                            height: 45,
+                            child: TextFormField(
+                              textCapitalization: TextCapitalization.words,
+                              style: TextStyle(color: Colors.black87),
+                              controller: ctlTenNguoiNhan,
+                              onChanged: (value) {
+                                setState(() {
+                                  _onChanged = true;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                                filled: true,
+                                fillColor: Color(0xffEBEBEB),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(7),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       )
@@ -134,28 +129,25 @@ class _HienTrangUpdatePageState extends State<HienTrangUpdatePage> {
               ],
             ),
           ),
-          (_onChanged == false)
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                  child: MyButton(
-                    color: Colors.black26,
-                    text: Text(
-                      'Lưu',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                    ),
-                    event: null,
-                  ),
-                )
+          _onChanged == false
+              ? MyButtonDisable()
               : BlocListener(
                   bloc: _nhaChoThueDetailBloc,
                   listener: (context, state) {
                     print(state);
                     if (state is UpdateSuccess) {
-                      Navigator.pop(context, _changed);
+                      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                      Navigator.pop(context, _changed); // pop về dashboard
+                      Dialogs.showUpdateSuccessToast();
+                    }
+                    if (state is UpdateFailure) {
+                      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                      Dialogs.showFailureToast();
                     }
                   },
                   child: Builder(
-                    builder: (context) => Padding(
+                    builder: (context) =>
+                     Padding(
                       padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
                       child: MyButton(
                         color: Color(0xff3FBF55),
@@ -174,9 +166,7 @@ class _HienTrangUpdatePageState extends State<HienTrangUpdatePage> {
                             );
                           } else {
                             _changed = true;
-
-                            _nhaChoThueDetailBloc.add(UpdateHienTrang(
-                                id: widget.id, hienTrang: radioValue, sdt: ctlSdtNguoiNhan.text, ten: ctlTenNguoiNhan.text));
+                            _handleSubmit(context);
                           }
                         },
                       ),

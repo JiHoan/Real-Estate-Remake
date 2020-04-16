@@ -63,14 +63,6 @@ class _ThongTinLienHeUpdatePageState extends State<ThongTinLienHeUpdatePage> {
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -87,7 +79,7 @@ class _ThongTinLienHeUpdatePageState extends State<ThongTinLienHeUpdatePage> {
                       child: Container(
                         height: 45,
                         child: TextFormField(
-                          style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+                          style: TextStyle(color: Colors.black87),
                           controller: ctlSdt,
                           keyboardType: TextInputType.number,
                           onChanged: (value){

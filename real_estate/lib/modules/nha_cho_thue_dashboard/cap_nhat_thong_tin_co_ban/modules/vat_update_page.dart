@@ -5,6 +5,7 @@ import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/nha_cho_thue_detail_model.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
 class VATUpdatePage extends StatefulWidget {
@@ -52,6 +53,25 @@ class _VATUpdatePageState extends State<VATUpdatePage> {
     ctlHoaHong.text = widget.hoaHong.toString();
   }
 
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      _nhaChoThueDetailBloc.add(
+        UpdateVAT(
+          model: NhaChoThueDetailModel(
+            gia: int.tryParse(ctlGia.text) ?? 0,
+            hoaHong: int.tryParse(ctlHoaHong.text) ?? 0,
+            vat: int.tryParse(ctlVAT.text) ?? 0,
+          ),
+          id: widget.id,
+        ),
+      );
+    } catch (error) {
+      print(error);
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -71,14 +91,6 @@ class _VATUpdatePageState extends State<VATUpdatePage> {
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -148,7 +160,13 @@ class _VATUpdatePageState extends State<VATUpdatePage> {
                   bloc: _nhaChoThueDetailBloc,
                   listener: (context, state) {
                     if (state is UpdateSuccess) {
-                      Navigator.pop(context, _changed);
+                      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                      Navigator.pop(context, _changed); // pop về dashboard
+                      Dialogs.showUpdateSuccessToast();
+                    }
+                    if (state is UpdateFailure) {
+                      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                      Dialogs.showFailureToast();
                     }
                   },
                   child: Builder(
@@ -163,16 +181,7 @@ class _VATUpdatePageState extends State<VATUpdatePage> {
                         event: () {
                           if (ctlGia.text != '' && ctlHoaHong.text != '' && ctlVAT.text != '') {
                             _changed = true;
-                            _nhaChoThueDetailBloc.add(
-                              UpdateVAT(
-                                model: NhaChoThueDetailModel(
-                                  gia: int.tryParse(ctlGia.text) ?? 0,
-                                  hoaHong: int.tryParse(ctlHoaHong.text) ?? 0,
-                                  vat: int.tryParse(ctlVAT.text) ?? 0,
-                                ),
-                                id: widget.id,
-                              ),
-                            );
+                            _handleSubmit(context);
                           } else {
                             Scaffold.of(context).removeCurrentSnackBar();
                             Scaffold.of(context).showSnackBar(

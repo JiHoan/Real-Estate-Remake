@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:real_estate/modules/lo_trinh/bloc/lo_trinh.dart';
 import 'package:real_estate/modules/lo_trinh/model/lo_trinh_model.dart';
 import 'package:real_estate/modules/lo_trinh/modules/lich_su_lo_trinh_page.dart';
+import 'package:real_estate/modules/nha_cho_thue_dashboard/nha_cho_thue_dashboard_page.dart';
 import 'package:real_estate/utils/style.dart';
 
 class LoTrinhHomNayPage extends StatefulWidget {
@@ -170,12 +171,21 @@ class _LoTrinhHomNayPageState extends State<LoTrinhHomNayPage> {
       color: Color(0xffEDEDED),
       borderRadius: BorderRadius.circular(7),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NhaChoThueDashboardPage(
+                nhaChoThueModelId: element.info.id,
+              ),
+            ),
+          );
+        },
         borderRadius: BorderRadius.circular(7),
         child: Stack(
           children: <Widget>[
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -221,10 +231,7 @@ class _LoTrinhHomNayPageState extends State<LoTrinhHomNayPage> {
                     ],
                   ),
                   SizedBox(height: 3),
-                  Text(
-                    element.info.gia.toString(),
-                    style: MyAppStyle.price,
-                  ),
+                  Text('${NumberFormat.currency(locale: 'vi', symbol: 'vnđ').format(element.info.gia)}' , style: MyAppStyle.price1),
                 ],
               ),
             ),

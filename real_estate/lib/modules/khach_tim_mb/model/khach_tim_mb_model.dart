@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:real_estate/modules/nha_cho_thue/model/hien_trang_model.dart';
 
 class KhachTimMbModel extends Equatable {
@@ -30,7 +31,8 @@ class KhachTimMbModel extends Equatable {
   final int soThangThoatHiem;
   final int soThangMay;
   final String huongNha;
-  final int giaCanThue;
+  final int giaMin;
+  final int giaMax;
   final int thoiGianThue;
   final String khachLauNam;
   final String loaiHinh;
@@ -38,8 +40,10 @@ class KhachTimMbModel extends Equatable {
   final String tenThuongHieu;
   final String moTaKhac;
   final DateTime createdAt;
+  final String diaChi;
 
   KhachTimMbModel({
+    this.diaChi,
     this.id,
     this.tinhTrang,
     this.moTa,
@@ -65,7 +69,8 @@ class KhachTimMbModel extends Equatable {
     this.soThangThoatHiem,
     this.soThangMay,
     this.huongNha,
-    this.giaCanThue,
+    this.giaMin,
+    this.giaMax,
     this.thoiGianThue,
     this.khachLauNam,
     this.loaiHinh,
@@ -81,6 +86,9 @@ class KhachTimMbModel extends Equatable {
       nguoiNhan: json['ten_khach_hang'],
       tinhTrang: HienTrangModel.fromJson(json['tinh_trang']),
       createdAt: DateTime.fromMillisecondsSinceEpoch(json['created_at'] * 1000),
+      giaMin: json['gia_can_thue_min'],
+      giaMax: json['gia_can_thue_max'],
+      diaChi: json['dia_chi'],
     );
   }
 
@@ -95,6 +103,7 @@ class KhachTimMbModel extends Equatable {
 
   @override
   List<Object> get props => [
+        diaChi,
         id,
         tinhTrang,
         moTa,
@@ -120,13 +129,14 @@ class KhachTimMbModel extends Equatable {
         soThangThoatHiem,
         soThangMay,
         huongNha,
-        giaCanThue,
+        giaMin,
         thoiGianThue,
         khachLauNam,
         loaiHinh,
         loaiKhach,
         tenThuongHieu,
         moTaKhac,
+        giaMax,
       ];
 }
 
@@ -167,4 +177,14 @@ class KhachTimMbListModel extends ListMixin<KhachTimMbModel> {
   String toString() {
     return json.encode(toJson());
   }
+}
+
+class KhachCommenModel extends Equatable{
+  final KhachTimMbListModel khachTimMbListModel;
+  final int count;
+
+  KhachCommenModel({@required this.khachTimMbListModel,@required this.count});
+
+  @override
+  List<Object> get props => null;
 }

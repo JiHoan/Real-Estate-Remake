@@ -1,20 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:real_estate/api/api_provider.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/model/thong_tin_co_ban_model.dart';
 
 class ThongTinCoBanApiProvider extends ApiProvider {
   Future<bool> saveAdd({@required ThongTinCoBanModel model}) async {
-    final storage = new FlutterSecureStorage();
-    String token = await storage.read(key: 'token');
-
-    httpClient.options.headers.addAll({
-      'accept': 'application/json',
-      'authorization': 'Bearer ' + token,
-    });
-
-    print(model.roomNumber);
-
     Map<String, dynamic> _requestBody = {
       'chu_nha_sdt': model.sdtNguoiNhan,
       'chu_nha_ten': model.tenNguoiNhan,
@@ -41,8 +30,6 @@ class ThongTinCoBanApiProvider extends ApiProvider {
     };
 
     Response _resp = await httpClient.post('info/create', data: _requestBody);
-
-    httpClient.options.headers.clear();
 
     if (_resp.statusCode == 200) {
       return true;

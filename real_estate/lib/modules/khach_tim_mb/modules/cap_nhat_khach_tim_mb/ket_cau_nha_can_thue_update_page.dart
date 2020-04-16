@@ -138,14 +138,6 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -270,8 +262,8 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
             },
             borderRadius: BorderRadius.circular(5),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: const Icon(Icons.remove),
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+              child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
             ),
           ),
         ),
@@ -292,8 +284,8 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
             },
             borderRadius: BorderRadius.circular(5),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: const Icon(Icons.add),
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+              child: const Icon(Icons.add, size: 20, color: Colors.black54,),
             ),
           ),
         ),
@@ -570,8 +562,8 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.remove),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -592,8 +584,8 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.add),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -621,8 +613,8 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.remove),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -643,8 +635,8 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.add),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -672,8 +664,8 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.remove),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -694,8 +686,8 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.add),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -716,7 +708,7 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
           .map(
             (data) => ConstrainedBox(
               constraints: BoxConstraints(
-                minWidth: 89,
+                minWidth: 160,
               ),
               child: Wrap(
                 spacing: 7,
@@ -776,8 +768,8 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
                         },
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: const Icon(Icons.remove),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                         ),
                       ),
                     ),
@@ -798,8 +790,8 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
                         },
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: const Icon(Icons.add),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                         ),
                       ),
                     ),
@@ -827,8 +819,8 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
                         },
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: const Icon(Icons.remove),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                         ),
                       ),
                     ),
@@ -849,8 +841,8 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
                         },
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: const Icon(Icons.add),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                         ),
                       ),
                     ),

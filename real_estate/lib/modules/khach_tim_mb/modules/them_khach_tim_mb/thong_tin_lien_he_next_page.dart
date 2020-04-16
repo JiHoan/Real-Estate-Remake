@@ -37,11 +37,16 @@ class _ThongTinLienHeNextPageState extends State<ThongTinLienHeNextPage> {
           },
         ),
         actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
+          Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: (){
+                Dialogs.showBackHomeDialog(context);
+              },
+              child: Container(
+                child: Image.asset('assets/group.png'),
+              ),
+            ),
           ),
         ],
       ),
@@ -54,50 +59,32 @@ class _ThongTinLienHeNextPageState extends State<ThongTinLienHeNextPage> {
               children: <Widget>[
                 //
                 MyTopTitle(text: 'Số điện thoại'),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        height: 45,
-                        child: TextFormField(
-                          style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
-                          controller: ctlSdt,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-                            filled: true,
-                            fillColor: Color(0xffEBEBEB),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(7), topLeft: Radius.circular(7)),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Material(
-                      color: Color(0xffEBEBEB),
-                      borderRadius: BorderRadius.only(bottomRight: Radius.circular(7), topRight: Radius.circular(7)),
-                      child: InkWell(
-                        onTap: () {},
-                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(7), topRight: Radius.circular(7)),
-                        child: Container(
-                          width: 45,
-                          height: 45,
-                          child: Image.asset('assets/phone.png'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                //
-                MyTopTitle(text: 'Tên'),
                 MyInput(
                   hintText: '',
                   color: Color(0xffEBEBEB),
                   lines: 1,
-                  controller: ctlTen,
+                  controller: ctlSdt,
+                  type: TextInputType.number,
+                ),
+                SizedBox(height: 20),
+                //
+                MyTopTitle(text: 'Tên'),
+                Container(
+                  height: 45,
+                  child: TextFormField(
+                    textCapitalization: TextCapitalization.words,
+                    style: TextStyle(color: Colors.black87),
+                    controller: ctlTen,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                      filled: true,
+                      fillColor: Color(0xffEBEBEB),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -112,7 +99,7 @@ class _ThongTinLienHeNextPageState extends State<ThongTinLienHeNextPage> {
                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                 ),
                 event: () {
-                  if (ctlTen.text != '' && ctlSdt.text != null) {
+                  if (ctlTen.text != '' && ctlSdt.text != '') {
                     Scaffold.of(context).removeCurrentSnackBar();
                     Navigator.push(
                         context,

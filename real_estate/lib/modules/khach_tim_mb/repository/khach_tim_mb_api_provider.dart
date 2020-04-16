@@ -27,7 +27,8 @@ class KhachTimMbApiProvider extends ApiProvider {
       'bao_nhieu_wc_chung': khachTimMbModel.soWCC,
       'phong_co_ban_cong_khong': khachTimMbModel.banCong,
       'phong_co_cua_so_khong': khachTimMbModel.cuaSo,
-      'gia': khachTimMbModel.giaCanThue,
+      'gia_can_thue_min': khachTimMbModel.giaMin,
+      'gia_can_thue_max': khachTimMbModel.giaMax,
       'co_bao_nhieu_lau': khachTimMbModel.soLau,
       'vi_tri_thang_bo': khachTimMbModel.thangBo,
       'bao_nhieu_thang_thoat_hiem': khachTimMbModel.soThangThoatHiem,
@@ -43,6 +44,8 @@ class KhachTimMbApiProvider extends ApiProvider {
 
     Response _resp = await httpClient.post('request/create', data: _formData);
 
+    print(_resp.statusCode);
+
     if (_resp.statusCode == 200) {
       return true;
     } else {
@@ -50,11 +53,15 @@ class KhachTimMbApiProvider extends ApiProvider {
     }
   }
 
-  Future<KhachTimMbListModel> getDsKhachTimMb({@required String tinhTrang, @required int page}) async {
+  Future<KhachCommenModel> getDsKhachTimMb({@required String tinhTrang, @required int page}) async {
     Response _resp = await httpClient.get('request/index?tinh_trang=$tinhTrang&page=$page');
 
+    print('a');
+    print(_resp.data['count']);
+
     if (_resp.statusCode == 200) {
-      return KhachTimMbListModel.fromJson(_resp.data['data']);
+      return KhachCommenModel(khachTimMbListModel: KhachTimMbListModel.fromJson(_resp.data['data']), count: _resp.data['count']);
+//      return KhachTimMbListModel.fromJson(_resp.data['data']);
     } else {
       throw _resp.data['message'];
     }

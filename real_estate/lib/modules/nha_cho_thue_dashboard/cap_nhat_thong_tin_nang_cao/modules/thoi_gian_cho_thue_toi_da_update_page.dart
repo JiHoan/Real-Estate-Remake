@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_nang_cao/bloc/cap_nhat_ttnc.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
 class ThoiGianChoThueToiDaUpdatePage extends StatefulWidget {
@@ -21,6 +22,16 @@ class _ThoiGianChoThueToiDaUpdatePageState extends State<ThoiGianChoThueToiDaUpd
 
   bool _onChanged = false;
   bool _changed = false;
+
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      _capNhatTtncBloc.add(UpdateThoiGianChoThueToiDa(id: widget.id, soNamThueToiDa: ctlSoNamThueToiDa.text));
+    } catch (error) {
+      print(error);
+    }
+  }
 
   @override
   void initState() {
@@ -43,14 +54,6 @@ class _ThoiGianChoThueToiDaUpdatePageState extends State<ThoiGianChoThueToiDaUpd
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -92,7 +95,13 @@ class _ThoiGianChoThueToiDaUpdatePageState extends State<ThoiGianChoThueToiDaUpd
             bloc: _capNhatTtncBloc,
             listener: (context, state) {
               if (state is UpdateSuccess) {
-                Navigator.pop(context, _changed);
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                Navigator.pop(context, _changed); // pop về dashboard
+                Dialogs.showUpdateSuccessToast();
+              }
+              if (state is UpdateFailure) {
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                Dialogs.showFailureToast();
               }
             },
             child: Builder(
@@ -107,7 +116,7 @@ class _ThoiGianChoThueToiDaUpdatePageState extends State<ThoiGianChoThueToiDaUpd
                   event: () {
                     if (ctlSoNamThueToiDa.text != '') {
                       _changed = true;
-                      _capNhatTtncBloc.add(UpdateThoiGianChoThueToiDa(id: widget.id, soNamThueToiDa: ctlSoNamThueToiDa.text));
+                      _handleSubmit(context);
                     } else {
                       Scaffold.of(context).removeCurrentSnackBar();
                       Scaffold.of(context).showSnackBar(

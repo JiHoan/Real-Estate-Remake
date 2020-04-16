@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:real_estate/modules/khach_tim_mb/bloc/khach_tim_mb.dart';
 import 'package:real_estate/modules/khach_tim_mb/model/khach_tim_mb_model.dart';
 import 'package:real_estate/utils/button.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
 class MoTaKhacNextPage extends StatefulWidget {
@@ -31,14 +32,15 @@ class MoTaKhacNextPage extends StatefulWidget {
   final int soThangThoatHiem;
   final int soThangMay;
   final String huongNha;
-  final String giaThue;
+  final String giaMin;
+  final String giaMax;
   final String thoiGianThue;
   final String loaiHinh;
   final String loaiKhach;
   final String tenThuongHieu;
   final int currentSegment;
 
-  const MoTaKhacNextPage({Key key, this.moTa, this.sdt, this.ten, this.mucDich, this.thanhPho, this.quan, this.phuong, this.tenDuong, this.dienTich, this.soLau, this.lung, this.ham, this.sanThuong, this.sanThuongCaiTao, this.soPhong, this.soWCR, this.soWCC, this.banCong, this.cuaSo, this.thangBo, this.soThangThoatHiem, this.soThangMay, this.huongNha, this.giaThue, this.thoiGianThue, this.loaiHinh, this.loaiKhach, this.tenThuongHieu, this.currentSegment}) : super(key: key);
+  const MoTaKhacNextPage({Key key, this.giaMax, this.moTa, this.sdt, this.ten, this.mucDich, this.thanhPho, this.quan, this.phuong, this.tenDuong, this.dienTich, this.soLau, this.lung, this.ham, this.sanThuong, this.sanThuongCaiTao, this.soPhong, this.soWCR, this.soWCC, this.banCong, this.cuaSo, this.thangBo, this.soThangThoatHiem, this.soThangMay, this.huongNha, this.giaMin, this.thoiGianThue, this.loaiHinh, this.loaiKhach, this.tenThuongHieu, this.currentSegment}) : super(key: key);
   @override
   _MoTaKhacNextPageState createState() => _MoTaKhacNextPageState();
 }
@@ -46,6 +48,50 @@ class MoTaKhacNextPage extends StatefulWidget {
 class _MoTaKhacNextPageState extends State<MoTaKhacNextPage> {
   TextEditingController ctlMoTaKhac = TextEditingController();
   KhachTimMbBloc _khachTimMbBloc;
+
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      KhachTimMbModel _model = KhachTimMbModel(
+        moTa: widget.moTa,
+        sdt: widget.sdt,
+        nguoiNhan: widget.ten,
+        mucDich: widget.mucDich,
+        thanhPho: widget.thanhPho,
+        quan: widget.quan,
+        phuong: widget.phuong,
+        tenDuong: widget.tenDuong,
+        dienTich: widget.dienTich,
+        soLau: widget.soLau,
+        lung: widget.lung,
+        ham: widget.ham,
+        sanThuong: widget.sanThuong,
+        sanThuongCaiTao: widget.sanThuongCaiTao,
+        soPhong: widget.soPhong,
+        soWCR: widget.soWCR,
+        soWCC: widget.soWCC,
+        banCong: widget.banCong,
+        cuaSo: widget.cuaSo,
+        thangBo: widget.thangBo,
+        soThangThoatHiem: widget.soThangThoatHiem,
+        soThangMay: widget.soThangMay,
+        huongNha: widget.huongNha,
+        giaMin: int.tryParse(widget.giaMin) ?? 0,
+        giaMax: int.tryParse(widget.giaMax) ?? 0,
+        thoiGianThue: int.tryParse(widget.thoiGianThue) ?? 0,
+        loaiHinh: widget.loaiHinh,
+        khachLauNam: widget.currentSegment == 0 ? 'CO' : 'KHONG',
+        loaiKhach: widget.loaiKhach,
+        tenThuongHieu: widget.tenThuongHieu,
+        moTaKhac: ctlMoTaKhac.text,
+      );
+      _khachTimMbBloc.add(ThemKhachTimMb(model: _model));
+    } catch (error, s) {
+      print(error);
+      print(s);
+    }
+  }
 
   @override
   void initState() {
@@ -73,11 +119,16 @@ class _MoTaKhacNextPageState extends State<MoTaKhacNextPage> {
           },
         ),
         actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
+          Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: (){
+                Dialogs.showBackHomeDialog(context);
+              },
+              child: Container(
+                child: Image.asset('assets/group.png'),
+              ),
+            ),
           ),
         ],
       ),
@@ -91,7 +142,7 @@ class _MoTaKhacNextPageState extends State<MoTaKhacNextPage> {
                 MyTopTitle(text: 'Mô tả khác'),
                 Container(
                   child: TextFormField(
-                    style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+                    style: TextStyle(color: Colors.black87),
                     maxLines: 3,
                     controller: ctlMoTaKhac,
                     decoration: InputDecoration(
@@ -113,90 +164,27 @@ class _MoTaKhacNextPageState extends State<MoTaKhacNextPage> {
             bloc: _khachTimMbBloc,
             listener: (context, state){
               if(state is KhachTimMbSuccess){
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
                 Navigator.of(context).popUntil((route) => route.isFirst);
-                Fluttertoast.showToast(
-                  msg: "Đã thêm thành công.",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.black54,
-                  textColor: Colors.white,
-                  fontSize: 16.0,
-                );
+                Dialogs.showAddSuccessToast();
+              }
+              if(state is KhachTimMbFailure){
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                Dialogs.showFailureToast();
               }
             },
-            child: BlocBuilder(
-              bloc: _khachTimMbBloc,
-              builder: (context, state){
-                if(state is KhachTimMbLoading){
-                  return Container(
-                    height: 45,
-                    width: double.infinity,
-                    margin: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                    decoration: BoxDecoration(
-                      color: Color(0xff3FBF55),
-                      borderRadius: BorderRadius.circular(7),
-                    ),
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-                if(state is KhachTimMbFailure){
-                  Fluttertoast.showToast(
-                    msg: "Đã có lỗi xảy ra.",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: Colors.black54,
-                    textColor: Colors.white,
-                    fontSize: 16.0,
-                  );
-                }
-                return Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                  child: MyButton(
-                    color: Color(0xff3FBF55),
-                    text: Text(
-                      'Lưu',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                    ),
-                    event: (){
-                      KhachTimMbModel _model = KhachTimMbModel(
-                        moTa: widget.moTa,
-                        sdt: widget.sdt,
-                        nguoiNhan: widget.ten,
-                        mucDich: widget.mucDich,
-                        thanhPho: widget.thanhPho,
-                        quan: widget.quan,
-                        phuong: widget.phuong,
-                        tenDuong: widget.tenDuong,
-                        dienTich: widget.dienTich,
-                        soLau: widget.soLau,
-                        lung: widget.lung,
-                        ham: widget.ham,
-                        sanThuong: widget.sanThuong,
-                        sanThuongCaiTao: widget.sanThuongCaiTao,
-                        soPhong: widget.soPhong,
-                        soWCR: widget.soWCR,
-                        soWCC: widget.soWCC,
-                        banCong: widget.banCong,
-                        cuaSo: widget.cuaSo,
-                        thangBo: widget.thangBo,
-                        soThangThoatHiem: widget.soThangThoatHiem,
-                        soThangMay: widget.soThangMay,
-                        huongNha: widget.huongNha,
-                        giaCanThue: int.tryParse(widget.giaThue) ?? 0,
-                        thoiGianThue: int.tryParse(widget.thoiGianThue) ?? 0,
-                        loaiHinh: widget.loaiHinh,
-                        khachLauNam: widget.currentSegment == 0 ? 'CO' : 'KHONG',
-                        loaiKhach: widget.loaiKhach,
-                        tenThuongHieu: widget.tenThuongHieu,
-                        moTaKhac: ctlMoTaKhac.text,
-                      );
-                      _khachTimMbBloc.add(ThemKhachTimMb(model: _model));
-                    },
-                  ),
-                );
-              },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+              child: MyButton(
+                color: Color(0xff3FBF55),
+                text: Text(
+                  'Lưu',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                ),
+                event: (){
+                  _handleSubmit(context);
+                },
+              ),
             ),
           ),
         ],

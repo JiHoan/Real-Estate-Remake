@@ -33,6 +33,7 @@ class KhachTimMbDashboardPage extends StatefulWidget {
 class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
   KhachTimMbBloc _khachTimMbBloc;
   bool _isUpdateTinhTrang = false;
+  String nguoiNhan;
 
   @override
   void initState() {
@@ -92,10 +93,12 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
         Flexible(
           child: ListView(
             physics: BouncingScrollPhysics(),
-            padding: const EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 15),
             children: <Widget>[
               // thong tin co ban
-              Text('Nhu cầu khách tìm mặt bằng'.toUpperCase(), style: MyAppStyle.price),
+              Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 0),
+                child: Text('Nhu cầu khách tìm mặt bằng'.toUpperCase(), style: MyAppStyle.price),
+              ),
               Material(
                 color: Colors.white,
                 child: InkWell(
@@ -129,33 +132,38 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
                       },
                     );
                   },
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: RichText(
-                          overflow: TextOverflow.ellipsis,
-                          text: TextSpan(
-                            text: 'Tình trạng: ',
-                            style: TextStyle(
-                              color: Colors.black87,
+                  child: Container(
+                    height: 30,
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: RichText(
+                            overflow: TextOverflow.ellipsis,
+                            text: TextSpan(
+                              text: 'Tình trạng: ',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black87,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: model.tinhTrang.value == 'CAN_GAP' ? 'Cần gấp' : 'Bình thường',
+                                  style: TextStyle(
+                                    color: Color(0xffA00000),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                )
+                              ],
                             ),
-                            children: [
-                              TextSpan(
-                                text: model.tinhTrang.value == 'CAN_GAP' ? 'Cần gấp' : 'Bình thường',
-                                style: TextStyle(
-                                  color: Color(0xffA00000),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              )
-                            ],
                           ),
                         ),
-                      ),
-                      const Icon(
-                        Icons.navigate_next,
-                        color: Colors.black54,
-                      ),
-                    ],
+                        const Icon(
+                          Icons.navigate_next,
+                          color: Colors.black26,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -461,25 +469,29 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
     );
   }
 
-  Material _buildItemRow(String text, Function onTap) {
+  Widget _buildItemRow(String text, Function onTap) {
     return Material(
       color: Colors.white,
       child: InkWell(
         onTap: onTap,
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Text(
-                text,
-                style: MyAppStyle.text,
-                overflow: TextOverflow.ellipsis,
+        child: Container(
+          height: 30,
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  text,
+                  style: MyAppStyle.text,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-            ),
-            const Icon(
-              Icons.navigate_next,
-              color: Colors.black54,
-            ),
-          ],
+              const Icon(
+                Icons.navigate_next,
+                color: Colors.black26,
+              ),
+            ],
+          ),
         ),
       ),
     );

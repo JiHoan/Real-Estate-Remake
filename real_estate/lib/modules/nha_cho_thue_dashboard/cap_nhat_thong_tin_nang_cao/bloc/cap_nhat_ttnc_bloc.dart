@@ -209,5 +209,23 @@ class CapNhatTtncBloc extends Bloc<CapNhatTtncEvent, CapNhatTtncState>{
         yield UpdateFailure(error: e);
       }
     }
+
+    if(event is ExportExcel){
+      yield DownloadLoading();
+
+      try{
+        final _url = await _repository.exportExcel(id: event.id);
+
+        if (_url != null) {
+          yield DownloadSuccess(url: _url);
+        } else {
+          yield DownloadFailure();
+        }
+      }catch(e, s){
+        print(e);
+        print(s);
+        yield DownloadFailure(error: e);
+      }
+    }
   }
 }

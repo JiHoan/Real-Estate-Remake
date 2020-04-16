@@ -59,7 +59,7 @@ class NhaChoThueBloc extends Bloc<NhaChoThueEvent, NhaChoThueState> {
 
     bool _hasReachedMax(NhaChoThueState state) => state is NhaChoThueLoaded && state.hasReachedMax;
 
-    if (event is LoadMoreDanhSachNhaChoThue && _hasReachedMax(state)) {
+    if (event is LoadMoreDanhSachNhaChoThue && !_hasReachedMax(state)) {
       try {
         if (currentState is NhaChoThueInitial) {
           final _listNhaKhongXacDinh = await _nhaChoThueApiProvider.getNhaChoThue(type: event.type, page: 1);
@@ -91,6 +91,6 @@ class NhaChoThueBloc extends Bloc<NhaChoThueEvent, NhaChoThueState> {
 
   bool _reachedMax(int length) {
     print('length: $length');
-    return length < 11 ? true : false;
+    return length < 10 ? true : false;
   }
 }

@@ -49,4 +49,8 @@ class CapNhatTtncRepository {
   Future<bool> removeHinhAnh({@required int id, @required List<int> idHinhAnh}) async {
     return await _capNhatTtncApiProvider.removeHinhAnh(id: id, idHinhAnh: idHinhAnh);
   }
+
+  Future<String> exportExcel({@required int id}) async {
+    return await _capNhatTtncApiProvider.exportExcel(id: id);
+  }
 }

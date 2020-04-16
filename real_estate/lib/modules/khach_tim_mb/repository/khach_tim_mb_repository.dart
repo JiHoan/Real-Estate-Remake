@@ -12,7 +12,7 @@ class KhachTimMbRepository {
     return await _apiProvider.themKhachTimMb(khachTimMbModel: khachTimMbModel);
   }
 
-  Future<KhachTimMbListModel> getDsKhachTimMb({@required String tinhTrang, @required int page}) async {
+  Future<KhachCommenModel> getDsKhachTimMb({@required String tinhTrang, @required int page}) async {
     return await _apiProvider.getDsKhachTimMb(tinhTrang: tinhTrang, page: page);
   }
 

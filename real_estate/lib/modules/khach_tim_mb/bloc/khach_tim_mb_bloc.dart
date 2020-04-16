@@ -82,8 +82,8 @@ class KhachTimMbBloc extends Bloc<KhachTimMbEvent, KhachTimMbState> {
       try {
         final _danhSach = await _repository.getDsKhachTimMb(tinhTrang: event.type, page: 1);
 
-        if (_danhSach.isNotEmpty) {
-          yield KhachTimMbLoaded(khachTimMbListModel: _danhSach, hasReachedMax: _reachedMax(_danhSach.length), page: 1);
+        if (_danhSach.khachTimMbListModel.isNotEmpty) {
+          yield KhachTimMbLoaded(khachTimMbListModel: _danhSach.khachTimMbListModel, hasReachedMax: _reachedMax(_danhSach.khachTimMbListModel.length), page: 1, count: _danhSach.count, ool: false);
         } else {
           yield KhachTimMbEmpty();
         }
@@ -102,7 +102,7 @@ class KhachTimMbBloc extends Bloc<KhachTimMbEvent, KhachTimMbState> {
         if (currentState is KhachTimMbInitial) {
           final _danhSach = await _repository.getDsKhachTimMb(tinhTrang: event.type, page: 1);
 
-          yield KhachTimMbLoaded(khachTimMbListModel: _danhSach, hasReachedMax: false);
+          yield KhachTimMbLoaded(khachTimMbListModel: _danhSach.khachTimMbListModel, hasReachedMax: false, ool: false);
           return;
         }
 
@@ -112,10 +112,10 @@ class KhachTimMbBloc extends Bloc<KhachTimMbEvent, KhachTimMbState> {
 
           final copyListNhaKhongXacDinh = KhachTimMbListModel.fromJson(currentState.khachTimMbListModel.toJson());
 
-          yield _danhSach.isEmpty
+          yield _danhSach.khachTimMbListModel.isEmpty
               ? currentState.copyWith(hasReachedMax: true)
               : KhachTimMbLoaded(
-                  khachTimMbListModel: copyListNhaKhongXacDinh..addAll(_danhSach),
+                  khachTimMbListModel: copyListNhaKhongXacDinh..addAll(_danhSach.khachTimMbListModel),
                   hasReachedMax: true,
                   page: temp,
                 );
@@ -325,6 +325,6 @@ class KhachTimMbBloc extends Bloc<KhachTimMbEvent, KhachTimMbState> {
 
   bool _reachedMax(int length) {
     print('length: $length');
-    return length < 11 ? true : false;
+    return length < 10 ? true : false;
   }
 }

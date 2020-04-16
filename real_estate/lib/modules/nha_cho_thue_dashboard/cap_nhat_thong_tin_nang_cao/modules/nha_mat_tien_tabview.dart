@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_radio_button.dart';
 import 'package:real_estate/utils/my_text.dart';
 
-import 'chuong_ngai_vat_update_page.dart';
 import '../../cap_nhat_thong_tin_co_ban/model/common_model.dart';
 import '../bloc/cap_nhat_ttnc.dart';
 
@@ -46,6 +46,16 @@ class _NhaMatTienTabViewState extends State<NhaMatTienTabView> {
 
   bool _onChanged = false;
   bool _changed = false;
+
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      _capNhatTtncBloc.add(UpdateMatTien(id: widget.id, leDuong: double.tryParse(ctlLeDuong.text), duongMotChieu: radioValue));
+    } catch (error) {
+      print(error);
+    }
+  }
 
   @override
   void initState() {
@@ -114,7 +124,13 @@ class _NhaMatTienTabViewState extends State<NhaMatTienTabView> {
                 bloc: _capNhatTtncBloc,
                 listener: (context, state) {
                   if (state is UpdateSuccess) {
-                    Navigator.pop(context, _changed);
+                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                    Navigator.pop(context, _changed); // pop về dashboard
+                    Dialogs.showUpdateSuccessToast();
+                  }
+                  if (state is UpdateFailure) {
+                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                    Dialogs.showFailureToast();
                   }
                 },
                 child: Padding(
@@ -128,7 +144,7 @@ class _NhaMatTienTabViewState extends State<NhaMatTienTabView> {
                     event: () {
                       if (ctlLeDuong.text != '') {
                         _changed = true;
-                        _capNhatTtncBloc.add(UpdateMatTien(id: widget.id, leDuong: double.tryParse(ctlLeDuong.text), duongMotChieu: radioValue));
+                        _handleSubmit(context);
                       } else {
                         Scaffold.of(context).removeCurrentSnackBar();
                         Scaffold.of(context).showSnackBar(

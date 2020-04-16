@@ -4,6 +4,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/modules/vat/vat_next_page.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_radio_button.dart';
 import 'package:real_estate/utils/my_text.dart';
 
@@ -172,11 +173,16 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
           },
         ),
         actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
+          Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: (){
+                Dialogs.showBackHomeDialog(context);
+              },
+              child: Container(
+                child: Image.asset('assets/group.png'),
+              ),
+            ),
           ),
         ],
       ),
@@ -241,8 +247,8 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                         },
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: const Icon(Icons.remove),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                         ),
                       ),
                     ),
@@ -262,8 +268,8 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                         },
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: const Icon(Icons.add),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                         ),
                       ),
                     ),
@@ -635,8 +641,8 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.remove),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -658,8 +664,8 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.add),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -688,8 +694,8 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.remove),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -711,8 +717,8 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.add),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -739,8 +745,8 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.remove),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -760,8 +766,8 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.add),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),

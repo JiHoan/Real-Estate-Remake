@@ -11,6 +11,7 @@ import 'package:real_estate/modules/thong_tin_co_ban/modules/dia_chi/tinh_thanh_
 import 'package:real_estate/modules/tim_kiem_nha_cho_thue/bloc/tim_nha_cho_thue.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
 import 'ket_qua_tim_kiem_page.dart';
@@ -54,6 +55,44 @@ class _TimNhaChoThuePageState extends State<TimNhaChoThuePage> {
 
   var controller = new MaskedTextController(mask: '000.000.000.000');
 
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      ttncVal == false
+          ? _timNhaChoThueBloc.add(TimNhaChoThue(
+        thanhPho: idThanhPho,
+        quan: _quanHuyenSelection,
+        phuong: _phuongXaSelection,
+        duong: _ctlTenDuong.text,
+        dienTich: double.tryParse(_ctlDienTich.text),
+        giaMin: int.tryParse(_ctlGiaMin.text),
+        giaMax: int.tryParse(_ctlGiaMax.text),
+      ))
+          : _timNhaChoThueBloc.add(TimNhaChoThue(
+        thanhPho: idThanhPho,
+        quan: _quanHuyenSelection,
+        phuong: _phuongXaSelection,
+        duong: _ctlTenDuong.text,
+        dienTich: double.tryParse(_ctlDienTich.text),
+        giaMin: int.tryParse(_ctlGiaMin.text),
+        giaMax: int.tryParse(_ctlGiaMax.text),
+        soLau: lauSelection,
+        lung: lungSelection,
+        ham: hamSelection,
+        sanThuong: sanThuongSelection,
+        soPhong: phongSelection,
+        soWCR: wcrSelection,
+        soWCC: wccSelection,
+        thangMay: thangMaySelection,
+        thoatHiem: thoatHiemSelection,
+        huongNha: huongNhaSelection,
+      ));
+    } catch (error) {
+      print(error);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -85,14 +124,6 @@ class _TimNhaChoThuePageState extends State<TimNhaChoThuePage> {
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -130,23 +161,17 @@ class _TimNhaChoThuePageState extends State<TimNhaChoThuePage> {
           BlocListener(
             bloc: _timNhaChoThueBloc,
             listener: (context, state) {
-              print(state);
               if (state is TimNhaChoThueLoaded) {
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
                 Navigator.push(context, MaterialPageRoute(builder: (context) => KetQuaTimKiemPage(list: state.list)));
               }
               if (state is TimNhaChoThueEmpty) {
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
                 Navigator.push(context, MaterialPageRoute(builder: (context) => KetQuaTimKiemPage(list: null)));
               }
               if (state is TimNhaChoThueFailure) {
-                Fluttertoast.showToast(
-                  msg: "Đã có lỗi xảy ra.",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.black54,
-                  textColor: Colors.white,
-                  fontSize: 16.0,
-                );
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                Dialogs.showFailureToast();
               }
             },
             child: Padding(
@@ -157,36 +182,9 @@ class _TimNhaChoThuePageState extends State<TimNhaChoThuePage> {
                   'Tìm',
                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                 ),
-                event: () async {
-                  ttncVal == false
-                      ? _timNhaChoThueBloc.add(TimNhaChoThue(
-                          thanhPho: idThanhPho,
-                          quan: _quanHuyenSelection,
-                          phuong: _phuongXaSelection,
-                          duong: _ctlTenDuong.text,
-                          dienTich: double.tryParse(_ctlDienTich.text),
-                          giaMin: int.tryParse(_ctlGiaMin.text),
-                          giaMax: int.tryParse(_ctlGiaMax.text),
-                        ))
-                      : _timNhaChoThueBloc.add(TimNhaChoThue(
-                          thanhPho: idThanhPho,
-                          quan: _quanHuyenSelection,
-                          phuong: _phuongXaSelection,
-                          duong: _ctlTenDuong.text,
-                          dienTich: double.tryParse(_ctlDienTich.text),
-                          giaMin: int.tryParse(_ctlGiaMin.text),
-                          giaMax: int.tryParse(_ctlGiaMax.text),
-                          soLau: lauSelection,
-                          lung: lungSelection,
-                          ham: hamSelection,
-                          sanThuong: sanThuongSelection,
-                          soPhong: phongSelection,
-                          soWCR: wcrSelection,
-                          soWCC: wccSelection,
-                          thangMay: thangMaySelection,
-                          thoatHiem: thoatHiemSelection,
-                          huongNha: huongNhaSelection,
-                        ));
+                event: () {
+                  _handleSubmit(context);
+
                 },
               ),
             ),
@@ -364,6 +362,7 @@ class _TimNhaChoThuePageState extends State<TimNhaChoThuePage> {
           color: Color(0xffEBEBEB),
           lines: 1,
           controller: _ctlDienTich,
+          type: TextInputType.number,
         ),
         SizedBox(height: 20),
         MyTopTitle(text: 'Giá'),
@@ -375,7 +374,7 @@ class _TimNhaChoThuePageState extends State<TimNhaChoThuePage> {
                 height: 45,
                 child: TextFormField(
                   controller: _ctlGiaMin,
-                  style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+                  style: TextStyle(color: Colors.black87),
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
@@ -395,7 +394,7 @@ class _TimNhaChoThuePageState extends State<TimNhaChoThuePage> {
                 height: 45,
                 child: TextFormField(
                   controller: _ctlGiaMax,
-                  style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+                  style: TextStyle(color: Colors.black87),
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),

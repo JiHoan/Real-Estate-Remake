@@ -12,12 +12,16 @@ class _ChonLoaiNhaCanTimPageState extends State<ChonLoaiNhaCanTimPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Chọn loại', style: MyAppStyle.appbar),
+        title: Text('Chọn loại'),
         centerTitle: true,
-        elevation: 0.0,
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Color(0xffF8A200)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, size: 20),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Container(
         color: Colors.white,
@@ -42,7 +46,6 @@ class _ChonLoaiNhaCanTimPageState extends State<ChonLoaiNhaCanTimPage> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Tìm nhà cho thuê',
-                    style: TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
@@ -61,7 +64,6 @@ class _ChonLoaiNhaCanTimPageState extends State<ChonLoaiNhaCanTimPage> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Tìm khách cần tìm mặt bằng',
-                    style: TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ),
               ),

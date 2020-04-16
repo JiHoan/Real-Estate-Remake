@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/bloc/cap_nhat_ttcb.dart';
 import 'package:real_estate/utils/button.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
 class GhiChuUpdatePage extends StatefulWidget {
@@ -21,6 +22,17 @@ class _GhiChuUpdatePageState extends State<GhiChuUpdatePage> {
 
   bool _onChanged = false;
   bool _changed = false;
+
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      _nhaChoThueDetailBloc
+          .add(UpdateRow(type: 'ghi-chu', obType: 'ghi_chu', id: widget.id, text: ctlGhiChu.text));
+    } catch (error) {
+      print(error);
+    }
+  }
 
   @override
   void initState() {
@@ -49,14 +61,6 @@ class _GhiChuUpdatePageState extends State<GhiChuUpdatePage> {
             Navigator.pop(context, _changed);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -68,7 +72,7 @@ class _GhiChuUpdatePageState extends State<GhiChuUpdatePage> {
                 MyTopTitle(text: 'Nội dung ghi chú'),
                 Container(
                   child: TextFormField(
-                    style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+                    style: TextStyle(color: Colors.black87),
                     maxLines: 3,
                     controller: ctlGhiChu,
                     onChanged: (value) {
@@ -91,25 +95,24 @@ class _GhiChuUpdatePageState extends State<GhiChuUpdatePage> {
             ),
           ),
           _onChanged == false
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                  child: MyButton(
-                    color: Colors.black26,
-                    text: Text(
-                      'Lưu',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                    ),
-                    event: null,
-                  ),
-                )
+              ? MyButtonDisable()
               : BlocListener(
-                  bloc: _nhaChoThueDetailBloc,
-                  listener: (context, state) {
-                    if (state is UpdateSuccess) {
-                      Navigator.pop(context, _changed);
-                    }
-                  },
-                  child: Padding(
+            bloc: _nhaChoThueDetailBloc,
+            listener: (context, state) {
+              print(state);
+              if (state is UpdateSuccess) {
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                Navigator.pop(context, _changed); // pop về dashboard
+                Dialogs.showUpdateSuccessToast();
+              }
+              if (state is UpdateFailure) {
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                Dialogs.showFailureToast();
+              }
+            },
+            child: Builder(
+              builder: (context) =>
+                  Padding(
                     padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
                     child: MyButton(
                       color: Color(0xff3FBF55),
@@ -118,13 +121,23 @@ class _GhiChuUpdatePageState extends State<GhiChuUpdatePage> {
                         style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                       ),
                       event: () {
-                        _changed = true;
-                        _nhaChoThueDetailBloc
-                            .add(UpdateRow(type: 'ghi-chu', obType: 'ghi_chu', id: widget.id, text: ctlGhiChu.text));
+                        if (ctlGhiChu.text == '') {
+                          Scaffold.of(context).removeCurrentSnackBar();
+                          Scaffold.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Hãy nhập đầy đủ thông tin !'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        } else {
+                          _changed = true;
+                          _handleSubmit(context);
+                        }
                       },
                     ),
                   ),
-                ),
+            ),
+          ),
         ],
       ),
     );

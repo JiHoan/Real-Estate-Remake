@@ -36,11 +36,16 @@ class _MucDichThueNextPageState extends State<MucDichThueNextPage> {
           },
         ),
         actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
+          Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: (){
+                Dialogs.showBackHomeDialog(context);
+              },
+              child: Container(
+                child: Image.asset('assets/group.png'),
+              ),
+            ),
           ),
         ],
       ),
@@ -54,7 +59,7 @@ class _MucDichThueNextPageState extends State<MucDichThueNextPage> {
                 MyTopTitle(text: 'Mục đích thuê nhà'),
                 Container(
                   child: TextFormField(
-                    style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+                    style: TextStyle(color: Colors.black87),
                     maxLines: 3,
                     controller: ctlMucDich,
                     decoration: InputDecoration(

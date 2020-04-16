@@ -6,6 +6,7 @@ import 'package:real_estate/modules/thong_tin_co_ban/modules/dia_chi/tinh_thanh_
 import 'package:real_estate/modules/tim_kiem_nha_cho_thue/bloc/tim_nha_cho_thue.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
 import '../them_khach_tim_mb/ket_cau_nha_can_thue_next_page.dart';
@@ -65,11 +66,16 @@ class _KhuVucCanThueNextPageState extends State<KhuVucCanThueNextPage> {
           },
         ),
         actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
+          Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: (){
+                Dialogs.showBackHomeDialog(context);
+              },
+              child: Container(
+                child: Image.asset('assets/group.png'),
+              ),
+            ),
           ),
         ],
       ),
@@ -249,7 +255,7 @@ class _KhuVucCanThueNextPageState extends State<KhuVucCanThueNextPage> {
                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                 ),
                 event: () {
-                  if (ctlTenDuong.text != '' && _phuongXaSelection != null) {
+                  if (_quanHuyenSelection != null) {
                     Scaffold.of(context).removeCurrentSnackBar();
                     Navigator.push(
                         context,

@@ -82,10 +82,11 @@ class _KiemTraLienLacState extends State<KiemTraLienLac> {
           FloatingActionButton(
             onPressed: () {
               launch("tel://$phoneNumber");
+//              launch("tel:$phoneNumber");
             },
             elevation: 0.0,
             backgroundColor: Colors.white,
-            child: Image.asset('assets/phone.png'),
+            child: Image.asset('assets/phone.png', height: 20),
           ),
         ],
       ),
@@ -148,7 +149,7 @@ class _KiemTraLienLacState extends State<KiemTraLienLac> {
                 if (state is UpdateSuccess) {
                   Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
                   Navigator.pop(context, _changed); // pop về dashboard
-                  Dialogs.showSuccessToast();
+                  Dialogs.showUpdateSuccessToast();
                 }
                 if (state is UpdateFailure) {
                   Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog

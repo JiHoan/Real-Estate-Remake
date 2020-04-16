@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_nang_cao/modules/vi_tri_cau_thang_update_page.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_radio_button.dart';
 import 'package:real_estate/utils/my_text.dart';
 
@@ -261,11 +262,16 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
           },
         ),
         actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
+          Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: (){
+                Dialogs.showBackHomeDialog(context);
+              },
+              child: Container(
+                child: Image.asset('assets/group.png'),
+              ),
+            ),
           ),
         ],
       ),
@@ -298,13 +304,12 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                             if (valFloorNum > 0) {
                               valFloorNum--;
                             }
-                            print(valFloorNum);
                           });
                         },
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: const Icon(Icons.remove),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                         ),
                       ),
                     ),
@@ -320,13 +325,12 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                         onTap: () {
                           setState(() {
                             valFloorNum++;
-                            print(valFloorNum);
                           });
                         },
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: const Icon(Icons.add),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                         ),
                       ),
                     ),
@@ -473,11 +477,18 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                           basementGroup = data.index;
                         },
                       );
-                      print(basementValue);
                     },
                   ),
                 ),
-                Text(data.title),
+                GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        basementValue = data.value;
+                        basementGroup = data.index;
+                      });
+                    },
+                    child: Text(data.title)
+                ),
               ],
             ),
           )
@@ -509,11 +520,18 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                           terraceGroup = data.index;
                         },
                       );
-                      print(terraceValue);
                     },
                   ),
                 ),
-                Text(data.title),
+                GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        terraceValue = data.value;
+                        terraceGroup = data.index;
+                      });
+                    },
+                    child: Text(data.title)
+                ),
               ],
             ),
           )
@@ -545,11 +563,18 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                           terraceUpgratedGroup = data.index;
                         },
                       );
-                      print(terraceUpgratedValue);
                     },
                   ),
                 ),
-                Text(data.title),
+                GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        terraceUpgratedValue = data.value;
+                        terraceUpgratedGroup = data.index;
+                      });
+                    },
+                    child: Text(data.title)
+                ),
               ],
             ),
           )
@@ -584,7 +609,15 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                     },
                   ),
                 ),
-                Text(data.title),
+                GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        mezzanineValue = data.value;
+                        mezzanineGroup = data.index;
+                      });
+                    },
+                    child: Text(data.title)
+                ),
               ],
             ),
           )
@@ -620,7 +653,15 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                     },
                   ),
                 ),
-                Text(data.title),
+                GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        balconyValue = data.value;
+                        balconyGroup = data.index;
+                      });
+                    },
+                    child: Text(data.title)
+                ),
               ],
             ),
           )
@@ -656,7 +697,15 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                     },
                   ),
                 ),
-                Text(data.title),
+                GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        windowValue = data.value;
+                        windowGroup = data.index;
+                      });
+                    },
+                    child: Text(data.title)
+                ),
               ],
             ),
           )
@@ -683,13 +732,12 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                         if (valRoomNum > 0) {
                           valRoomNum--;
                         }
-                        print(valRoomNum);
                       });
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.remove),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -705,13 +753,12 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                     onTap: () {
                       setState(() {
                         valRoomNum++;
-                        print(valRoomNum);
                       });
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.add),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -734,13 +781,12 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                         if (valWCR > 0) {
                           valWCR--;
                         }
-                        print(valWCR);
                       });
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.remove),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -756,13 +802,12 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                     onTap: () {
                       setState(() {
                         valWCR++;
-                        print(valWCR);
                       });
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.add),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -785,13 +830,12 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                         if (valWCC > 0) {
                           valWCC--;
                         }
-                        print(valWCC);
                       });
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.remove),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -807,13 +851,12 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                     onTap: () {
                       setState(() {
                         valWCC++;
-                        print(valWCC);
                       });
                     },
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: const Icon(Icons.add),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                     ),
                   ),
                 ),
@@ -834,7 +877,7 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
           .map(
             (data) => ConstrainedBox(
               constraints: BoxConstraints(
-                minWidth: 89,
+                minWidth: 160,
               ),
               child: Wrap(
                 spacing: 7,
@@ -854,11 +897,18 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                             rdViTriCauThangGroup = data.index;
                           },
                         );
-                        print(rdViTriCauThangValue);
                       },
                     ),
                   ),
-                  Text(data.title),
+                  GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        rdViTriCauThangValue = data.value;
+                        rdViTriCauThangGroup = data.index;
+                      });
+                    },
+                    child: Text(data.title)
+                  ),
                 ],
               ),
             ),
@@ -889,13 +939,12 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                             if (valExitStairNum > 0) {
                               valExitStairNum--;
                             }
-                            print(valExitStairNum);
                           });
                         },
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: const Icon(Icons.remove),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                         ),
                       ),
                     ),
@@ -911,13 +960,12 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                         onTap: () {
                           setState(() {
                             valExitStairNum++;
-                            print(valExitStairNum);
                           });
                         },
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: const Icon(Icons.add),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                         ),
                       ),
                     ),
@@ -940,13 +988,12 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                             if (valElevatorNum > 0) {
                               valElevatorNum--;
                             }
-                            print(valElevatorNum);
                           });
                         },
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: const Icon(Icons.remove),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
                         ),
                       ),
                     ),
@@ -962,13 +1009,12 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                         onTap: () {
                           setState(() {
                             valElevatorNum++;
-                            print(valElevatorNum);
                           });
                         },
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: const Icon(Icons.add),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          child: const Icon(Icons.add, size: 20, color: Colors.black54,),
                         ),
                       ),
                     ),

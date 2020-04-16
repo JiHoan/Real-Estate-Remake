@@ -33,10 +33,10 @@ class _MyApplicationState extends State<MyApplication> {
           try {
             final result = await InternetAddress.lookup('google.com');
             if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-              print('connected');
+              print('Connected');
             }
           } on SocketException catch (_) {
-            print('not connected');
+            print('No internet');
           }
         },
         onResponse: (Response resp) {
@@ -66,7 +66,7 @@ class _MyApplicationState extends State<MyApplication> {
         initialRoute: '/',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          fontFamily: 'HelveticaNeue',
+          fontFamily: 'helveticaneue',
           appBarTheme: AppBarTheme(
             color: Colors.white,
             elevation: 0.0,

@@ -18,10 +18,13 @@ class ThongTinCoBanBloc extends Bloc<ThongTinCoBanEvent, ThongTinCoBanState> {
 
         if (isSuccess == true) {
           yield ThongTinCoBanSaveSuccess();
+        } else {
+          yield ThongTinCoBanSaveFailure();
         }
       } catch (e, s) {
         print(e);
         print(s);
+        yield ThongTinCoBanSaveFailure();
       }
     }
   }

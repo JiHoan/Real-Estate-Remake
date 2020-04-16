@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/common_model.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_nang_cao/bloc/cap_nhat_ttnc.dart';
 import 'package:real_estate/utils/button.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_radio_button.dart';
 import 'package:real_estate/utils/my_text.dart';
 
@@ -39,6 +40,16 @@ class _PhapLyChuNhaUpdatePageState extends State<PhapLyChuNhaUpdatePage> {
   bool _onChanged = false;
   bool _changed = false;
 
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      _capNhatTtncBloc.add(UpdatePhapLy(id: widget.id, phapLy: radioValue));
+    } catch (error) {
+      print(error);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -73,14 +84,6 @@ class _PhapLyChuNhaUpdatePageState extends State<PhapLyChuNhaUpdatePage> {
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -110,7 +113,13 @@ class _PhapLyChuNhaUpdatePageState extends State<PhapLyChuNhaUpdatePage> {
                   bloc: _capNhatTtncBloc,
                   listener: (context, state) {
                     if (state is UpdateSuccess) {
-                      Navigator.pop(context, _changed);
+                      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                      Navigator.pop(context, _changed); // pop về dashboard
+                      Dialogs.showUpdateSuccessToast();
+                    }
+                    if (state is UpdateFailure) {
+                      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                      Dialogs.showFailureToast();
                     }
                   },
                   child: Padding(
@@ -123,7 +132,7 @@ class _PhapLyChuNhaUpdatePageState extends State<PhapLyChuNhaUpdatePage> {
                       ),
                       event: () {
                         _changed = true;
-                        _capNhatTtncBloc.add(UpdatePhapLy(id: widget.id, phapLy: radioValue));
+                        _handleSubmit(context);
                       },
                     ),
                   ),

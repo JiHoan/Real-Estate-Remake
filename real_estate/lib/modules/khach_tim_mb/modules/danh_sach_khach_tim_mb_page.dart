@@ -34,11 +34,9 @@ class _DanhSachKhachTimMbPageState extends State<DanhSachKhachTimMbPage> {
     ),
   ];
 
-//  NhaChoThueBloc _nhaChoThueBloc;
   KhachTimMbBloc _khachTimMbBloc;
 
   final f = DateFormat('dd/MM/yyyy');
-
   final _scrollController = ScrollController();
   final _scrollThreshold = 0.0;
 
@@ -75,15 +73,25 @@ class _DanhSachKhachTimMbPageState extends State<DanhSachKhachTimMbPage> {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: <Widget>[
                           SizedBox(
-                            height: 30,
+                            height: 32,
                             width: 20,
                             child: Radio(
                               groupValue: id,
                               value: data.index,
+                              activeColor: Color(0xff3FBF55),
                               onChanged: (val) {
                                 setState(() {
                                   radioItem = data.name;
                                   id = data.index;
+                                  type = data.type;
+
+                                  if (data.name == 'Tất cả') {
+                                    _khachTimMbBloc.add(FetchDsKhachTimMb(type: ''));
+                                  } else if (data.name == 'Bình thường') {
+                                    _khachTimMbBloc.add(FetchDsKhachTimMb(type: 'BINH_THUONG'));
+                                  } else {
+                                    _khachTimMbBloc.add(FetchDsKhachTimMb(type: 'CAN_GAP'));
+                                  }
                                 });
                                 Navigator.pop(context);
                               },
@@ -95,27 +103,6 @@ class _DanhSachKhachTimMbPageState extends State<DanhSachKhachTimMbPage> {
                     ))
                 .toList(),
           ),
-          actions: <Widget>[
-            Material(
-              color: Color(0xff3FBF55),
-              borderRadius: BorderRadius.circular(7),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                borderRadius: BorderRadius.circular(7),
-                child: Container(
-                  height: 30,
-                  width: 70,
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Hủy',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-          ],
         );
       },
     );
@@ -151,7 +138,7 @@ class _DanhSachKhachTimMbPageState extends State<DanhSachKhachTimMbPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Nhà cho thuê'),
+        title: Text('Khách tìm mặt bằng'),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, size: 20),
@@ -170,10 +157,10 @@ class _DanhSachKhachTimMbPageState extends State<DanhSachKhachTimMbPage> {
                   bloc: _khachTimMbBloc,
                   builder: (context, state) {
                     if (state is KhachTimMbLoaded) {
-                      final length = state.khachTimMbListModel.length;
+                      final length = state.count;
                       return Text('Kết quả: $length');
                     }
-                    return Text('Kết quả: 0');
+                    return Text('Kết quả:');
                   },
                 ),
                 Spacer(),
@@ -188,7 +175,7 @@ class _DanhSachKhachTimMbPageState extends State<DanhSachKhachTimMbPage> {
                   onTap: () {
                     _showDialog();
                   },
-                  child: Image.asset('assets/filter.png'),
+                  child: Image.asset('assets/filter.png', height: 15),
                 ),
               ],
             ),
@@ -222,8 +209,7 @@ class _DanhSachKhachTimMbPageState extends State<DanhSachKhachTimMbPage> {
 
   ListView buildDanhSach(KhachTimMbLoaded state) {
     return ListView.separated(
-      // 1 phân trang return 10 dòng, nếu trả ít hơn 11 thì k còn dữ liệu nên tắt scroll hạn chế spam event LoadMore
-      controller: state.khachTimMbListModel.length < 10 ? null : _scrollController,
+      controller: _scrollController,
       physics: BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 15),
       itemCount: state.hasReachedMax ? state.khachTimMbListModel.length : state.khachTimMbListModel.length + 1,
@@ -259,24 +245,31 @@ class _DanhSachKhachTimMbPageState extends State<DanhSachKhachTimMbPage> {
                   child: Stack(
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
                               state.khachTimMbListModel[index].nguoiNhan,
                               style: TextStyle(
+                                fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
-                            SizedBox(height: 4),
+                            SizedBox(height: 2),
                             Text(
-                              state.khachTimMbListModel[index].id.toString(),
+                              state.khachTimMbListModel[index].diaChi,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            SizedBox(height: 8),
-                            Text(state.khachTimMbListModel[index].giaCanThue.toString(), style: MyAppStyle.price),
+                            SizedBox(height: 2),
+                            Row(
+                              children: <Widget>[
+                                Text('${NumberFormat.currency(locale: 'vi', symbol: '').format(state.khachTimMbListModel[index].giaMin)}' , style: MyAppStyle.price1),
+                                Text('- ', style: MyAppStyle.price),
+                                Text('${NumberFormat.currency(locale: 'vi', symbol: 'vnđ').format(state.khachTimMbListModel[index].giaMax)}' , style: MyAppStyle.price1),
+                              ],
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
@@ -290,7 +283,7 @@ class _DanhSachKhachTimMbPageState extends State<DanhSachKhachTimMbPage> {
                           ? Positioned(
                               top: 10,
                               right: 15,
-                              child: Image.asset('assets/star (2).png'),
+                              child: Image.asset('assets/star.png', height: 15),
                             )
                           : SizedBox()
                     ],

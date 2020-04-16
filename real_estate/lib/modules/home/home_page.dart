@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Image.asset('assets/shield.png'),
+                  Image.asset('assets/shield.png', height: 20),
                   SizedBox(width: 5),
                   Expanded(
                     child: BlocBuilder(
@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                           style: TextStyle(color: Color(0xff6C6C6C)),
                         ),
                         Spacer(),
-                        Image.asset('assets/search.png'),
+                        Image.asset('assets/search.png', height: 20),
                       ],
                     ),
                   ),
@@ -180,10 +180,11 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Image.asset(imgUrl),
+                Image.asset(imgUrl, height: 50,),
                 SizedBox(height: 8),
                 Text(
                   text,
+                  style: TextStyle(fontFamily: 'helveticaneue',),
                 ),
               ],
             ),

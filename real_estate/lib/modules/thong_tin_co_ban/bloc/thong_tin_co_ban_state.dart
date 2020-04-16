@@ -11,3 +11,5 @@ class ThongTinCoBanInitial extends ThongTinCoBanState {}
 class ThongTinCoBanSaveLoading extends ThongTinCoBanState {}
 
 class ThongTinCoBanSaveSuccess extends ThongTinCoBanState {}
+
+class ThongTinCoBanSaveFailure extends ThongTinCoBanState {}

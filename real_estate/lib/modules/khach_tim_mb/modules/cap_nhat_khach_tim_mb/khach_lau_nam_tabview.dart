@@ -79,7 +79,7 @@ class _KhachLauNamTabViewState extends State<KhachLauNamTabView> {
                   if (state is KhachTimMbSuccess) {
                     Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
                     Navigator.pop(context, _changed); // pop về dashboard
-                    Dialogs.showSuccessToast();
+                    Dialogs.showUpdateSuccessToast();
                   }
                   if (state is KhachTimMbFailure) {
                     Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
@@ -109,7 +109,7 @@ class _KhachLauNamTabViewState extends State<KhachLauNamTabView> {
                       if (state is KhachTimMbSuccess) {
                         Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
                         Navigator.pop(context, _changed); // pop về dashboard
-                        Dialogs.showSuccessToast();
+                        Dialogs.showUpdateSuccessToast();
                       }
                       if (state is KhachTimMbFailure) {
                         Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
@@ -137,41 +137,43 @@ class _KhachLauNamTabViewState extends State<KhachLauNamTabView> {
 
   Widget buildRow() {
     return Row(
-      children: <Widget>[
-        Wrap(
-          spacing: 60,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: radioList
+          .map(
+            (data) => Wrap(
+          spacing: 7,
           crossAxisAlignment: WrapCrossAlignment.center,
-          children: radioList
-              .map(
-                (data) => Wrap(
-                  spacing: 7,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: Radio(
-                        groupValue: radioGroup,
-                        value: data.index,
-                        activeColor: Color(0xff3FBF55),
-                        onChanged: (val) {
-                          setState(
-                            () {
-                              radioValue = data.value;
-                              radioGroup = data.index;
-                              _onChanged = true;
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    Text(data.title),
-                  ],
-                ),
-              )
-              .toList(),
+          children: <Widget>[
+            SizedBox(
+              height: 20,
+              width: 20,
+              child: Radio(
+                groupValue: radioGroup,
+                value: data.index,
+                activeColor: Color(0xff3FBF55),
+                onChanged: (val) {
+                  setState(
+                        () {
+                      radioValue = data.value;
+                      radioGroup = data.index;
+                    },
+                  );
+                },
+              ),
+            ),
+            GestureDetector(
+              onTap: (){
+                setState(() {
+                  radioValue = data.value;
+                  radioGroup = data.index;
+                });
+              },
+              child: Text(data.title),
+            ),
+          ],
         ),
-      ],
+      )
+          .toList(),
     );
   }
 }

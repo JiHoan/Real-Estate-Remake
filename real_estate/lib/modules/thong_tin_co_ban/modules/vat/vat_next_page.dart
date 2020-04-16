@@ -6,6 +6,7 @@ import 'package:real_estate/modules/thong_tin_co_ban/bloc/thong_tin_co_ban.dart'
 import 'package:real_estate/modules/thong_tin_co_ban/model/thong_tin_co_ban_model.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
 class VATNextPage extends StatefulWidget {
@@ -57,15 +58,46 @@ class VATNextPage extends StatefulWidget {
 }
 
 class _VATNextPageState extends State<VATNextPage> {
-  /*var ctlGia = new MoneyMaskedTextController(decimalSeparator: '', thousandSeparator: ',', precision: 0);
-  var ctlVAT = new MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: ',');
-  var ctlHoaHong = new MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: ',');*/
-
   var ctlGia = new MaskedTextController(mask: '000000000000');
   var ctlVAT = new MaskedTextController(mask: '000000000000');
   var ctlHoaHong = new MaskedTextController(mask: '000000000000');
 
   ThongTinCoBanBloc _thongTinCoBanBloc;
+
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      ThongTinCoBanModel _thongTinCoBanModel = ThongTinCoBanModel(
+        sdtNguoiNhan: widget.sdtNguoiNhan,
+        tenNguoiNhan: widget.tenNguoiNhan,
+        tinhTpId: widget.tinhTpId,
+        quanHuyenId: widget.quanHuyenId,
+        phuongXaId: widget.phuongXaId,
+        soNha: widget.soNha,
+        tenDuong: widget.tenDuong,
+        ngang: widget.ngang,
+        dai: widget.dai,
+        basement: widget.basement,
+        terrace: widget.terrace,
+        terraceUpgrated: widget.terraceUpgrated,
+        mezzanine: widget.mezzanine,
+        roomNumber: widget.roomNumber,
+        wcrNumber: widget.wcrNumber,
+        wccNumber: widget.wccNumber,
+        balcony: widget.balcony,
+        window: widget.window,
+        gia: double.parse(ctlGia.text),
+        floorNumber: widget.floorNumber,
+        hoaHong: double.parse(ctlHoaHong.text),
+        vat: int.parse(ctlVAT.text),
+      );
+      _thongTinCoBanBloc.add(ThongTinCoBanSave(thongTinCoBanModel: _thongTinCoBanModel)); // bloc
+    } catch (error, s) {
+      print(error);
+      print(s);
+    }
+  }
 
   @override
   void initState() {
@@ -93,60 +125,70 @@ class _VATNextPageState extends State<VATNextPage> {
           },
         ),
         actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
+          Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: (){
+                Dialogs.showBackHomeDialog(context);
+              },
+              child: Container(
+                child: Image.asset('assets/group.png'),
+              ),
+            ),
           ),
         ],
       ),
-      body: BlocListener(
-        bloc: _thongTinCoBanBloc,
-        listener: (BuildContext context, ThongTinCoBanState state){
-          print(state);
-          if(state is ThongTinCoBanSaveSuccess){
-            Navigator.of(context).popUntil((route) => route.isFirst);
-          }
-        },
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: ListView(
-                physics: BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                children: <Widget>[
-                  MyTopTitle(text: 'Giá'),
-                  MyInput(
-                    hintText: '',
-                    color: Color(0xffEBEBEB),
-                    lines: 1,
-                    controller: ctlGia,
-                    type: TextInputType.number,
-                  ),
-                  SizedBox(height: 20),
-                  MyTopTitle(text: 'Hoa hồng'),
-                  MyInput(
-                    hintText: '',
-                    color: Color(0xffEBEBEB),
-                    lines: 1,
-                    controller: ctlHoaHong,
-                    type: TextInputType.number,
-                  ),
-                  SizedBox(height: 20),
-                  MyTopTitle(text: 'VAT'),
-                  MyInput(
-                    hintText: '',
-                    color: Color(0xffEBEBEB),
-                    lines: 1,
-                    controller: ctlVAT,
-                    type: TextInputType.number,
-                  ),
-                ],
-              ),
-            ), // bottom
-            Builder(
-              builder: (context) => Padding(
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView(
+              physics: BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              children: <Widget>[
+                MyTopTitle(text: 'Giá'),
+                MyInput(
+                  hintText: '',
+                  color: Color(0xffEBEBEB),
+                  lines: 1,
+                  controller: ctlGia,
+                  type: TextInputType.number,
+                ),
+                SizedBox(height: 20),
+                MyTopTitle(text: 'Hoa hồng'),
+                MyInput(
+                  hintText: '',
+                  color: Color(0xffEBEBEB),
+                  lines: 1,
+                  controller: ctlHoaHong,
+                  type: TextInputType.number,
+                ),
+                SizedBox(height: 20),
+                MyTopTitle(text: 'VAT'),
+                MyInput(
+                  hintText: '',
+                  color: Color(0xffEBEBEB),
+                  lines: 1,
+                  controller: ctlVAT,
+                  type: TextInputType.number,
+                ),
+              ],
+            ),
+          ), // bottom
+          BlocListener(
+            bloc: _thongTinCoBanBloc,
+            listener: (context, state){
+              if(state is ThongTinCoBanSaveSuccess){
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                Dialogs.showAddSuccessToast();
+              }
+              if(state is ThongTinCoBanSaveFailure){
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                Dialogs.showFailureToast();
+              }
+            },
+            child: Builder(
+              builder: (context) =>  Padding(
                 padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
                 child: MyButton(
                   color: Color(0xff3FBF55),
@@ -154,34 +196,9 @@ class _VATNextPageState extends State<VATNextPage> {
                     'Lưu',
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                   ),
-                  event: () {
+                  event: (){
                     if (ctlGia.text != '' && ctlHoaHong.text != '' && ctlVAT.text != '') {
-                      ThongTinCoBanModel _thongTinCoBanModel = ThongTinCoBanModel(
-                        sdtNguoiNhan: widget.sdtNguoiNhan,
-                        tenNguoiNhan: widget.tenNguoiNhan,
-                        tinhTpId: widget.tinhTpId,
-                        quanHuyenId: widget.quanHuyenId,
-                        phuongXaId: widget.phuongXaId,
-                        soNha: widget.soNha,
-                        tenDuong: widget.tenDuong,
-                        ngang: widget.ngang,
-                        dai: widget.dai,
-                        basement: widget.basement,
-                        terrace: widget.terrace,
-                        terraceUpgrated: widget.terraceUpgrated,
-                        mezzanine: widget.mezzanine,
-                        roomNumber: widget.roomNumber,
-                        wcrNumber: widget.wcrNumber,
-                        wccNumber: widget.wccNumber,
-                        balcony: widget.balcony,
-                        window: widget.window,
-                        gia: double.parse(ctlGia.text),
-                        floorNumber: widget.floorNumber,
-                        hoaHong: double.parse(ctlHoaHong.text),
-                        vat: int.parse(ctlVAT.text),
-                      );
-
-                      _thongTinCoBanBloc.add(ThongTinCoBanSave(thongTinCoBanModel: _thongTinCoBanModel)); // bloc
+                      _handleSubmit(context);
                     } else {
                       Scaffold.of(context).removeCurrentSnackBar();
                       Scaffold.of(context).showSnackBar(
@@ -195,8 +212,8 @@ class _VATNextPageState extends State<VATNextPage> {
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

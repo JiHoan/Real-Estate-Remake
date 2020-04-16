@@ -69,14 +69,6 @@ class _GiaCanThueUpdatePageState extends State<GiaCanThueUpdatePage> {
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -103,7 +95,7 @@ class _GiaCanThueUpdatePageState extends State<GiaCanThueUpdatePage> {
                         height: 45,
                         child: TextFormField(
                           controller: ctlGiaMin,
-                          style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+                          style: TextStyle(color: Colors.black87),
                           keyboardType: TextInputType.number,
                           onChanged: (value) {
                             setState(() {
@@ -138,7 +130,7 @@ class _GiaCanThueUpdatePageState extends State<GiaCanThueUpdatePage> {
                         height: 45,
                         child: TextFormField(
                           controller: ctlGiaMax,
-                          style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+                          style: TextStyle(color: Colors.black87),
                           keyboardType: TextInputType.number,
                           onChanged: (value) {
                             setState(() {
@@ -170,7 +162,7 @@ class _GiaCanThueUpdatePageState extends State<GiaCanThueUpdatePage> {
                     if (state is KhachTimMbSuccess) {
                       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
                       Navigator.pop(context, _changed); // pop về dashboard
-                      Dialogs.showSuccessToast();
+                      Dialogs.showUpdateSuccessToast();
                     }
                     if (state is KhachTimMbFailure) {
                       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog

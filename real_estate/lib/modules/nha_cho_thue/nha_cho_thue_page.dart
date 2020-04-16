@@ -78,49 +78,43 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
                       child: Wrap(
                         spacing: 7,
                         crossAxisAlignment: WrapCrossAlignment.center,
+                        direction: Axis.horizontal,
                         children: <Widget>[
                           SizedBox(
-                            height: 30,
+                            height: 32,
                             width: 20,
                             child: Radio(
                               groupValue: id,
                               value: data.index,
+                              activeColor: Color(0xff3FBF55),
                               onChanged: (val) {
-                                setState(() {
-                                  radioItem = data.name;
-                                  id = data.index;
-                                });
+                                setState(
+                                      () {
+                                    radioItem = data.name;
+                                    id = data.index;
+                                    type = data.type;
+
+                                    if (data.name == 'Chưa có thông tin nâng cao') {
+                                      _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'KHONG_CO_THONG_TIN_NANG_CAO'));
+                                    } else if (data.name == 'Chưa thuê') {
+                                      _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'CHUA_THUE'));
+                                    } else if (data.name == 'Đã thuê') {
+                                      _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'DA_THUE'));
+                                    } else {
+                                      _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: 'CHUA_CALL'));
+                                    }
+                                  },
+                                );
                                 Navigator.pop(context);
                               },
                             ),
                           ),
-                          Text(data.name),
+                          Text(data.name, overflow: TextOverflow.ellipsis),
                         ],
                       ),
                     ))
                 .toList(),
           ),
-          actions: <Widget>[
-            Material(
-              color: Color(0xff3FBF55),
-              borderRadius: BorderRadius.circular(7),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                borderRadius: BorderRadius.circular(7),
-                child: Container(
-                  height: 30,
-                  width: 70,
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Hủy',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-          ],
         );
       },
     );
@@ -193,7 +187,7 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
                   onTap: () {
                     _showDialog();
                   },
-                  child: Image.asset('assets/filter.png'),
+                  child: Image.asset('assets/filter.png', height: 15),
                 ),
               ],
             ),
@@ -202,7 +196,6 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
             child: BlocBuilder(
               bloc: _nhaChoThueBloc,
               builder: (BuildContext context, NhaChoThueState state) {
-                print(state);
                 if (state is NhaChoThueLoading) {
                   return Center(
                     child: CircularProgressIndicator(),
@@ -228,7 +221,8 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
   ListView buildListNhaChoThue(NhaChoThueLoaded state) {
     return ListView.separated(
       // 1 phân trang return 10 dòng, nếu trả ít hơn 11 thì k còn dữ liệu nên tắt scroll hạn chế spam event LoadMore
-      controller: state.nhaChoThueListModel.length < 11 ? null : _scrollController,
+      controller: _scrollController,
+//      controller: state.nhaChoThueListModel.length < 11 ? null : _scrollController,
       physics: BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 15),
       itemCount: state.hasReachedMax ? state.nhaChoThueListModel.length : state.nhaChoThueListModel.length + 1,
@@ -292,7 +286,7 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
                           ],
                         ),
                         SizedBox(height: 8),
-                        Text(state.nhaChoThueListModel[index].gia.toString(), style: MyAppStyle.price),
+                        Text('${NumberFormat.currency(locale: 'vi', symbol: 'vnđ').format(state.nhaChoThueListModel[index].gia)}' , style: MyAppStyle.price1),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[

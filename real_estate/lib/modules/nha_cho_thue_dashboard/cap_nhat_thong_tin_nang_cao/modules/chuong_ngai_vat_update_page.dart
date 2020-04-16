@@ -6,6 +6,7 @@ import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_na
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
 import 'package:real_estate/utils/my_check_box.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
 class ChuongNgaiVatUpdatePage extends StatefulWidget {
@@ -58,6 +59,16 @@ class _ChuongNgaiVatUpdatePageState extends State<ChuongNgaiVatUpdatePage> {
   bool _onChanged = false;
   bool _changed = false;
 
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context, String chuongNgaiVat) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      _capNhatTtncBloc.add(UpdateChuongNgaiVat(id: widget.id, chuongNgaiVat: _isCheckedList, chuongNgaiVatKhac: chuongNgaiVat));
+    } catch (error) {
+      print(error);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -98,14 +109,6 @@ class _ChuongNgaiVatUpdatePageState extends State<ChuongNgaiVatUpdatePage> {
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -151,7 +154,13 @@ class _ChuongNgaiVatUpdatePageState extends State<ChuongNgaiVatUpdatePage> {
                   bloc: _capNhatTtncBloc,
                   listener: (context, state) {
                     if (state is UpdateSuccess) {
-                      Navigator.pop(context, _changed);
+                      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                      Navigator.pop(context, _changed); // pop về dashboard
+                      Dialogs.showUpdateSuccessToast();
+                    }
+                    if (state is UpdateFailure) {
+                      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                      Dialogs.showFailureToast();
                     }
                   },
                   child: Builder(
@@ -166,9 +175,11 @@ class _ChuongNgaiVatUpdatePageState extends State<ChuongNgaiVatUpdatePage> {
                         event: () {
                           _changed = true;
                           if(ctlChuongNgaiVatKhac.text.isEmpty){
-                            _capNhatTtncBloc.add(UpdateChuongNgaiVat(id: widget.id, chuongNgaiVat: _isCheckedList, chuongNgaiVatKhac: ' '));
+                            _handleSubmit(context, ' ');
+//                            _capNhatTtncBloc.add(UpdateChuongNgaiVat(id: widget.id, chuongNgaiVat: _isCheckedList, chuongNgaiVatKhac: ' '));
                           } else {
-                            _capNhatTtncBloc.add(UpdateChuongNgaiVat(id: widget.id, chuongNgaiVat: _isCheckedList, chuongNgaiVatKhac: ctlChuongNgaiVatKhac.text));
+                            _handleSubmit(context, ctlChuongNgaiVatKhac.text);
+//                            _capNhatTtncBloc.add(UpdateChuongNgaiVat(id: widget.id, chuongNgaiVat: _isCheckedList, chuongNgaiVatKhac: ctlChuongNgaiVatKhac.text));
                           }
                         },
                       ),
@@ -189,7 +200,7 @@ class _ChuongNgaiVatUpdatePageState extends State<ChuongNgaiVatUpdatePage> {
       children: _checkListModel.map((element) {
         final index = _checkListModel.indexOf(element);
         return ConstrainedBox(
-          constraints: BoxConstraints(minWidth: 95),
+          constraints: BoxConstraints(minWidth: 160),
           child: Wrap(
             spacing: 7,
             crossAxisAlignment: WrapCrossAlignment.center,

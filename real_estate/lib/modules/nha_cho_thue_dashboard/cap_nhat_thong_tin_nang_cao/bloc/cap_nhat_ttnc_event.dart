@@ -130,3 +130,12 @@ class RemoveHinhAnhNha extends CapNhatTtncEvent {
   @override
   List<Object> get props => [id, hinhAnhId];
 }
+
+class ExportExcel extends CapNhatTtncEvent {
+  final int id;
+
+  ExportExcel({@required this.id});
+
+  @override
+  List<Object> get props => [id];
+}

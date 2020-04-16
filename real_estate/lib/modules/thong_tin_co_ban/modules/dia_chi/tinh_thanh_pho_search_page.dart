@@ -30,13 +30,13 @@ class _TimTinhTpPageState extends State<TimTinhTpPage> {
           builder: (BuildContext context, TinhThanhPhoState state) {
             print(state);
             if (state is TinhThanhPhoLoading) {
-              return buildLoading(context);
+              return buildMainPage(context, null, 'loading');
             }
             if (state is TinhThanhPhoSuccess) {
-              return buildSuccess(context, state.tinhThanhPhoListModel);
+              return buildMainPage(context, state.tinhThanhPhoListModel, 'success');
             }
             if (state is TinhThanhPhoAutocomplete) {
-              return buildAutocomplete(context, state.tinhThanhPhoListModel);
+              return buildMainPage(context, state.tinhThanhPhoListModel, 'autocomplete');
             }
             return Center(
               child: Text('Bloc failure!!!'.toUpperCase()),
@@ -47,7 +47,7 @@ class _TimTinhTpPageState extends State<TimTinhTpPage> {
     );
   }
 
-  Column buildSuccess(BuildContext context, TinhThanhPhoListModel listModel) {
+  /*Column buildSuccess(BuildContext context, TinhThanhPhoListModel listModel) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
@@ -73,7 +73,7 @@ class _TimTinhTpPageState extends State<TimTinhTpPage> {
                     onChanged: (value) {
                       _tinhThanhPhoBloc.add(TinhThanhPhoSearch(tinhThanhPhoListModel: listModel, value: value));
                     },
-                    style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+                    style: TextStyle(color: Colors.black87),
                     decoration: InputDecoration(
                       hintText: 'Nhập tên Tỉnh cần tìm',
                       contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
@@ -121,7 +121,7 @@ class _TimTinhTpPageState extends State<TimTinhTpPage> {
                       _tinhThanhPhoBloc.add(TinhThanhPhoSearch(tinhThanhPhoListModel: listModel, value: value));
                     },
                     controller: ctlSearch,
-                    style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+                    style: TextStyle(color: Colors.black87),
                     decoration: InputDecoration(
                       hintText: 'Nhập tên Tỉnh cần tìm',
                       contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
@@ -162,9 +162,8 @@ class _TimTinhTpPageState extends State<TimTinhTpPage> {
         ),
       ],
     );
-  }
-
-  Column buildLoading(BuildContext context) {
+  }*/
+  Column buildMainPage(BuildContext context, TinhThanhPhoListModel listModel, String state) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
@@ -187,8 +186,11 @@ class _TimTinhTpPageState extends State<TimTinhTpPage> {
                 child: Container(
                   height: 45,
                   child: TextFormField(
-                    enabled: false,
-                    style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+                    enabled: state == 'loading' ? false : true,
+                    style: TextStyle(color: Colors.black87),
+                    onChanged: (value) {
+                      _tinhThanhPhoBloc.add(TinhThanhPhoSearch(tinhThanhPhoListModel: listModel, value: value));
+                    },
                     decoration: InputDecoration(
                       hintText: 'Nhập tên Tỉnh cần tìm',
                       contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
@@ -205,7 +207,32 @@ class _TimTinhTpPageState extends State<TimTinhTpPage> {
             ],
           ),
         ),
-        Text('Đang tải dữ liệu...'),
+        state == 'loading'
+            ? Text('Đang tải dữ liệu...')
+            : state == 'success'
+                ? SizedBox()
+                : Expanded(
+                    child: ListView.builder(
+                      itemCount: listModel.length,
+                      physics: BouncingScrollPhysics(),
+                      padding: EdgeInsets.only(top: 10),
+                      itemBuilder: (context, index) {
+                        return Material(
+                          color: Colors.white,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pop(context, listModel[index]);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(vertical: 5),
+                              child: Text(listModel[index].name),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
       ],
     );
   }

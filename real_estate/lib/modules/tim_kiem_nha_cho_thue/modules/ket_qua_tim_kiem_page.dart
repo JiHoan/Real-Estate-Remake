@@ -121,7 +121,7 @@ class _KetQuaTimKiemPageState extends State<KetQuaTimKiemPage> {
                     ],
                   ),
                   SizedBox(height: 8),
-                  Text(list[index].gia.toString(), style: MyAppStyle.price),
+                  Text('${NumberFormat.currency(locale: 'vi', symbol: 'vnđ').format(list[index].gia)}' , style: MyAppStyle.price1),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[

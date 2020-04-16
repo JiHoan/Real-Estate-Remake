@@ -4,7 +4,6 @@ import 'package:real_estate/modules/thong_tin_co_ban/model/thong_tin_co_ban_mode
 
 class ThongTinCoBanEvent extends Equatable{
   @override
-  // TODO: implement props
   List<Object> get props => null;
 }
 

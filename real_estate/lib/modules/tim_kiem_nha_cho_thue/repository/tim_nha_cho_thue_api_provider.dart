@@ -22,24 +22,6 @@ class TimNhaChoThueApiProvider extends ApiProvider {
     String thoatHiem,
     String huongNha,
   }) async {
-    print(quan);
-    print(phuong);
-    print(duong);
-    print(dienTich);
-    print(min);
-    print(max);
-    print(thanhPho);
-
-    print(soLau);
-    print(lung);
-    print(ham);
-    print(sanThuong);
-    print(soPhong);
-    print(soWCR);
-    print(soWCC);
-    print(thangMay);
-    print(thoatHiem);
-    print(huongNha);
 
     FormData _formData = FormData.fromMap({
       'type': 'NHA_CHO_THUE',

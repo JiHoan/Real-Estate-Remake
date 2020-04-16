@@ -20,7 +20,7 @@ class _MyInputState extends State<MyInput> {
     return Container(
       height: 45,
       child: TextFormField(
-        style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+        style: TextStyle(color: Colors.black87),
         maxLines: widget.lines,
         controller: widget.controller,
         keyboardType: widget.type,

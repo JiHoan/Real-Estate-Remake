@@ -126,7 +126,7 @@ class NhaChoThueDetailModel extends Equatable {
     return NhaChoThueDetailModel(
       id: json['id'],
       hienTrang: json['hien_trang'] == null ? null : CommonModel.fromJson(json['hien_trang']),
-      ghiChu: json['ghi_chu'] != null ? json['ghi_chu'] : 'Chưa có ghi chú',
+      ghiChu: json['ghi_chu'],
       thongTinLienHe: json['chu_nha'] == null ? null : ThongTinLienHeModel.fromJson(json['chu_nha']),
       ngang: double.tryParse(json['chieu_ngang_bao_nhieu'].toString()) ?? null,
       dai: double.tryParse(json['chieu_dai_bao_nhieu'].toString()) ?? null,

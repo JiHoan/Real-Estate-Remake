@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:real_estate/utils/button.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_radio_button.dart';
 import 'package:real_estate/utils/my_text.dart';
 
@@ -40,11 +41,16 @@ class _TinhTrangNextPageState extends State<TinhTrangNextPage> {
           },
         ),
         actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
+          Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: (){
+                Dialogs.showBackHomeDialog(context);
+              },
+              child: Container(
+                child: Image.asset('assets/group.png'),
+              ),
+            ),
           ),
         ],
       ),
@@ -56,7 +62,7 @@ class _TinhTrangNextPageState extends State<TinhTrangNextPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               children: <Widget>[
                 // body
-                MyTopTitle(text: 'Mô tả'), buildRowMoTa(), // bottom
+                MyTopTitle(text: 'Mô tả'), buildMoTa(), // bottom
               ],
             ),
           ),
@@ -80,40 +86,43 @@ class _TinhTrangNextPageState extends State<TinhTrangNextPage> {
     );
   }
 
-  Wrap buildRowMoTa() {
+  Wrap buildMoTa() {
     return Wrap(
-      spacing: 80,
+      spacing: 70,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: widget.rdMoTaList
           .map(
-            (data) => ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: 80,
-              ),
-              child: Wrap(
-                spacing: 7,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: Radio(
-                      groupValue: rdMoTaGroup,
-                      value: data.index,
-                      activeColor: Color(0xff3FBF55),
-                      onChanged: (val) {
-                        setState(
-                          () {
-                            rdMoTaValue = data.value;
-                            rdMoTaGroup = data.index;
-                          },
-                        );
-                      },
-                    ),
+            (data) => Wrap(
+              spacing: 7,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: Radio(
+                    groupValue: rdMoTaGroup,
+                    value: data.index,
+                    activeColor: Color(0xff3FBF55),
+                    onChanged: (val) {
+                      setState(
+                        () {
+                          rdMoTaValue = data.value;
+                          rdMoTaGroup = data.index;
+                        },
+                      );
+                    },
                   ),
-                  Text(data.title),
-                ],
-              ),
+                ),
+                GestureDetector(
+                  onTap: (){
+                    setState(() {
+                      rdMoTaValue = data.value;
+                      rdMoTaGroup = data.index;
+                    });
+                  },
+                  child: Text(data.title)
+                ),
+              ],
             ),
           )
           .toList(),

@@ -5,6 +5,7 @@ import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_nang_cao/bloc/cap_nhat_ttnc.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_radio_button.dart';
 import 'package:real_estate/utils/my_text.dart';
 
@@ -61,6 +62,28 @@ class _ThongTinNguoiChoThueUpdatePageState extends State<ThongTinNguoiChoThueUpd
 
   TextEditingController ctlPhiMoiGioi = TextEditingController();
 
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context, String type) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      if(rdNguoiChoThueValue == type){
+        _capNhatTtncBloc.add(UpdateThongTinNguoiChoThue(
+          id: widget.id,
+          nguoiChoThue: rdNguoiChoThueValue,
+          phiMoiGioi: 0,
+          nhaTheChap: rdTheChapValue));
+      } else{
+        _capNhatTtncBloc.add(UpdateThongTinNguoiChoThue(
+          id: widget.id,
+          nguoiChoThue: rdNguoiChoThueValue,
+          phiMoiGioi: int.tryParse(ctlPhiMoiGioi.text),
+          nhaTheChap: rdTheChapValue));
+      }
+    } catch (error) {
+      print(error);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -105,14 +128,6 @@ class _ThongTinNguoiChoThueUpdatePageState extends State<ThongTinNguoiChoThueUpd
             Navigator.pop(context);
           },
         ),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/group.png'),
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -163,7 +178,13 @@ class _ThongTinNguoiChoThueUpdatePageState extends State<ThongTinNguoiChoThueUpd
                   bloc: _capNhatTtncBloc,
                   listener: (context, state) {
                     if (state is UpdateSuccess) {
-                      Navigator.pop(context, _changed);
+                      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                      Navigator.pop(context, _changed); // pop về dashboard
+                      Dialogs.showUpdateSuccessToast();
+                    }
+                    if (state is UpdateFailure) {
+                      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                      Dialogs.showFailureToast();
                     }
                   },
                   child: Builder(
@@ -178,7 +199,8 @@ class _ThongTinNguoiChoThueUpdatePageState extends State<ThongTinNguoiChoThueUpd
                         event: () {
                           if (ctlPhiMoiGioi.text != '') {
                             _changed = true;
-                            if(rdNguoiChoThueValue == 'CHU_NHA'){
+                            _handleSubmit(context, 'CHU_NHA');
+                            /*if(rdNguoiChoThueValue == 'CHU_NHA'){
                               _capNhatTtncBloc.add(UpdateThongTinNguoiChoThue(
                                   id: widget.id,
                                   nguoiChoThue: rdNguoiChoThueValue,
@@ -190,7 +212,7 @@ class _ThongTinNguoiChoThueUpdatePageState extends State<ThongTinNguoiChoThueUpd
                                   nguoiChoThue: rdNguoiChoThueValue,
                                   phiMoiGioi: int.tryParse(ctlPhiMoiGioi.text),
                                   nhaTheChap: rdTheChapValue));
-                            }
+                            }*/
                           } else {
                             Scaffold.of(context).removeCurrentSnackBar();
                             Scaffold.of(context).showSnackBar(
