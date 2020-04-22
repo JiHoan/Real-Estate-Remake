@@ -7,6 +7,7 @@ import 'package:real_estate/modules/authentication/bloc/authentication.dart';
 import 'package:real_estate/modules/authentication/repository/authentication_repository.dart';
 import 'package:real_estate/modules/home/home_page.dart';
 import 'package:real_estate/modules/login/login_page.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 
 class MyApplication extends StatefulWidget {
   final AuthenticationRepository authenticationRepository;

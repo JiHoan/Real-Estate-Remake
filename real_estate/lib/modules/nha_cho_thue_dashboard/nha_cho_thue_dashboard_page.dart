@@ -1,12 +1,8 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:real_estate/modules/lo_trinh/bloc/lo_trinh.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_nang_cao/bloc/cap_nhat_ttnc.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_nang_cao/bloc/cap_nhat_ttnc_bloc.dart';
@@ -37,8 +33,10 @@ import 'cap_nhat_thong_tin_nang_cao/modules/vi_tri_cau_thang_update_page.dart';
 
 class NhaChoThueDashboardPage extends StatefulWidget {
   final int nhaChoThueModelId;
+  final String type;
+  final String diaChi;
 
-  const NhaChoThueDashboardPage({Key key, @required this.nhaChoThueModelId}) : super(key: key);
+  const NhaChoThueDashboardPage({Key key, @required this.nhaChoThueModelId, @required this.type, @required this.diaChi}) : super(key: key);
 
   @override
   _NhaChoThueDashboardPageState createState() => _NhaChoThueDashboardPageState();
@@ -51,6 +49,7 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
   CapNhatTtncBloc _capNhatTtncBloc;
 
   bool _isUpdateHienTrang = false;
+  bool _isUpdateLienLacChuNha = false;
 
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   Future<void> _handleSubmit(BuildContext context) async {
@@ -61,6 +60,33 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
       print(error);
     }
   }
+
+  // page controller
+  int _numPages;
+  final PageController _pageController = PageController(initialPage: 0);
+  int _currentPage = 0;
+  List<Widget> _buildPageIndicator() {
+    List<Widget> list = [];
+    for (int i = 0; i < _numPages; i++) {
+      list.add(i == _currentPage ? _indicator(true) : _indicator(false));
+    }
+    return list;
+  }
+
+  Widget _indicator(bool isActive) {
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 150),
+      margin: EdgeInsets.symmetric(horizontal: 2),
+      height: 2,
+      width: isActive ? 16 : 10,
+      decoration: BoxDecoration(
+        color: isActive ? Color(0xff41BC00) : Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+    );
+  }
+
+  // page controller
 
   @override
   void initState() {
@@ -83,15 +109,25 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
   }
 
   Future<bool> _willPopCallback() async {
-    Navigator.pop(context, _isUpdateHienTrang);
+    Navigator.pop(
+        context, {'isUpdateHienTrang': _isUpdateHienTrang, 'isUpdateLienLacChuNha': _isUpdateLienLacChuNha, 'type': widget.type});
+//    Navigator.pop(context, _isUpdateHienTrang);
     return false;
   }
 
-  _launchURL(String url) async {
+  _launchBrowser(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
       throw 'Could not launch $url';
+    }
+  }
+
+  _launchMap() async {
+    try{
+      MapsLauncher.launchQuery(widget.diaChi);
+    } catch(e, s){
+      throw 'Could not launch map';
     }
   }
 
@@ -117,6 +153,7 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                 );
               }
               if (state is FetchLoaded) {
+                _numPages = state.model.hinhAnhNha.length;
                 return buildDanhSachThongTin(context, state);
               }
               return Container();
@@ -130,118 +167,7 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
   Column buildDanhSachThongTin(BuildContext context, FetchLoaded state) {
     return Column(
       children: <Widget>[
-        Stack(
-          children: <Widget>[
-            Container(
-                color: const Color(0xffE9E9E9),
-                height: 170,
-                width: double.infinity,
-                child: state.model.hinhAnhNha.isEmpty
-                    ? Image.asset(
-                        'assets/no-image.jpg',
-                        fit: BoxFit.contain,
-                      )
-                    : Swiper(
-                        itemCount: state.model.hinhAnhNha.length,
-                        pagination: state.model.hinhAnhNha.length > 1
-                            ? SwiperPagination(
-                                builder: SwiperPagination.dots,
-                              )
-                            : SwiperCustomPagination(builder: (BuildContext context, SwiperPluginConfig config) {
-                                return SizedBox();
-                              }),
-                        loop: state.model.hinhAnhNha.length > 1 ? true : false,
-                        autoplay: state.model.hinhAnhNha.length > 1 ? true : false,
-                        autoplayDelay: 5000,
-                        itemBuilder: (BuildContext context, int index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HinhAnhNhaChoThueUpdatePage(
-                                    id: widget.nhaChoThueModelId,
-                                    listHinhAnh: state.model.hinhAnhNha,
-                                  ),
-                                ),
-                              ).then(
-                                (value) {
-                                  if (value == true) {
-                                    _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
-                                  }
-                                },
-                              );
-                            },
-                            child: Image.network(
-                              'http://nhadat.imark.vn/' + state.model.hinhAnhNha[index].url,
-                              height: 60,
-                              width: 60,
-                              fit: BoxFit.cover,
-                            ),
-                          );
-                        },
-                      )),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      size: 20,
-                      color: Color(0xffF8A200),
-                    ),
-                    onPressed: () {
-                      _willPopCallback();
-                    },
-                  ),
-                  Text('Nhà cho thuê'.toUpperCase(), style: TextStyle(fontSize: 16, color: Color(0xffF8A200))),
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.transparent,
-                    ),
-                    onPressed: null,
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              right: 15,
-              bottom: 15,
-              child: Material(
-                color: Color(0xff41BC00),
-                borderRadius: BorderRadius.circular(20),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => UploadHinhAnhUpdatePage(
-                          id: widget.nhaChoThueModelId,
-                        ),
-                      ),
-                    ).then(
-                      (value) {
-                        if (value == true) {
-                          _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
-                        }
-                      },
-                    );
-                  },
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    padding: const EdgeInsets.all(8),
-                    child: Image.asset('assets/camera.png'),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+        buildAppbarImage(state, context),
         Padding(
           padding: const EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 15),
           child: Row(
@@ -252,58 +178,71 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                 spacing: 7,
                 children: <Widget>[
                   Image.asset('assets/location.png', height: 15),
-                  Text(
-                    'Xem trên map',
-                    style: TextStyle(color: Color(0xff3FBF55), fontSize: 16, fontWeight: FontWeight.w600),
+                  GestureDetector(
+                    onTap: (){
+                      _launchMap();
+                    },
+                    child: Text(
+                      'Xem trên map',
+                      style: TextStyle(color: Color(0xff3FBF55), fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ],
               ),
               state.model.loTrinh == 'KHONG_CO_TRONG_LO_TRINH'
-                  ? BlocBuilder(
+                  ? BlocListener(
                       bloc: _loTrinhBloc,
-                      builder: (context, state) {
-                        print(state);
-                        if (state is LoTrinhLoading) {
-                          /*return CircularProgressIndicator(
-                            strokeWidth: 1,
-                          );*/
-                        }
+                      listener: (context, state) {
                         if (state is LoTrinhSuccess) {
-                          return Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            spacing: 7,
-                            children: <Widget>[
-                              Image.asset('assets/more.png', height: 15),
-                              Text(
-                                'Đã thêm vào lộ trình',
-                                style: TextStyle(color: Color(0xff3FBF55), fontSize: 16, fontWeight: FontWeight.w600),
-                              ),
-                            ],
-                          );
+                          Dialogs.showAddSuccessToast();
                         }
-                        return GestureDetector(
-                          onTap: () {
-                            _loTrinhBloc.add(ThemLoTrinh(id: widget.nhaChoThueModelId));
-                          },
-                          child: Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            spacing: 7,
-                            children: <Widget>[
-                              Image.asset('assets/more.png', height: 15),
-                              Text(
-                                'Thêm vào lộ trình',
-                                style: TextStyle(color: Color(0xff3FBF55), fontSize: 16, fontWeight: FontWeight.w600),
-                              ),
-                            ],
-                          ),
-                        );
                       },
+                      child: BlocBuilder(
+                        bloc: _loTrinhBloc,
+                        builder: (context, state) {
+                          print(state);
+                          if (state is LoTrinhLoading) {
+                            /*return CircularProgressIndicator(
+                              strokeWidth: 1,
+                            );*/
+                          }
+                          if (state is LoTrinhSuccess) {
+                            return Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 7,
+                              children: <Widget>[
+                                Image.asset('assets/tick.png', height: 15),
+                                Text(
+                                  'Đã thêm vào lộ trình',
+                                  style: TextStyle(color: Color(0xff3FBF55), fontSize: 16, fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            );
+                          }
+                          return GestureDetector(
+                            onTap: () {
+                              _loTrinhBloc.add(ThemLoTrinh(id: widget.nhaChoThueModelId));
+                            },
+                            child: Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 7,
+                              children: <Widget>[
+                                Image.asset('assets/more.png', height: 15),
+                                Text(
+                                  'Thêm vào lộ trình',
+                                  style: TextStyle(color: Color(0xff3FBF55), fontSize: 16, fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     )
                   : Wrap(
                       crossAxisAlignment: WrapCrossAlignment.center,
                       spacing: 7,
                       children: <Widget>[
-                        Image.asset('assets/more.png'),
+                        Image.asset('assets/tick.png', height: 15),
                         Text(
                           'Đã thêm vào lộ trình',
                           style: TextStyle(color: Color(0xff3FBF55), fontSize: 16, fontWeight: FontWeight.w600),
@@ -336,38 +275,38 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                           nguoiThue: state.model.nguoiThue,
                           list: state.model.hienTrang.value == 'KHONG_CO_THONG_TIN_NANG_CAO'
                               ? [
-                            MyRadioList(
-                              index: 4,
-                              title: 'Chưa có thông tin nâng cao',
-                              value: 'KHONG_CO_THONG_TIN_NANG_CAO',
-                            ),
-                            MyRadioList(
-                              index: 2,
-                              title: 'Đã có thông tin nâng cao (chưa thuê)',
-                              value: 'CHUA_THUE',
-                            ),
-                            MyRadioList(
-                              index: 3,
-                              title: 'Đã thuê',
-                              value: 'DA_THUE',
-                            ),
-                          ]
+                                  MyRadioList(
+                                    index: 4,
+                                    title: 'Chưa có thông tin nâng cao',
+                                    value: 'KHONG_CO_THONG_TIN_NANG_CAO',
+                                  ),
+                                  MyRadioList(
+                                    index: 2,
+                                    title: 'Đã có thông tin nâng cao (chưa thuê)',
+                                    value: 'CHUA_THUE',
+                                  ),
+                                  MyRadioList(
+                                    index: 3,
+                                    title: 'Đã thuê',
+                                    value: 'DA_THUE',
+                                  ),
+                                ]
                               : [
-                            MyRadioList(
-                              index: 2,
-                              title: 'Đã có thông tin nâng cao (chưa thuê)',
-                              value: 'CHUA_THUE',
-                            ),
-                            MyRadioList(
-                              index: 3,
-                              title: 'Đã thuê',
-                              value: 'DA_THUE',
-                            ),
-                          ],
+                                  MyRadioList(
+                                    index: 2,
+                                    title: 'Đã có thông tin nâng cao (chưa thuê)',
+                                    value: 'CHUA_THUE',
+                                  ),
+                                  MyRadioList(
+                                    index: 3,
+                                    title: 'Đã thuê',
+                                    value: 'DA_THUE',
+                                  ),
+                                ],
                         ),
                       ),
                     ).then(
-                          (value) {
+                      (value) {
                         if (value == true) {
                           _isUpdateHienTrang = true;
 
@@ -465,9 +404,16 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                 color: Colors.white,
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> KiemTraLienLac(id: widget.nhaChoThueModelId, phone: state.model.thongTinLienHe.phone,))).then(
-                          (value) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => KiemTraLienLac(
+                                  id: widget.nhaChoThueModelId,
+                                  phone: state.model.thongTinLienHe.phone,
+                                ))).then(
+                      (value) {
                         if (value == true) {
+                          _isUpdateLienLacChuNha = true;
                           _callLogsBloc.add(GetCallLogs(id: widget.nhaChoThueModelId));
                         }
                       },
@@ -482,15 +428,15 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                         Expanded(
                           child: BlocBuilder(
                             bloc: _callLogsBloc,
-                            builder: (context, state){
-                              if (state is CallLogsLoading){
+                            builder: (context, state) {
+                              if (state is CallLogsLoading) {
                                 return Text(
                                   'Đang cập nhật',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                   overflow: TextOverflow.ellipsis,
                                 );
                               }
-                              if (state is CallLogsLoaded){
+                              if (state is CallLogsLoaded) {
                                 int lastIndex = state.callLogsListModel.length - 1;
                                 return Text(
                                   '(' + DateFormat("dd/MM/yyyy hh:mm").format(state.callLogsListModel[lastIndex].createdAt) + ')',
@@ -762,7 +708,7 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                 bloc: _capNhatTtncBloc,
                 listener: (context, state) async {
                   print(state);
-                  if(state is DownloadSuccess){
+                  if (state is DownloadSuccess) {
                     Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
                     Fluttertoast.showToast(
                       msg: "Quá trình tải xuống tập tin excel.",
@@ -773,9 +719,9 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                       textColor: Colors.white,
                       fontSize: 16.0,
                     );
-                    _launchURL(state.url);
+                    _launchBrowser(state.url);
                   }
-                  if(state is DownloadFailure){
+                  if (state is DownloadFailure) {
                     Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
                     Fluttertoast.showToast(
                       msg: "Tải xuống thất bại.",
@@ -822,6 +768,124 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                 ),
               ),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Stack buildAppbarImage(FetchLoaded state, BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Container(
+            color: const Color(0xffE9E9E9),
+            height: 170,
+            width: double.infinity,
+            child: state.model.hinhAnhNha.isEmpty
+                ? Image.asset(
+                    'assets/no-image.jpg',
+                    fit: BoxFit.contain,
+                  )
+                : PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: (int page) {
+                      setState(() {
+                        _currentPage = page;
+                      });
+                    },
+                    itemBuilder: (context, position) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HinhAnhNhaChoThueUpdatePage(
+                                id: widget.nhaChoThueModelId,
+                                listHinhAnh: state.model.hinhAnhNha,
+                              ),
+                            ),
+                          ).then(
+                            (value) {
+                              if (value == true) {
+                                _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
+                              }
+                            },
+                          );
+                        },
+                        child: Image.network(
+                          'http://nhadat.imark.vn/' + state.model.hinhAnhNha[position].url,
+                          height: 60,
+                          width: 60,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
+                    itemCount: state.model.hinhAnhNha.length, // Can be null
+                  )),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  size: 20,
+                  color: Color(0xffF8A200),
+                ),
+                onPressed: () {
+                  _willPopCallback();
+                },
+              ),
+              Text('Nhà cho thuê'.toUpperCase(), style: TextStyle(fontSize: 16, color: Color(0xffF8A200))),
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Colors.transparent,
+                ),
+                onPressed: null,
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          right: 15,
+          bottom: 15,
+          child: Material(
+            color: Color(0xff41BC00),
+            borderRadius: BorderRadius.circular(20),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UploadHinhAnhUpdatePage(
+                      id: widget.nhaChoThueModelId,
+                    ),
+                  ),
+                ).then(
+                  (value) {
+                    if (value == true) {
+                      _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
+                    }
+                  },
+                );
+              },
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                height: 40,
+                width: 40,
+                padding: const EdgeInsets.all(8),
+                child: Image.asset('assets/camera.png'),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 10, left: 10, right: 10,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: _buildPageIndicator(),
           ),
         ),
       ],

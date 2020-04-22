@@ -11,6 +11,9 @@ class LoTrinhInitial extends LoTrinhState {}
 class LoTrinhLoading extends LoTrinhState {}
 
 class LoTrinhEmpty extends LoTrinhState {
+  final String type;
+
+  LoTrinhEmpty({this.type});
 }
 
 class LoTrinhFailure extends LoTrinhState {
@@ -24,8 +27,9 @@ class LoTrinhFailure extends LoTrinhState {
 
 class LoTrinhSuccess extends LoTrinhState {
   final LoTrinhListModel listModel;
+  final String type;
 
-  LoTrinhSuccess({this.listModel});
+  LoTrinhSuccess({this.listModel, this.type});
 
   @override
   List<Object> get props => [listModel];

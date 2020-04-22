@@ -38,3 +38,4 @@ class QuanHuyenSuccess extends TinhThanhPhoState {
   List<Object> get props => [quanHuyenListModel];
 }
 
+class QuanHuyenLoading extends TinhThanhPhoState {}

@@ -45,6 +45,8 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
   final _scrollController = ScrollController();
   final _scrollThreshold = 0.0;
 
+  int count = 0;
+
   void _showDialog() {
     showDialog(
       context: context,
@@ -75,10 +77,7 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
                         );
                         Navigator.pop(context);
                       },
-                      child: Wrap(
-                        spacing: 7,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        direction: Axis.horizontal,
+                      child: Row(
                         children: <Widget>[
                           SizedBox(
                             height: 32,
@@ -109,7 +108,8 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
                               },
                             ),
                           ),
-                          Text(data.name, overflow: TextOverflow.ellipsis),
+                          SizedBox(width: 7),
+                          Expanded(child: Text(data.name, overflow: TextOverflow.ellipsis)),
                         ],
                       ),
                     ))
@@ -125,7 +125,12 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
     final currentScroll = _scrollController.position.pixels;
 
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _nhaChoThueBloc.add(LoadMoreDanhSachNhaChoThue(type: type));
+      Future.delayed(
+        const Duration(seconds: 1),
+        (){
+          _nhaChoThueBloc.add(LoadMoreDanhSachNhaChoThue(type: type));
+        },
+      );
     }
   }
 
@@ -168,11 +173,12 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
                 BlocBuilder(
                   bloc: _nhaChoThueBloc,
                   builder: (context, state){
+                    print(state);
                     if(state is NhaChoThueLoaded){
-                      final length = state.nhaChoThueListModel.length;
-                      return Text('Kết quả: $length');
+                      count = state.count;
+                      return Text('Kết quả: $count');
                     }
-                    return Text('Kết quả: 0');
+                    return Text('Kết quả: ');
                   },
                 ),
                 Spacer(),
@@ -220,11 +226,10 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
 
   ListView buildListNhaChoThue(NhaChoThueLoaded state) {
     return ListView.separated(
-      // 1 phân trang return 10 dòng, nếu trả ít hơn 11 thì k còn dữ liệu nên tắt scroll hạn chế spam event LoadMore
       controller: _scrollController,
-//      controller: state.nhaChoThueListModel.length < 11 ? null : _scrollController,
       physics: BouncingScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 10),
+//      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       itemCount: state.hasReachedMax ? state.nhaChoThueListModel.length : state.nhaChoThueListModel.length + 1,
       separatorBuilder: (BuildContext context, int index) {
         return SizedBox(
@@ -244,13 +249,20 @@ class _NhaChoThuePageState extends State<NhaChoThuePage> {
                       MaterialPageRoute(
                         builder: (context) => NhaChoThueDashboardPage(
                           nhaChoThueModelId: state.nhaChoThueListModel[index].id,
+                          type: type,
+                          diaChi: state.nhaChoThueListModel[index].diaChi,
                         ),
                       ),
                     ).then(
                       (value) {
-                        if (value == true) {
+                        print(value['isUpdateHienTrang']);
+                        if (value['isUpdateHienTrang'] == true) {
                           _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: type));
                         }
+                        if (value['isUpdateLienLacChuNha'] == true && value['type'] == 'CHUA_CALL' ) {
+                          _nhaChoThueBloc.add(FetchDanhSachNhaChoThue(type: type));
+                        }
+
                       },
                     );
                   },

@@ -53,6 +53,33 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
     return false;
   }
 
+  // page controller
+  int _numPages;
+  final PageController _pageController = PageController(initialPage: 0);
+  int _currentPage = 0;
+  List<Widget> _buildPageIndicator() {
+    List<Widget> list = [];
+    for (int i = 0; i < _numPages; i++) {
+      list.add(i == _currentPage ? _indicator(true) : _indicator(false));
+    }
+    return list;
+  }
+
+  Widget _indicator(bool isActive) {
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 150),
+      margin: EdgeInsets.symmetric(horizontal: 2),
+      height: 2,
+      width: isActive ? 16 : 10,
+      decoration: BoxDecoration(
+        color: isActive ? Color(0xff41BC00) : Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+    );
+  }
+
+  // page controller
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -76,6 +103,7 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
               }
               if (state is DetailKhachTimMbLoaded) {
                 DetailKtmbModel model = state.model;
+                _numPages = state.model.hinhAnh.length;
                 return _buildDanhSachChiTiet(context, model);
               }
               return Container();
@@ -137,25 +165,12 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
                     padding: const EdgeInsets.only(left: 15, right: 15),
                     child: Row(
                       children: <Widget>[
+                        Text('Tình trạng: ', style: MyAppStyle.text),
                         Expanded(
-                          child: RichText(
+                          child: Text(
+                            model.tinhTrang.value == 'CAN_GAP' ? 'Cần gấp' : 'Bình thường',
+                            style: TextStyle(color: Color(0xffA00000), fontWeight: FontWeight.bold),
                             overflow: TextOverflow.ellipsis,
-                            text: TextSpan(
-                              text: 'Tình trạng: ',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black87,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: model.tinhTrang.value == 'CAN_GAP' ? 'Cần gấp' : 'Bình thường',
-                                  style: TextStyle(
-                                    color: Color(0xffA00000),
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                )
-                              ],
-                            ),
                           ),
                         ),
                         const Icon(
@@ -366,19 +381,14 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
                     'assets/no-image.png',
                     fit: BoxFit.contain,
                   )
-                : Swiper(
-                    itemCount: model.hinhAnh.length,
-                    pagination: model.hinhAnh.length > 1
-                        ? SwiperPagination(
-                            builder: SwiperPagination.dots,
-                          )
-                        : SwiperCustomPagination(builder: (BuildContext context, SwiperPluginConfig config) {
-                            return SizedBox();
-                          }),
-                    loop: model.hinhAnh.length > 1 ? true : false,
-                    autoplay: model.hinhAnh.length > 1 ? true : false,
-                    autoplayDelay: 5000,
-                    itemBuilder: (BuildContext context, int index) {
+                : PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: (int page) {
+                      setState(() {
+                        _currentPage = page;
+                      });
+                    },
+                    itemBuilder: (context, position) {
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -398,13 +408,14 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
                           );
                         },
                         child: Image.network(
-                          'http://nhadat.imark.vn/' + model.hinhAnh[index].url,
+                          'http://nhadat.imark.vn/' + model.hinhAnh[position].url,
                           height: 60,
                           width: 60,
                           fit: BoxFit.cover,
                         ),
                       );
                     },
+                    itemCount: model.hinhAnh.length, // Can be null
                   )),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -463,6 +474,13 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
                 child: Image.asset('assets/camera.png'),
               ),
             ),
+          ),
+        ),
+        Positioned(
+          bottom: 10, left: 10, right: 10,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: _buildPageIndicator(),
           ),
         ),
       ],

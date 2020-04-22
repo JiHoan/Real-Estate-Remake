@@ -81,7 +81,7 @@ class _KiemTraLienLacState extends State<KiemTraLienLac> {
         actions: <Widget>[
           FloatingActionButton(
             onPressed: () {
-              launch("tel://$phoneNumber");
+              launch("tel:$phoneNumber");
 //              launch("tel:$phoneNumber");
             },
             elevation: 0.0,
@@ -96,36 +96,33 @@ class _KiemTraLienLacState extends State<KiemTraLienLac> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             MyTopTitle(text: 'Mô tả'),
-            SizedBox(
-              height: 20,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: list.map((element){
-                  return Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: 20,
-                        child: Radio(
-                          groupValue: rdGroup,
-                          value: element.index,
-                          activeColor: Color(0xff3FBF55),
-                          onChanged: (val) {
-                            setState(
-                                  () {
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              children: list.map((element){
+                return Row(
+                  children: <Widget>[
+                    SizedBox(
+                      width: 20,
+                      child: Radio(
+                        groupValue: rdGroup,
+                        value: element.index,
+                        activeColor: Color(0xff3FBF55),
+                        onChanged: (val) {
+                          setState(
+                                () {
 //                              _onChanged = true;
-                                rdValue = element.value;
-                                rdGroup = element.index;
-                              },
-                            );
-                          },
-                        ),
+                              rdValue = element.value;
+                              rdGroup = element.index;
+                            },
+                          );
+                        },
                       ),
-                      SizedBox(width: 7),
-                      Text(element.title),
-                    ],
-                  );
-                }).toList(),
-              ),
+                    ),
+                    SizedBox(width: 7),
+                    Expanded(child: Text(element.title, overflow: TextOverflow.ellipsis)),
+                  ],
+                );
+              }).toList(),
             ),
             SizedBox(height: 20),
             MyTopTitle(text: 'Ghi chú'),

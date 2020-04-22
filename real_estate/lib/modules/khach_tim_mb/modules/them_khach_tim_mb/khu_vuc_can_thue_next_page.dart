@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/modules/dia_chi/bloc/dia_chi.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/modules/dia_chi/model/tinh_thanh_pho_model.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/modules/dia_chi/tinh_thanh_pho_search_page.dart';
@@ -131,9 +132,25 @@ class _KhuVucCanThueNextPageState extends State<KhuVucCanThueNextPage> {
                   child: BlocBuilder(
                     bloc: _tinhThanhPhoBloc,
                     builder: (BuildContext context, TinhThanhPhoState state) {
-                      print(state);
                       if (state is QuanHuyenSuccess && _tinhTpModel != null) {
                         return buildQuanHuyenSuccess(state);
+                      }
+                      if (state is QuanHuyenLoading) {
+                        return Container(
+                          height: 45,
+                          padding: const EdgeInsets.only(left: 15, right: 15),
+                          decoration: BoxDecoration(
+                            color: Color(0xffEBEBEB),
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              SpinKitThreeBounce(color: Colors.black87, size: 15),
+                              Spacer(),
+                              Icon(Icons.arrow_drop_down),
+                            ],
+                          ),
+                        );
                       }
                       return Material(
                         color: Color(0xffEBEBEB),
@@ -178,6 +195,23 @@ class _KhuVucCanThueNextPageState extends State<KhuVucCanThueNextPage> {
                       print(state);
                       if (state is PhuongXaSuccess && _tinhTpModel != null) {
                         return buildPhuongXaSuccess(state);
+                      }
+                      if (state is PhuongXaLoading) {
+                        return Container(
+                          height: 45,
+                          padding: const EdgeInsets.only(left: 15, right: 15),
+                          decoration: BoxDecoration(
+                            color: Color(0xffEBEBEB),
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              SpinKitThreeBounce(color: Colors.black87, size: 15),
+                              Spacer(),
+                              Icon(Icons.arrow_drop_down),
+                            ],
+                          ),
+                        );
                       }
                       if (state is PhuongXaFailure) {
                         return Material(
@@ -236,11 +270,23 @@ class _KhuVucCanThueNextPageState extends State<KhuVucCanThueNextPage> {
                 ),
                 SizedBox(height: 20),
                 MyTopTitle(text: 'Tên đường'),
-                MyInput(
-                  hintText: '',
-                  color: Color(0xffEBEBEB),
-                  lines: 1,
-                  controller: ctlTenDuong,
+                Container(
+                  height: 45,
+                  child: TextFormField(
+                    textCapitalization: TextCapitalization.words,
+                    style: TextStyle(color: Colors.black87),
+                    controller: ctlTenDuong,
+                    toolbarOptions: ToolbarOptions(cut: false, copy: true, paste: true, selectAll: true),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                      filled: true,
+                      fillColor: Color(0xffEBEBEB),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

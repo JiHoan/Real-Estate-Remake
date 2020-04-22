@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MyInput extends StatefulWidget {
   final String hintText;
@@ -8,7 +9,7 @@ class MyInput extends StatefulWidget {
   final TextInputType type;
   final Function onChanged;
 
-  MyInput({@required this.hintText, @required this.color, this.lines, this.controller, this.type, this.onChanged});
+  MyInput({this.hintText, @required this.color, this.lines, @required this.controller, this.type, this.onChanged});
 
   @override
   _MyInputState createState() => _MyInputState();
@@ -25,6 +26,8 @@ class _MyInputState extends State<MyInput> {
         controller: widget.controller,
         keyboardType: widget.type,
         onChanged: widget.onChanged,
+        textCapitalization: TextCapitalization.sentences,
+        toolbarOptions: widget.type == TextInputType.number ? ToolbarOptions(cut: false, copy: true, paste: false, selectAll: true) : ToolbarOptions(cut: false, copy: true, paste: true, selectAll: true),
         decoration: InputDecoration(
           hintText: widget.hintText,
           contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
@@ -73,7 +76,7 @@ class _MyDropBoxState extends State<MyDropBox> {
         /*icon: Icon(Icons.arrow_downward),
                 iconSize: 24,
                 elevation: 16,*/
-        style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+        style: TextStyle(color: Colors.black87),
         underline: SizedBox(),
         onChanged: (String newValue) {
           setState(() {
@@ -90,3 +93,79 @@ class _MyDropBoxState extends State<MyDropBox> {
     );
   }
 }
+
+class MyDienTichInput extends StatefulWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final Function onChanged;
+
+  const MyDienTichInput({Key key, @required this.controller, this.hintText, this.onChanged}) : super(key: key);
+
+  @override
+  _MyDienTichInputState createState() => _MyDienTichInputState();
+}
+
+class _MyDienTichInputState extends State<MyDienTichInput> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 45,
+      child: TextFormField(
+        style: TextStyle(color: Colors.black87),
+        controller: widget.controller,
+        keyboardType: TextInputType.number,
+        textCapitalization: TextCapitalization.sentences,
+        toolbarOptions: ToolbarOptions(cut: false, copy: true, paste: false, selectAll: true),
+        onChanged: widget.onChanged,
+        inputFormatters: [
+          BlacklistingTextInputFormatter(RegExp("[-]|[,]|[ ]"))
+        ],
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+          filled: true,
+          fillColor: Color(0xffEBEBEB),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(7),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MyTenRiengInput extends StatefulWidget {
+  final TextEditingController controller;
+  final Function onChanged;
+
+  const MyTenRiengInput({Key key, @required this.controller, this.onChanged}) : super(key: key);
+
+  @override
+  _MyTenRiengInputState createState() => _MyTenRiengInputState();
+}
+
+class _MyTenRiengInputState extends State<MyTenRiengInput> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 45,
+      child: TextFormField(
+        style: TextStyle(color: Colors.black87),
+        controller: widget.controller,
+        textCapitalization: TextCapitalization.words,
+        toolbarOptions: ToolbarOptions(cut: false, copy: true, paste: true, selectAll: true),
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+          filled: true,
+          fillColor: Color(0xffEBEBEB),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(7),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+    );
+  }
+}
+

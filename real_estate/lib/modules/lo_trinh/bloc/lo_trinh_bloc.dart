@@ -54,9 +54,9 @@ class LoTrinhBloc extends Bloc<LoTrinhEvent, LoTrinhState> {
           final danhSach = await _repository.getDsLoTrinhHomNay();
 
           if (danhSach.isNotEmpty) {
-            yield LoTrinhSuccess(listModel: danhSach);
+            yield LoTrinhSuccess(listModel: danhSach, type: 'remove');
           } else {
-            yield LoTrinhEmpty();
+            yield LoTrinhEmpty(type: 'remove');
           }
         } else {
           yield LoTrinhFailure();
@@ -75,7 +75,7 @@ class LoTrinhBloc extends Bloc<LoTrinhEvent, LoTrinhState> {
         final danhSach = await _repository.getDsLichSuLoTrinh(date: event.date);
 
         if (danhSach.isNotEmpty) {
-          yield LoTrinhSuccess(listModel: danhSach);
+          yield LoTrinhSuccess(listModel: danhSach, type: 'fetch');
         } else {
           yield LoTrinhEmpty();
         }
@@ -94,7 +94,7 @@ class LoTrinhBloc extends Bloc<LoTrinhEvent, LoTrinhState> {
           final danhSach = await _repository.getDsLoTrinhHomNay();
 
           if (danhSach.isNotEmpty) {
-            yield LoTrinhSuccess(listModel: danhSach);
+            yield LoTrinhSuccess(listModel: danhSach, type: 'update');
           } else {
             yield LoTrinhEmpty();
           }

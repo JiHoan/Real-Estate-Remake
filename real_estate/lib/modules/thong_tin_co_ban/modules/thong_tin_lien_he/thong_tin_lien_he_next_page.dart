@@ -59,13 +59,13 @@ class _ThongTinLienHeNextPageState extends State<ThongTinLienHeNextPage> {
                 MyInput(
                   hintText: '',
                   color: Color(0xffEBEBEB),
-                  lines: 1,
                   controller: ctlSdtNguoiNhan,
                   type: TextInputType.number,
                 ),
                 SizedBox(height: 20),
                 MyTopTitle(text: 'Người nhận'),
-                Container(
+                MyTenRiengInput(controller: ctlTenNguoiNhan),
+                /*Container(
                   height: 45,
                   child: TextFormField(
                     textCapitalization: TextCapitalization.words,
@@ -81,7 +81,7 @@ class _ThongTinLienHeNextPageState extends State<ThongTinLienHeNextPage> {
                       ),
                     ),
                   ),
-                ),
+                ),*/
                 // bottom
               ],
             ),
@@ -109,12 +109,7 @@ class _ThongTinLienHeNextPageState extends State<ThongTinLienHeNextPage> {
                     );
                   } else {
                     Scaffold.of(context).removeCurrentSnackBar();
-                    Scaffold.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Hãy nhập đầy đủ thông tin !'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                    Dialogs.showMissingTextField(context);
                   }
                 },
               ),

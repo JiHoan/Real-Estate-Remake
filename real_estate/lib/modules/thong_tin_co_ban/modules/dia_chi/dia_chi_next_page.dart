@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/modules/dien_tich_ket_cau_noi_that/dien_tich_next_page.dart';
 import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
@@ -84,6 +85,9 @@ class _DiaChiNextPageState extends State<DiaChiNextPage> {
 
                       if (_tinhTpModel != null) {
                         _tinhThanhPhoBloc.add(QuanHuyenFetch(id: _tinhTpModel.id)); //fetch quận/huyện mới theo tỉnh/tp
+                      } else {
+                        _quanHuyenSelection = null;
+                        _phuongXaSelection = null;
                       }
                     },
                     borderRadius: BorderRadius.circular(7),
@@ -114,7 +118,23 @@ class _DiaChiNextPageState extends State<DiaChiNextPage> {
                   child: BlocBuilder(
                     bloc: _tinhThanhPhoBloc,
                     builder: (BuildContext context, TinhThanhPhoState state) {
-                      print(state);
+                      if (state is QuanHuyenLoading) {
+                        return Container(
+                          height: 45,
+                          padding: const EdgeInsets.only(left: 15, right: 15),
+                          decoration: BoxDecoration(
+                            color: Color(0xffEBEBEB),
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              SpinKitThreeBounce(color: Colors.black87, size: 15),
+                              Spacer(),
+                              Icon(Icons.arrow_drop_down),
+                            ],
+                          ),
+                        );
+                      }
                       if (state is QuanHuyenSuccess) {
                         return buildQuanHuyenSuccess(state);
                       }
@@ -158,7 +178,23 @@ class _DiaChiNextPageState extends State<DiaChiNextPage> {
                   child: BlocBuilder(
                     bloc: _phuongXaBloc,
                     builder: (BuildContext context, PhuongXaState state) {
-                      print(state);
+                      if (state is PhuongXaLoading) {
+                        return Container(
+                          height: 45,
+                          padding: const EdgeInsets.only(left: 15, right: 15),
+                          decoration: BoxDecoration(
+                            color: Color(0xffEBEBEB),
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              SpinKitThreeBounce(color: Colors.black87, size: 15),
+                              Spacer(),
+                              Icon(Icons.arrow_drop_down),
+                            ],
+                          ),
+                        );
+                      }
                       if (state is PhuongXaSuccess) {
                         return buildPhuongXaSuccess(state);
                       }
@@ -242,11 +278,24 @@ class _DiaChiNextPageState extends State<DiaChiNextPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           MyTopTitle(text: 'Tên đường'),
-                          MyInput(
-                            hintText: '',
-                            color: Color(0xffEBEBEB),
-                            lines: 1,
-                            controller: _ctlTenDuong,
+                          Container(
+                            height: 45,
+                            child: TextFormField(
+                              textCapitalization: TextCapitalization.words,
+                              style: TextStyle(color: Colors.black87),
+                              controller: _ctlTenDuong,
+                              toolbarOptions: ToolbarOptions(cut: false, copy: true, paste: true, selectAll: true),
+
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                                filled: true,
+                                fillColor: Color(0xffEBEBEB),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(7),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -272,12 +321,7 @@ class _DiaChiNextPageState extends State<DiaChiNextPage> {
                       _ctlSoNha.text == '' ||
                       _ctlTenDuong.text == '') {
                     Scaffold.of(context).removeCurrentSnackBar();
-                    Scaffold.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Hãy nhập đầy đủ thông tin !'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                    Dialogs.showMissingTextField(context);
                   } else {
                     Scaffold.of(context).removeCurrentSnackBar();
                     Navigator.push(

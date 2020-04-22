@@ -13,6 +13,8 @@ class PhuongXaBloc extends Bloc<PhuongXaEvent, PhuongXaState> {
   @override
   Stream<PhuongXaState> mapEventToState(PhuongXaEvent event) async* {
     if (event is PhuongXaFetch) {
+      yield PhuongXaLoading();
+
       try {
         final _listPhuongXa = await _tinhThanhPhoRepository.getPhuongXa(type: 'QUAN_HUYEN', id: event.id);
 

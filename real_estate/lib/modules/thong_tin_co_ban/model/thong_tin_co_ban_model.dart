@@ -20,8 +20,8 @@ class ThongTinCoBanModel extends Equatable {
   final int roomNumber;
   final int wcrNumber;
   final int wccNumber;
-  final double gia;
-  final double hoaHong;
+  final int gia;
+  final int hoaHong;
   final int vat;
 
   ThongTinCoBanModel({
@@ -69,9 +69,9 @@ class ThongTinCoBanModel extends Equatable {
       wccNumber: json['bao_nhieu_wc_chung'],
       balcony: json['phong_co_ban_cong_khong'],
       window: json['phong_co_cua_so_khong'],
-      gia: double.tryParse(json['gia']) ?? 0.0,
+      gia: int.tryParse(json['gia']) ?? 0,
       floorNumber: json['co_bao_nhieu_lau'],
-      hoaHong: double.tryParse(json['hoa_hong']) ?? 0.0,
+      hoaHong: int.tryParse(json['hoa_hong']) ?? 0,
       vat: int.tryParse(json['vat']) ?? 0,
     );
   }

@@ -83,7 +83,7 @@ class KhachTimMbBloc extends Bloc<KhachTimMbEvent, KhachTimMbState> {
         final _danhSach = await _repository.getDsKhachTimMb(tinhTrang: event.type, page: 1);
 
         if (_danhSach.khachTimMbListModel.isNotEmpty) {
-          yield KhachTimMbLoaded(khachTimMbListModel: _danhSach.khachTimMbListModel, hasReachedMax: _reachedMax(_danhSach.khachTimMbListModel.length), page: 1, count: _danhSach.count, ool: false);
+          yield KhachTimMbLoaded(khachTimMbListModel: _danhSach.khachTimMbListModel, hasReachedMax: _reachedMax(_danhSach.khachTimMbListModel.length), page: 1, count: _danhSach.count);
         } else {
           yield KhachTimMbEmpty();
         }
@@ -102,7 +102,7 @@ class KhachTimMbBloc extends Bloc<KhachTimMbEvent, KhachTimMbState> {
         if (currentState is KhachTimMbInitial) {
           final _danhSach = await _repository.getDsKhachTimMb(tinhTrang: event.type, page: 1);
 
-          yield KhachTimMbLoaded(khachTimMbListModel: _danhSach.khachTimMbListModel, hasReachedMax: false, ool: false);
+          yield KhachTimMbLoaded(khachTimMbListModel: _danhSach.khachTimMbListModel, hasReachedMax: false, count: _danhSach.count);
           return;
         }
 
@@ -118,6 +118,7 @@ class KhachTimMbBloc extends Bloc<KhachTimMbEvent, KhachTimMbState> {
                   khachTimMbListModel: copyListNhaKhongXacDinh..addAll(_danhSach.khachTimMbListModel),
                   hasReachedMax: true,
                   page: temp,
+                  count: _danhSach.count,
                 );
         }
       } catch (e, s) {

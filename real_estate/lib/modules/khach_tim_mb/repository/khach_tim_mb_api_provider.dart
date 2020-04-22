@@ -53,14 +53,11 @@ class KhachTimMbApiProvider extends ApiProvider {
     }
   }
 
-  Future<KhachCommenModel> getDsKhachTimMb({@required String tinhTrang, @required int page}) async {
+  Future<KhachCommonModel> getDsKhachTimMb({@required String tinhTrang, @required int page}) async {
     Response _resp = await httpClient.get('request/index?tinh_trang=$tinhTrang&page=$page');
 
-    print('a');
-    print(_resp.data['count']);
-
     if (_resp.statusCode == 200) {
-      return KhachCommenModel(khachTimMbListModel: KhachTimMbListModel.fromJson(_resp.data['data']), count: _resp.data['count']);
+      return KhachCommonModel(khachTimMbListModel: KhachTimMbListModel.fromJson(_resp.data['data']), count: _resp.data['count']);
 //      return KhachTimMbListModel.fromJson(_resp.data['data']);
     } else {
       throw _resp.data['message'];

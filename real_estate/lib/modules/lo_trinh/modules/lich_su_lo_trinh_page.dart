@@ -161,7 +161,6 @@ class _LichSuLoTrinhState extends State<LichSuLoTrinh> {
           color: Color(0xffEDEDED),
           borderRadius: BorderRadius.circular(7),
           child: InkWell(
-            onTap: () {},
             borderRadius: BorderRadius.circular(7),
             child: Stack(
               children: <Widget>[

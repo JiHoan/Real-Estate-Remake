@@ -14,8 +14,9 @@ class NhaChoThueLoading extends NhaChoThueState {}
 class NhaChoThueLoaded extends NhaChoThueState {
   final NhaChoThueListModel nhaChoThueListModel;
   final bool hasReachedMax;
+  final int count;
 
-  NhaChoThueLoaded({@required this.nhaChoThueListModel, this.hasReachedMax});
+  NhaChoThueLoaded({@required this.nhaChoThueListModel, @required this.hasReachedMax, this.count});
 
   NhaChoThueLoaded copyWith({
     NhaChoThueListModel nhaChoThueListModel,
@@ -24,11 +25,12 @@ class NhaChoThueLoaded extends NhaChoThueState {
     return NhaChoThueLoaded(
       nhaChoThueListModel: nhaChoThueListModel ?? this.nhaChoThueListModel,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      count: count ?? this.count,
     );
   }
 
   @override
-  List<Object> get props => [nhaChoThueListModel, hasReachedMax];
+  List<Object> get props => [nhaChoThueListModel, hasReachedMax, count];
 }
 
 class NhaChoThueSuccess extends NhaChoThueState {}

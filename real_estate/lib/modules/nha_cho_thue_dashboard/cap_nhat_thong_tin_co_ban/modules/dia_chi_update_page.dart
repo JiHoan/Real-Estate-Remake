@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/bloc/cap_nhat_ttcb.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/dia_chi_common_model.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/modules/dia_chi/bloc/dia_chi.dart';
@@ -168,9 +169,25 @@ class _DiaChiUpdatePageState extends State<DiaChiUpdatePage> {
                   child: BlocBuilder(
                     bloc: _tinhThanhPhoBloc,
                     builder: (BuildContext context, TinhThanhPhoState state) {
-                      print(state);
                       if (state is QuanHuyenSuccess) {
                         return buildQuanHuyenSuccess(state);
+                      }
+                      if (state is QuanHuyenLoading) {
+                        return Container(
+                          height: 45,
+                          padding: const EdgeInsets.only(left: 15, right: 15),
+                          decoration: BoxDecoration(
+                            color: Color(0xffEBEBEB),
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              SpinKitThreeBounce(color: Colors.black87, size: 15),
+                              Spacer(),
+                              Icon(Icons.arrow_drop_down),
+                            ],
+                          ),
+                        );
                       }
                       return Material(
                         color: Color(0xffEBEBEB),
@@ -216,7 +233,23 @@ class _DiaChiUpdatePageState extends State<DiaChiUpdatePage> {
                   child: BlocBuilder(
                     bloc: _phuongXaBloc,
                     builder: (BuildContext context, PhuongXaState state) {
-                      print(state);
+                      if (state is PhuongXaLoading) {
+                        return Container(
+                          height: 45,
+                          padding: const EdgeInsets.only(left: 15, right: 15),
+                          decoration: BoxDecoration(
+                            color: Color(0xffEBEBEB),
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              SpinKitThreeBounce(color: Colors.black87, size: 15),
+                              Spacer(),
+                              Icon(Icons.arrow_drop_down),
+                            ],
+                          ),
+                        );
+                      }
                       if (state is PhuongXaSuccess) {
                         return buildPhuongXaSuccess(state);
                       }

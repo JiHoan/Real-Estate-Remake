@@ -17,9 +17,8 @@ class KhachTimMbLoaded extends KhachTimMbState {
   final bool hasReachedMax;
   final int page;
   final int count;
-  final bool ool;
 
-  KhachTimMbLoaded({@required this.khachTimMbListModel, this.hasReachedMax, this.page, this.count, this.ool});
+  KhachTimMbLoaded({@required this.khachTimMbListModel, this.hasReachedMax, this.page, this.count});
 
   KhachTimMbLoaded copyWith({
     KhachTimMbListModel khachTimMbListModel,
@@ -28,11 +27,12 @@ class KhachTimMbLoaded extends KhachTimMbState {
     return KhachTimMbLoaded(
       khachTimMbListModel: khachTimMbListModel ?? this.khachTimMbListModel,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      count: count ?? this.count,
     );
   }
 
   @override
-  List<Object> get props => [khachTimMbListModel, hasReachedMax, page, count, ool];
+  List<Object> get props => [khachTimMbListModel, hasReachedMax, page, count];
 }
 
 class KhachTimMbEmpty extends KhachTimMbState {}

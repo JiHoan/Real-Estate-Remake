@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:real_estate/modules/khach_tim_mb/bloc/khach_tim_mb.dart';
 import 'package:real_estate/utils/button.dart';
+import 'package:real_estate/utils/currency_textfield.dart';
 import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
@@ -32,8 +33,8 @@ class _GiaCanThueUpdatePageState extends State<GiaCanThueUpdatePage> {
       _khachTimMbBloc.add(
         UpdateGiaCanThue(
           id: widget.id,
-          giaMin: int.tryParse(ctlGiaMin.text),
-          giaMax: int.tryParse(ctlGiaMax.text),
+          giaMin: int.tryParse(ctlGiaMin.text.replaceAll('.', '')) ?? 0,
+          giaMax: int.tryParse(ctlGiaMax.text.replaceAll('.', '')) ?? 0,
         ),
       );
     } catch (error) {
@@ -41,13 +42,15 @@ class _GiaCanThueUpdatePageState extends State<GiaCanThueUpdatePage> {
     }
   }
 
+  final formatter = NumberFormat("#,###", "vi_VN");
+
   @override
   void initState() {
     super.initState();
     _khachTimMbBloc = KhachTimMbBloc();
 
-    ctlGiaMin.text = widget.giaMin.toString();
-    ctlGiaMax.text = widget.giaMax.toString();
+    ctlGiaMin.text = formatter.format(widget.giaMin);
+    ctlGiaMax.text = formatter.format(widget.giaMax);
   }
 
   @override
@@ -80,77 +83,30 @@ class _GiaCanThueUpdatePageState extends State<GiaCanThueUpdatePage> {
                 MyTopTitle(text: 'Giá cần thuê'),
                 Row(
                   children: <Widget>[
-                    Container(
-                      height: 45,
-                      child: Text('Từ: ', style: TextStyle(color: Colors.black54)),
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.only(left: 15),
-                      decoration: BoxDecoration(
-                        color: Color(0xffEBEBEB),
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(7), bottomLeft: Radius.circular(7)),
-                      ),
-                    ),
                     Expanded(
-                      child: Container(
-                        height: 45,
-                        child: TextFormField(
-                          controller: ctlGiaMin,
-                          style: TextStyle(color: Colors.black87),
-                          keyboardType: TextInputType.number,
-                          onChanged: (value) {
-                            setState(() {
-                              _onChanged = true;
-                            });
-                          },
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.only(right: 15),
-                            filled: true,
-                            fillColor: Color(0xffEBEBEB),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.only(topRight: Radius.circular(7), bottomRight: Radius.circular(7)),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                        ),
+                      child: MyCurrencyTextField(
+                        ctl: ctlGiaMin,
+                        onChanged: (){
+                          setState(() {
+                            _onChanged = true;
+                          });
+                        },
                       ),
                     ),
                     SizedBox(width: 7),
-                    Container(
-                      height: 45,
-                      child: Text('đến: ', style: TextStyle(color: Colors.black54)),
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.only(left: 15),
-                      decoration: BoxDecoration(
-                        color: Color(0xffEBEBEB),
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(7), bottomLeft: Radius.circular(7)),
-                      ),
-                    ),
                     Expanded(
-                      child: Container(
-                        height: 45,
-                        child: TextFormField(
-                          controller: ctlGiaMax,
-                          style: TextStyle(color: Colors.black87),
-                          keyboardType: TextInputType.number,
-                          onChanged: (value) {
-                            setState(() {
-                              _onChanged = true;
-                            });
-                          },
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.only(right: 15),
-                            filled: true,
-                            fillColor: Color(0xffEBEBEB),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.only(topRight: Radius.circular(7), bottomRight: Radius.circular(7)),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                        ),
+                      child: MyCurrencyTextField(
+                        ctl: ctlGiaMax,
+                        onChanged: (){
+                          setState(() {
+                            _onChanged = true;
+                          });
+                        },
                       ),
                     ),
                   ],
                 ),
+                
               ],
             ),
           ),

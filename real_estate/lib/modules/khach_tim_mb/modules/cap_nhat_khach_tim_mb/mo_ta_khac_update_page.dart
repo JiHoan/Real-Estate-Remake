@@ -79,6 +79,8 @@ class _MoTaKhacUpdatePageState extends State<MoTaKhacUpdatePage> {
                         _onChanged = true;
                       });
                     },
+                    textCapitalization: TextCapitalization.sentences,
+                    toolbarOptions: ToolbarOptions(cut: false, copy: true, paste: true, selectAll: true),
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                       filled: true,

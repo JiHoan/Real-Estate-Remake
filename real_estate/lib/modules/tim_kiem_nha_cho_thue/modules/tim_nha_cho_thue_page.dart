@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_nang_cao/modules/vi_tri_cau_thang_update_page.dart';
@@ -10,6 +11,7 @@ import 'package:real_estate/modules/thong_tin_co_ban/modules/dia_chi/model/tinh_
 import 'package:real_estate/modules/thong_tin_co_ban/modules/dia_chi/tinh_thanh_pho_search_page.dart';
 import 'package:real_estate/modules/tim_kiem_nha_cho_thue/bloc/tim_nha_cho_thue.dart';
 import 'package:real_estate/utils/button.dart';
+import 'package:real_estate/utils/currency_textfield.dart';
 import 'package:real_estate/utils/input_field.dart';
 import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
@@ -53,41 +55,39 @@ class _TimNhaChoThuePageState extends State<TimNhaChoThuePage> {
   String thoatHiemSelection;
   String huongNhaSelection;
 
-  var controller = new MaskedTextController(mask: '000.000.000.000');
-
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   Future<void> _handleSubmit(BuildContext context) async {
     try {
       Dialogs.showProgressDialog(context, _keyLoader);
       ttncVal == false
           ? _timNhaChoThueBloc.add(TimNhaChoThue(
-        thanhPho: idThanhPho,
-        quan: _quanHuyenSelection,
-        phuong: _phuongXaSelection,
-        duong: _ctlTenDuong.text,
-        dienTich: double.tryParse(_ctlDienTich.text),
-        giaMin: int.tryParse(_ctlGiaMin.text),
-        giaMax: int.tryParse(_ctlGiaMax.text),
-      ))
+              thanhPho: idThanhPho,
+              quan: _quanHuyenSelection,
+              phuong: _phuongXaSelection,
+              duong: _ctlTenDuong.text,
+              dienTich: double.tryParse(_ctlDienTich.text),
+              giaMin: int.tryParse(_ctlGiaMin.text.replaceAll('.', '')),
+              giaMax: int.tryParse(_ctlGiaMax.text.replaceAll('.', '')),
+            ))
           : _timNhaChoThueBloc.add(TimNhaChoThue(
-        thanhPho: idThanhPho,
-        quan: _quanHuyenSelection,
-        phuong: _phuongXaSelection,
-        duong: _ctlTenDuong.text,
-        dienTich: double.tryParse(_ctlDienTich.text),
-        giaMin: int.tryParse(_ctlGiaMin.text),
-        giaMax: int.tryParse(_ctlGiaMax.text),
-        soLau: lauSelection,
-        lung: lungSelection,
-        ham: hamSelection,
-        sanThuong: sanThuongSelection,
-        soPhong: phongSelection,
-        soWCR: wcrSelection,
-        soWCC: wccSelection,
-        thangMay: thangMaySelection,
-        thoatHiem: thoatHiemSelection,
-        huongNha: huongNhaSelection,
-      ));
+              thanhPho: idThanhPho,
+              quan: _quanHuyenSelection,
+              phuong: _phuongXaSelection,
+              duong: _ctlTenDuong.text,
+              dienTich: double.tryParse(_ctlDienTich.text),
+              giaMin: int.tryParse(_ctlGiaMin.text.replaceAll('.', '')),
+              giaMax: int.tryParse(_ctlGiaMax.text.replaceAll('.', '')),
+              soLau: lauSelection,
+              lung: lungSelection,
+              ham: hamSelection,
+              sanThuong: sanThuongSelection,
+              soPhong: phongSelection,
+              soWCR: wcrSelection,
+              soWCC: wccSelection,
+              thangMay: thangMaySelection,
+              thoatHiem: thoatHiemSelection,
+              huongNha: huongNhaSelection,
+            ));
     } catch (error) {
       print(error);
     }
@@ -108,7 +108,6 @@ class _TimNhaChoThuePageState extends State<TimNhaChoThuePage> {
     _timNhaChoThueBloc.close();
     _phuongXaBloc.close();
     _timNhaChoThueBloc.close();
-    controller.clear();
   }
 
   @override
@@ -174,18 +173,33 @@ class _TimNhaChoThuePageState extends State<TimNhaChoThuePage> {
                 Dialogs.showFailureToast();
               }
             },
-            child: Padding(
-              padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-              child: MyButton(
-                color: Color(0xff3FBF55),
-                text: Text(
-                  'Tìm',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+            child: Builder(
+              builder: (context) => Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                child: MyButton(
+                  color: Color(0xff3FBF55),
+                  text: Text(
+                    'Tìm',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
+                  event: () {
+                    if(_ctlGiaMin.text != '' && _ctlGiaMax.text != '' && int.tryParse(_ctlGiaMin.text.replaceAll('.', '')) >= int.tryParse(_ctlGiaMax.text.replaceAll('.', ''))){
+                      Scaffold.of(context).removeCurrentSnackBar();
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Giá min phải thấp hơn giá max.'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                    else if (double.tryParse(_ctlDienTich.text) == null && _ctlDienTich.text != '') {
+                      Scaffold.of(context).removeCurrentSnackBar();
+                      Dialogs.showWrongFormatTextField(context);
+                    } else {
+                      _handleSubmit(context);
+                    }
+                  },
                 ),
-                event: () {
-                  _handleSubmit(context);
-
-                },
               ),
             ),
           ),
@@ -236,17 +250,34 @@ class _TimNhaChoThuePageState extends State<TimNhaChoThuePage> {
           bloc: _tinhThanhPhoBloc,
           listener: (BuildContext context, TinhThanhPhoState state) {
             if (state is QuanHuyenSuccess) {
-              _quanHuyenSelection =
-                  state.quanHuyenListModel.elementAt(0).id; //reset value mặc định(row đầu tiên) cho dropdown quận/huyện
+             /* _quanHuyenSelection =
+                  state.quanHuyenListModel.elementAt(0).id; //reset value mặc định(row đầu tiên) cho dropdown quận/huyện*/
+             _quanHuyenSelection = null;
               _phuongXaBloc.add(PhuongXaFetch(id: state.quanHuyenListModel.elementAt(0).id)); //fetch data phường/xã
             }
           },
           child: BlocBuilder(
             bloc: _tinhThanhPhoBloc,
             builder: (BuildContext context, TinhThanhPhoState state) {
-              print(state);
               if (state is QuanHuyenSuccess && _tinhTpModel != null) {
                 return buildQuan(state);
+              }
+              if (state is QuanHuyenLoading) {
+                return Container(
+                  height: 45,
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  decoration: BoxDecoration(
+                    color: Color(0xffEBEBEB),
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      SpinKitThreeBounce(color: Colors.black87, size: 15),
+                      Spacer(),
+                      Icon(Icons.arrow_drop_down),
+                    ],
+                  ),
+                );
               }
               return Material(
                 color: Color(0xffEBEBEB),
@@ -288,9 +319,25 @@ class _TimNhaChoThuePageState extends State<TimNhaChoThuePage> {
           child: BlocBuilder(
             bloc: _phuongXaBloc,
             builder: (BuildContext context, PhuongXaState state) {
-              print(state);
               if (state is PhuongXaSuccess && _tinhTpModel != null) {
                 return buildPhuong(state);
+              }
+              if (state is PhuongXaLoading) {
+                return Container(
+                  height: 45,
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  decoration: BoxDecoration(
+                    color: Color(0xffEBEBEB),
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      SpinKitThreeBounce(color: Colors.black87, size: 15),
+                      Spacer(),
+                      Icon(Icons.arrow_drop_down),
+                    ],
+                  ),
+                );
               }
               if (state is PhuongXaFailure) {
                 return Material(
@@ -349,64 +396,21 @@ class _TimNhaChoThuePageState extends State<TimNhaChoThuePage> {
         ),
         SizedBox(height: 20),
         MyTopTitle(text: 'Đường'),
-        MyInput(
-          hintText: '',
-          color: Color(0xffEBEBEB),
-          lines: 1,
-          controller: _ctlTenDuong,
-        ),
+        MyTenRiengInput(controller: _ctlTenDuong),
         SizedBox(height: 20),
         MyTopTitle(text: 'Diện tích'),
-        MyInput(
-          hintText: '',
-          color: Color(0xffEBEBEB),
-          lines: 1,
-          controller: _ctlDienTich,
-          type: TextInputType.number,
-        ),
+        MyDienTichInput(controller: _ctlDienTich),
         SizedBox(height: 20),
         MyTopTitle(text: 'Giá'),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Expanded(
-              child: Container(
-                height: 45,
-                child: TextFormField(
-                  controller: _ctlGiaMin,
-                  style: TextStyle(color: Colors.black87),
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-                    filled: true,
-                    fillColor: Color(0xffEBEBEB),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7)),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              ),
+              child: MyCurrencyTextField(ctl: _ctlGiaMin),
             ),
             SizedBox(width: 7),
             Expanded(
-              child: Container(
-                height: 45,
-                child: TextFormField(
-                  controller: _ctlGiaMax,
-                  style: TextStyle(color: Colors.black87),
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-                    filled: true,
-                    fillColor: Color(0xffEBEBEB),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7)),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              ),
+              child: MyCurrencyTextField(ctl: _ctlGiaMax),
             ),
           ],
         ),

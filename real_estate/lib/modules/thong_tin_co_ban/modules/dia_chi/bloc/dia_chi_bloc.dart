@@ -48,6 +48,9 @@ class TinhThanhPhoBloc extends Bloc<TinhThanhPhoEvent, TinhThanhPhoState> {
     }
 
     if(event is QuanHuyenFetch){
+      print('a');
+      yield QuanHuyenLoading();
+
       try{
         final _listQuanHuyen = await _tinhThanhPhoRepository.getQuanHuyen(type: 'TINH_THANH_PHO', id: event.id);
 
@@ -56,7 +59,8 @@ class TinhThanhPhoBloc extends Bloc<TinhThanhPhoEvent, TinhThanhPhoState> {
         } else {
           //todo
         }
-      }catch(error){
+      }catch(error, s){
+        print(s);
         print(error);
       }
     }

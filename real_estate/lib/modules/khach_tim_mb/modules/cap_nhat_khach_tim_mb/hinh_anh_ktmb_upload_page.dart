@@ -233,7 +233,7 @@ class _HinhAnhKtmbUploadPageState extends State<HinhAnhKtmbUploadPage> {
                     if (state is KhachTimMbSuccess) {
                       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
                       Navigator.pop(context, _changed); // pop về dashboard
-                      Dialogs.showUpdateSuccessToast();
+                      Dialogs.showAddSuccessToast();
                     }
                     if (state is KhachTimMbFailure) {
                       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog

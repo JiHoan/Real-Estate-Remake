@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:real_estate/modules/nha_cho_thue/model/hien_trang_model.dart';
 
 class NhaChoThueModel extends Equatable {
@@ -80,4 +81,14 @@ class NhaChoThueListModel extends ListMixin<NhaChoThueModel> {
   String toString() {
     return json.encode(toJson());
   }
+}
+
+class NhaCommonModel extends Equatable{
+  final NhaChoThueListModel nhaChoThueListModel;
+  final int count;
+
+  NhaCommonModel({@required this.nhaChoThueListModel,@required this.count});
+
+  @override
+  List<Object> get props => [nhaChoThueListModel, count];
 }

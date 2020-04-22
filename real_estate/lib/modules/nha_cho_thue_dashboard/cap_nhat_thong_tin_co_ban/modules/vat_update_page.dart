@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/bloc/cap_nhat_ttcb.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/nha_cho_thue_detail_model.dart';
 import 'package:real_estate/utils/button.dart';
-import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/currency_textfield.dart';
 import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
@@ -27,13 +27,6 @@ class VATUpdatePage extends StatefulWidget {
 }
 
 class _VATUpdatePageState extends State<VATUpdatePage> {
-  /*var ctlGia = new MoneyMaskedTextController(decimalSeparator: '', thousandSeparator: ',', precision: 0);
-  var ctlVAT = new MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: ',');
-  var ctlHoaHong = new MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: ',');*/
-
-  /*var ctlGia = new MaskedTextController(mask: '000000000000');
-  var ctlVAT = new MaskedTextController(mask: '000000000000');
-  var ctlHoaHong = new MaskedTextController(mask: '000000000000');*/
   CapNhatTtcbBloc _nhaChoThueDetailBloc;
 
   bool _onChanged = false;
@@ -43,14 +36,16 @@ class _VATUpdatePageState extends State<VATUpdatePage> {
   TextEditingController ctlVAT = TextEditingController();
   TextEditingController ctlHoaHong = TextEditingController();
 
+  final formatter = NumberFormat("#,###", "vi_VN");
+
   @override
   void initState() {
     super.initState();
     _nhaChoThueDetailBloc = CapNhatTtcbBloc();
 
-    ctlGia.text = widget.gia.toString();
-    ctlVAT.text = widget.vat.toString();
-    ctlHoaHong.text = widget.hoaHong.toString();
+    ctlGia.text = formatter.format(widget.gia);
+    ctlVAT.text = formatter.format(widget.vat);
+    ctlHoaHong.text = formatter.format(widget.hoaHong);
   }
 
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
@@ -60,9 +55,9 @@ class _VATUpdatePageState extends State<VATUpdatePage> {
       _nhaChoThueDetailBloc.add(
         UpdateVAT(
           model: NhaChoThueDetailModel(
-            gia: int.tryParse(ctlGia.text) ?? 0,
-            hoaHong: int.tryParse(ctlHoaHong.text) ?? 0,
-            vat: int.tryParse(ctlVAT.text) ?? 0,
+            gia: int.tryParse(ctlGia.text.replaceAll('.', '')) ?? 0,
+            hoaHong: int.tryParse(ctlHoaHong.text.replaceAll('.', '')) ?? 0,
+            vat: int.tryParse(ctlVAT.text.replaceAll('.', '')) ?? 0,
           ),
           id: widget.id,
         ),
@@ -100,13 +95,9 @@ class _VATUpdatePageState extends State<VATUpdatePage> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               children: <Widget>[
                 MyTopTitle(text: 'Giá'),
-                MyInput(
-                  hintText: '',
-                  color: Color(0xffEBEBEB),
-                  lines: 1,
-                  controller: ctlGia,
-                  type: TextInputType.number,
-                  onChanged: (value) {
+                MyCurrencyTextField(
+                  ctl: ctlGia,
+                  onChanged: (){
                     setState(() {
                       _onChanged = true;
                     });
@@ -114,13 +105,9 @@ class _VATUpdatePageState extends State<VATUpdatePage> {
                 ),
                 SizedBox(height: 20),
                 MyTopTitle(text: 'Hoa hồng'),
-                MyInput(
-                  hintText: '',
-                  color: Color(0xffEBEBEB),
-                  lines: 1,
-                  controller: ctlHoaHong,
-                  type: TextInputType.number,
-                  onChanged: (value) {
+                MyCurrencyTextField(
+                  ctl: ctlHoaHong,
+                  onChanged: (){
                     setState(() {
                       _onChanged = true;
                     });
@@ -128,13 +115,9 @@ class _VATUpdatePageState extends State<VATUpdatePage> {
                 ),
                 SizedBox(height: 20),
                 MyTopTitle(text: 'VAT'),
-                MyInput(
-                  hintText: '',
-                  color: Color(0xffEBEBEB),
-                  lines: 1,
-                  controller: ctlVAT,
-                  type: TextInputType.number,
-                  onChanged: (value) {
+                MyCurrencyTextField(
+                  ctl: ctlVAT,
+                  onChanged: (){
                     setState(() {
                       _onChanged = true;
                     });

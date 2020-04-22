@@ -6,6 +6,7 @@ import 'package:real_estate/modules/lo_trinh/bloc/lo_trinh.dart';
 import 'package:real_estate/modules/lo_trinh/model/lo_trinh_model.dart';
 import 'package:real_estate/modules/lo_trinh/modules/lich_su_lo_trinh_page.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/nha_cho_thue_dashboard_page.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/style.dart';
 
 class LoTrinhHomNayPage extends StatefulWidget {
@@ -88,77 +89,94 @@ class _LoTrinhHomNayPageState extends State<LoTrinhHomNayPage> {
             ),
           ),
           Expanded(
-            child: BlocBuilder(
+            child: BlocListener(
               bloc: _loTrinhBloc,
-              builder: (context, state) {
-                print(state);
-                if (state is LoTrinhLoading) {
-                  return Center(child: CircularProgressIndicator());
+              listener: (context, state){
+                if (state is LoTrinhSuccess && state.type == 'update'){
+                  Dialogs.showUpdateSuccessToast();
                 }
-                if (state is LoTrinhEmpty) {
+                if (state is LoTrinhSuccess && state.type == 'remove'){
+                  Dialogs.showRemoveSuccessToast();
+                }
+                if (state is LoTrinhEmpty && state.type == 'remove'){
+                  Dialogs.showRemoveSuccessToast();
+                }
+                if (state is LoTrinhFailure){
+                  Dialogs.showFailureToast();
+                }
+              },
+              child: BlocBuilder(
+                bloc: _loTrinhBloc,
+                builder: (context, state) {
+                  print(state);
+                  if (state is LoTrinhLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (state is LoTrinhEmpty) {
+                    return Center(
+                      child: Text('Chưa có thông tin lộ trình hôm nay.'),
+                    );
+                  }
+                  if (state is LoTrinhSuccess) {
+                    LoTrinhListModel list = state.listModel;
+
+                    return ListView.separated(
+                      physics: BouncingScrollPhysics(),
+                      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                      itemBuilder: (context, index) {
+                        return Slidable(
+                          actionPane: SlidableBehindActionPane(),
+                          actionExtentRatio: 0.25,
+                          actions: <Widget>[
+                            list[index].status == 'NOT_GO'
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(7),
+                                    child: IconSlideAction(
+                                      caption: 'Đã xong',
+                                      color: Colors.green,
+                                      icon: Icons.check,
+                                      onTap: () {
+                                        _loTrinhBloc.add(CheckInLoTrinh(id: list[index].info.id.toString(), type: 'ADD'));
+                                      },
+                                    ),
+                                  )
+                                : ClipRRect(
+                                    borderRadius: BorderRadius.circular(7),
+                                    child: IconSlideAction(
+                                      caption: 'Hủy check',
+                                      color: Colors.red,
+                                      icon: Icons.delete,
+                                      onTap: () {
+                                        _loTrinhBloc.add(CheckInLoTrinh(id: list[index].info.id.toString(), type: 'REMOVE'));
+                                      },
+                                    ),
+                                  ),
+                          ],
+                          secondaryActions: <Widget>[
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(7),
+                              child: IconSlideAction(
+                                caption: 'Xóa',
+                                color: Colors.red,
+                                icon: Icons.delete,
+                                onTap: () {
+                                  _loTrinhBloc.add(XoaLoTrinh(id: list[index].info.id.toString()));
+                                },
+                              ),
+                            ),
+                          ],
+                          child: _buildItem(list[index]),
+                        );
+                      },
+                      separatorBuilder: (context, index) => SizedBox(height: 10),
+                      itemCount: list.length,
+                    );
+                  }
                   return Center(
                     child: Text('Chưa có thông tin lộ trình hôm nay.'),
                   );
-                }
-                if (state is LoTrinhSuccess) {
-                  LoTrinhListModel list = state.listModel;
-
-                  return ListView.separated(
-                    physics: BouncingScrollPhysics(),
-                    padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                    itemBuilder: (context, index) {
-                      return Slidable(
-                        actionPane: SlidableBehindActionPane(),
-                        actionExtentRatio: 0.25,
-                        actions: <Widget>[
-                          list[index].status == 'NOT_GO'
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(7),
-                                  child: IconSlideAction(
-                                    caption: 'Đã xong',
-                                    color: Colors.green,
-                                    icon: Icons.check,
-                                    onTap: () {
-                                      _loTrinhBloc.add(CheckInLoTrinh(id: list[index].info.id.toString(), type: 'ADD'));
-                                    },
-                                  ),
-                                )
-                              : ClipRRect(
-                                  borderRadius: BorderRadius.circular(7),
-                                  child: IconSlideAction(
-                                    caption: 'Hủy check',
-                                    color: Colors.red,
-                                    icon: Icons.delete,
-                                    onTap: () {
-                                      _loTrinhBloc.add(CheckInLoTrinh(id: list[index].info.id.toString(), type: 'REMOVE'));
-                                    },
-                                  ),
-                                ),
-                        ],
-                        secondaryActions: <Widget>[
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(7),
-                            child: IconSlideAction(
-                              caption: 'Xóa',
-                              color: Colors.red,
-                              icon: Icons.delete,
-                              onTap: () {
-                                _loTrinhBloc.add(XoaLoTrinh(id: list[index].info.id.toString()));
-                              },
-                            ),
-                          ),
-                        ],
-                        child: _buildItem(list[index]),
-                      );
-                    },
-                    separatorBuilder: (context, index) => SizedBox(height: 10),
-                    itemCount: list.length,
-                  );
-                }
-                return Center(
-                  child: Text('Chưa có thông tin lộ trình hôm nay.'),
-                );
-              },
+                },
+              ),
             ),
           ),
         ],

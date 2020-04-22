@@ -7,6 +7,7 @@ import 'package:real_estate/utils/button.dart';
 import 'package:real_estate/utils/input_field.dart';
 import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ThongTinLienHeUpdatePage extends StatefulWidget {
   final int id;
@@ -25,6 +26,7 @@ class _ThongTinLienHeUpdatePageState extends State<ThongTinLienHeUpdatePage> {
   TextEditingController ctlTen = TextEditingController();
   bool _onChanged = false;
   bool _changed = false;
+  String phoneNumber;
 
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   Future<void> _handleSubmit(BuildContext context) async {
@@ -42,6 +44,7 @@ class _ThongTinLienHeUpdatePageState extends State<ThongTinLienHeUpdatePage> {
     _khachTimMbBloc = KhachTimMbBloc();
     ctlSdt.text = widget.sdt;
     ctlTen.text = widget.ten;
+    phoneNumber = widget.sdt;
   }
 
   @override
@@ -103,11 +106,14 @@ class _ThongTinLienHeUpdatePageState extends State<ThongTinLienHeUpdatePage> {
                       color: Color(0xffEBEBEB),
                       borderRadius: BorderRadius.only(bottomRight: Radius.circular(7), topRight: Radius.circular(7)),
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          launch("tel:$phoneNumber");
+                        },
                         borderRadius: BorderRadius.only(bottomRight: Radius.circular(7), topRight: Radius.circular(7)),
                         child: Container(
                           width: 45,
                           height: 45,
+                          padding: const EdgeInsets.all(10),
                           child: Image.asset('assets/phone.png'),
                         ),
                       ),

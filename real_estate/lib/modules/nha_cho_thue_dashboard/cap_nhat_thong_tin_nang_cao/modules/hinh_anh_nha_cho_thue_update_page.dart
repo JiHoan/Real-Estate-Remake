@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_estate/models/hinh_anh_model.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_nang_cao/bloc/cap_nhat_ttnc.dart';
 import 'package:real_estate/utils/button.dart';
+import 'package:real_estate/utils/my_dialog.dart';
 
 class HinhAnhNhaChoThueUpdatePage extends StatefulWidget {
   final int id;
@@ -19,6 +20,15 @@ class _HinhAnhNhaChoThueUpdatePageState extends State<HinhAnhNhaChoThueUpdatePag
 
   bool _onChanged = false;
   bool _changed = false;
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showProgressDialog(context, _keyLoader);
+      _capNhatTtncBloc.add(RemoveHinhAnhNha(id: widget.id, hinhAnhId: _listHinhAnhId));
+    } catch (error) {
+      print(error);
+    }
+  }
 
   HinhAnhListModel _hinhAnhListModel = HinhAnhListModel.fromJson([]);
   List<int> _listHinhAnhId = List<int>();
@@ -146,7 +156,13 @@ class _HinhAnhNhaChoThueUpdatePageState extends State<HinhAnhNhaChoThueUpdatePag
             bloc: _capNhatTtncBloc,
             listener: (context, state) {
               if (state is UpdateSuccess) {
-                Navigator.pop(context, _changed);
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                Navigator.pop(context, _changed); // pop về dashboard
+                Dialogs.showRemoveSuccessToast();
+              }
+              if (state is UpdateFailure) {
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                Dialogs.showFailureToast();
               }
             },
             child: Padding(
@@ -159,7 +175,7 @@ class _HinhAnhNhaChoThueUpdatePageState extends State<HinhAnhNhaChoThueUpdatePag
                 ),
                 event: () {
                   _changed = true;
-                  _capNhatTtncBloc.add(RemoveHinhAnhNha(id: widget.id, hinhAnhId: _listHinhAnhId));
+                  _handleSubmit(context);
 //                  _capNhatTtncBloc.add(UploadHinhAnhNha(id: widget.id, hinhAnh: _listImg));
                 },
               ),

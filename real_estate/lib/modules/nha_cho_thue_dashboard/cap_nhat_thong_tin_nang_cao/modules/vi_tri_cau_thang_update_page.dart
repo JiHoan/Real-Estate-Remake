@@ -261,7 +261,7 @@ class _ViTriCauThangUpdatePageState extends State<ViTriCauThangUpdatePage> {
           .map(
             (data) => ConstrainedBox(
               constraints: BoxConstraints(
-                minWidth: 90,
+                minWidth: 120,
               ),
               child: GestureDetector(
                 onTap: (){

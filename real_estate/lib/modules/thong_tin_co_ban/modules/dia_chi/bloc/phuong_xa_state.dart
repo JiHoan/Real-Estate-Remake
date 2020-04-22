@@ -12,6 +12,8 @@ class PhuongXaInitial extends PhuongXaState{}
 
 class PhuongXaFailure extends PhuongXaState{}
 
+class PhuongXaLoading extends PhuongXaState{}
+
 class PhuongXaSuccess extends PhuongXaState {
   final PhuongXaListModel phuongXaListModel;
 

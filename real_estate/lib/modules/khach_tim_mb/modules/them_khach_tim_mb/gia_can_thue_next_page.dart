@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/utils/button.dart';
-import 'package:real_estate/utils/input_field.dart';
+import 'package:real_estate/utils/currency_textfield.dart';
 import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
 
@@ -105,34 +105,19 @@ class _GiaCanThueNextPageState extends State<GiaCanThueNextPage> {
                   children: <Widget>[
                     Flexible(
                       flex: 5,
-                      child: MyInput(
-                        hintText: 'Giá từ',
-                        color: Color(0xffEBEBEB),
-                        lines: 1,
-                        controller: ctlGiaMin,
-                        type: TextInputType.number,
+                      child: MyCurrencyTextField(
+                        ctl: ctlGiaMin,
                       ),
                     ),
                     SizedBox(width: 10),
                     Flexible(
                       flex: 5,
-                      child: MyInput(
-                        hintText: 'Đến',
-                        color: Color(0xffEBEBEB),
-                        lines: 1,
-                        controller: ctlGiaMax,
-                        type: TextInputType.number,
+                      child: MyCurrencyTextField(
+                        ctl: ctlGiaMax,
                       ),
                     ),
                   ],
                 ),
-                /*MyInput(
-                  hintText: '',
-                  color: Color(0xffEBEBEB),
-                  lines: 1,
-                  controller: ctlGiaCanThue,
-                  type: TextInputType.number,
-                ),*/
               ],
             ),
           ),
@@ -148,7 +133,7 @@ class _GiaCanThueNextPageState extends State<GiaCanThueNextPage> {
                 event: () {
 
                   if (ctlGiaMin.text != '' && ctlGiaMax.text != '') {
-                    if(int.tryParse(ctlGiaMin.text) >= int.tryParse(ctlGiaMax.text)){
+                    if(int.tryParse(ctlGiaMin.text.replaceAll('.', '')) >= int.tryParse(ctlGiaMax.text.replaceAll('.', ''))){
                       Scaffold.of(context).removeCurrentSnackBar();
                       Scaffold.of(context).showSnackBar(
                         SnackBar(
@@ -185,8 +170,8 @@ class _GiaCanThueNextPageState extends State<GiaCanThueNextPage> {
                                 soThangThoatHiem: widget.soThangThoatHiem,
                                 soThangMay: widget.soThangMay,
                                 huongNha: widget.huongNha,
-                                giaMin: ctlGiaMin.text,
-                                giaMax: ctlGiaMax.text,
+                                giaMin: int.tryParse(ctlGiaMin.text.replaceAll('.', '')).toString(),
+                                giaMax: int.tryParse(ctlGiaMax.text.replaceAll('.', '')).toString(),
                               )));
                     }
                   } else {

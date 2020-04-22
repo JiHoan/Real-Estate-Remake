@@ -77,15 +77,14 @@ class Dialogs {
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context){
-        return Dialog(
+        return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(7),
           ),
           elevation: 0.0,
           backgroundColor: Colors.white,
-          child: Container(
-            height: 157,
-            width: 100,
+          content: Container(
+            height: 130,
             padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -101,27 +100,24 @@ class Dialogs {
                   style: TextStyle(color: Colors.black87, fontSize: 16),
                 ),
                 SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    FlatButton(
-                      child: Text("Đồng ý"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).popUntil((route) => route.isFirst);
-                      },
-                    ),
-                    FlatButton(
-                      child: Text("Hủy"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Đồng ý"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              },
+            ),
+            FlatButton(
+              child: Text("Hủy"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
         );
       }
     );
@@ -130,6 +126,18 @@ class Dialogs {
   static showUpdateSuccessToast() {
     return Fluttertoast.showToast(
       msg: "Đã cập nhật thành công.",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black54,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
+  static showRemoveSuccessToast() {
+    return Fluttertoast.showToast(
+      msg: "Đã xóa thành công.",
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
@@ -160,6 +168,24 @@ class Dialogs {
       backgroundColor: Colors.black54,
       textColor: Colors.white,
       fontSize: 16.0,
+    );
+  }
+
+  static showMissingTextField (BuildContext context) {
+    return Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Hãy nhập đầy đủ thông tin.'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  static showWrongFormatTextField (BuildContext context) {
+    return Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Sai định dạng giá trị diện tích.'),
+        backgroundColor: Colors.red,
+      ),
     );
   }
 }

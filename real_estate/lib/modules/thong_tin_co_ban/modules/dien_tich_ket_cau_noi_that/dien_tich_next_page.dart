@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/modules/vat/vat_next_page.dart';
 import 'package:real_estate/utils/button.dart';
@@ -55,9 +56,11 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
   int balconyGroup = 2;
   int windowGroup = 2;
 
+//  var ctlNgang = new MaskedTextController(mask: '0000');
+//  var ctlDai = new MaskedTextController(mask: '0000');
 
-  var ctlNgang = new MaskedTextController(mask: '0000');
-  var ctlDai = new MaskedTextController(mask: '0000');
+  TextEditingController ctlNgang = TextEditingController();
+  TextEditingController ctlDai = TextEditingController();
 
   List<MyRadioList> basementList = [
     MyRadioList(
@@ -176,7 +179,7 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
           Material(
             color: Colors.white,
             child: InkWell(
-              onTap: (){
+              onTap: () {
                 Dialogs.showBackHomeDialog(context);
               },
               child: Container(
@@ -201,13 +204,32 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           MyTopTitle(text: 'Diện tích'),
-                          MyInput(
-                            hintText: 'Ngang',
-                            color: Color(0xffEBEBEB),
-                            lines: 1,
-                            controller: ctlNgang,
-                            type: TextInputType.number,
-                          ),
+                          MyDienTichInput(
+                              controller: ctlNgang,
+                              hintText:
+                                  'Ngang'), /*Container(
+                            height: 45,
+                            child: TextFormField(
+                              style: TextStyle(color: Colors.black87),
+                              controller: ctlNgang,
+                              keyboardType: TextInputType.number,
+                              textCapitalization: TextCapitalization.sentences,
+                              toolbarOptions: ToolbarOptions(cut: false, copy: true, paste: false, selectAll: true),
+                              inputFormatters: [
+                                BlacklistingTextInputFormatter(RegExp("[-]|[,]|[ ]"))
+                              ],
+                              decoration: InputDecoration(
+                                hintText: 'Ngang',
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                                filled: true,
+                                fillColor: Color(0xffEBEBEB),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(7),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            ),
+                          ),*/
                         ],
                       ),
                     ),
@@ -218,13 +240,7 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           MyTopTitle(text: ''),
-                          MyInput(
-                            hintText: 'Dài',
-                            color: Color(0xffEBEBEB),
-                            lines: 1,
-                            controller: ctlDai,
-                            type: TextInputType.number,
-                          ),
+                          MyDienTichInput(controller: ctlDai, hintText: 'Dài'),
                         ],
                       ),
                     ),
@@ -248,7 +264,11 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                          child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
+                          child: const Icon(
+                            Icons.remove,
+                            size: 20,
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
                     ),
@@ -269,7 +289,11 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                          child: const Icon(Icons.add, size: 20, color: Colors.black54,),
+                          child: const Icon(
+                            Icons.add,
+                            size: 20,
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
                     ),
@@ -311,41 +335,41 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                 ),
                 event: () {
                   if (ctlNgang.text != '' && ctlDai.text != '') {
-                    Scaffold.of(context).removeCurrentSnackBar();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => VATNextPage(
-                          sdtNguoiNhan: widget.sdtNguoiNhan,
-                          tenNguoiNhan: widget.tenNguoiNhan,
-                          tinhTpId: widget.tinhTpId,
-                          quanHuyenId: widget.quanHuyenId,
-                          phuongXaId: widget.phuongXaId,
-                          soNha: widget.soNha,
-                          tenDuong: widget.tenDuong,
-                          ngang: double.parse(ctlNgang.text),
-                          dai: double.parse(ctlDai.text),
-                          floorNumber: valFloorNum,
-                          basement: basementValue,
-                          terrace: terraceValue,
-                          terraceUpgrated: terraceUpgratedValue,
-                          mezzanine: mezzanineNum - 1,
-                          roomNumber: valRoomNum,
-                          wcrNumber: valWcrNum,
-                          wccNumber: valWccNum,
-                          balcony: balconyValue,
-                          window: windowValue,
+                    if (double.tryParse(ctlNgang.text) != null && double.tryParse(ctlDai.text) != null) {
+                      Scaffold.of(context).removeCurrentSnackBar();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VATNextPage(
+                            sdtNguoiNhan: widget.sdtNguoiNhan,
+                            tenNguoiNhan: widget.tenNguoiNhan,
+                            tinhTpId: widget.tinhTpId,
+                            quanHuyenId: widget.quanHuyenId,
+                            phuongXaId: widget.phuongXaId,
+                            soNha: widget.soNha,
+                            tenDuong: widget.tenDuong,
+                            ngang: double.parse(ctlNgang.text),
+                            dai: double.parse(ctlDai.text),
+                            floorNumber: valFloorNum,
+                            basement: basementValue,
+                            terrace: terraceValue,
+                            terraceUpgrated: terraceUpgratedValue,
+                            mezzanine: mezzanineNum,
+                            roomNumber: valRoomNum,
+                            wcrNumber: valWcrNum,
+                            wccNumber: valWccNum,
+                            balcony: balconyValue,
+                            window: windowValue,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    } else {
+                      Scaffold.of(context).removeCurrentSnackBar();
+                      Dialogs.showWrongFormatTextField(context);
+                    }
                   } else {
                     Scaffold.of(context).removeCurrentSnackBar();
-                    Scaffold.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Hãy nhập đầy đủ thông tin !'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                    Dialogs.showMissingTextField(context);
                   }
                 },
               ),
@@ -642,7 +666,11 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
+                      child: const Icon(
+                        Icons.remove,
+                        size: 20,
+                        color: Colors.black54,
+                      ),
                     ),
                   ),
                 ),
@@ -665,7 +693,11 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
+                      child: const Icon(
+                        Icons.add,
+                        size: 20,
+                        color: Colors.black54,
+                      ),
                     ),
                   ),
                 ),
@@ -695,7 +727,11 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
+                      child: const Icon(
+                        Icons.remove,
+                        size: 20,
+                        color: Colors.black54,
+                      ),
                     ),
                   ),
                 ),
@@ -718,7 +754,11 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
+                      child: const Icon(
+                        Icons.add,
+                        size: 20,
+                        color: Colors.black54,
+                      ),
                     ),
                   ),
                 ),
@@ -746,7 +786,11 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                      child: const Icon(Icons.remove, size: 20, color: Colors.black54,),
+                      child: const Icon(
+                        Icons.remove,
+                        size: 20,
+                        color: Colors.black54,
+                      ),
                     ),
                   ),
                 ),
@@ -767,7 +811,11 @@ class _DienTichNextPageState extends State<DienTichNextPage> {
                     borderRadius: BorderRadius.circular(5),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                      child: const Icon(Icons.add, size: 20, color: Colors.black54,),
+                      child: const Icon(
+                        Icons.add,
+                        size: 20,
+                        color: Colors.black54,
+                      ),
                     ),
                   ),
                 ),

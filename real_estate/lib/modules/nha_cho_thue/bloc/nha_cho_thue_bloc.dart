@@ -43,9 +43,9 @@ class NhaChoThueBloc extends Bloc<NhaChoThueEvent, NhaChoThueState> {
       try {
         final _listNhaKhongXacDinh = await _nhaChoThueApiProvider.getNhaChoThue(type: event.type, page: temp);
 
-        if (_listNhaKhongXacDinh.isNotEmpty) {
+        if (_listNhaKhongXacDinh.nhaChoThueListModel.isNotEmpty) {
           yield NhaChoThueLoaded(
-              nhaChoThueListModel: _listNhaKhongXacDinh, hasReachedMax: _reachedMax(_listNhaKhongXacDinh.length));
+              nhaChoThueListModel: _listNhaKhongXacDinh.nhaChoThueListModel, hasReachedMax: _reachedMax(_listNhaKhongXacDinh.nhaChoThueListModel.length), count: _listNhaKhongXacDinh.count);
         } else {
           yield NhaChoThueEmpty();
         }
@@ -64,7 +64,7 @@ class NhaChoThueBloc extends Bloc<NhaChoThueEvent, NhaChoThueState> {
         if (currentState is NhaChoThueInitial) {
           final _listNhaKhongXacDinh = await _nhaChoThueApiProvider.getNhaChoThue(type: event.type, page: 1);
 
-          yield NhaChoThueLoaded(nhaChoThueListModel: _listNhaKhongXacDinh, hasReachedMax: false);
+          yield NhaChoThueLoaded(nhaChoThueListModel: _listNhaKhongXacDinh.nhaChoThueListModel, hasReachedMax: false, count: _listNhaKhongXacDinh.count);
           return;
         }
 
@@ -74,11 +74,12 @@ class NhaChoThueBloc extends Bloc<NhaChoThueEvent, NhaChoThueState> {
 
           final copyListNhaKhongXacDinh = NhaChoThueListModel.fromJson(currentState.nhaChoThueListModel.toJson());
 
-          yield _listNhaKhongXacDinh.isEmpty
+          yield _listNhaKhongXacDinh.nhaChoThueListModel.isEmpty
               ? currentState.copyWith(hasReachedMax: true)
               : NhaChoThueLoaded(
-                  nhaChoThueListModel: copyListNhaKhongXacDinh..addAll(_listNhaKhongXacDinh),
+                  nhaChoThueListModel: copyListNhaKhongXacDinh..addAll(_listNhaKhongXacDinh.nhaChoThueListModel),
                   hasReachedMax: true,
+                  count: _listNhaKhongXacDinh.count,
                 );
         }
       } catch (e, s) {

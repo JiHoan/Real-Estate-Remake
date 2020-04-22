@@ -62,6 +62,8 @@ class _MucDichThueNextPageState extends State<MucDichThueNextPage> {
                     style: TextStyle(color: Colors.black87),
                     maxLines: 3,
                     controller: ctlMucDich,
+                    textCapitalization: TextCapitalization.sentences,
+                    toolbarOptions: ToolbarOptions(cut: false, copy: true, paste: true, selectAll: true),
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                       filled: true,
@@ -100,12 +102,7 @@ class _MucDichThueNextPageState extends State<MucDichThueNextPage> {
                             )));
                   } else {
                     Scaffold.of(context).removeCurrentSnackBar();
-                    Scaffold.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Hãy nhập đầy đủ thông tin.'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                    Dialogs.showMissingTextField(context);
                   }
                 },
               ),

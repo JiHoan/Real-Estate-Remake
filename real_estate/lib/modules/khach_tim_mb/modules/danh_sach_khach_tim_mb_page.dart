@@ -113,7 +113,12 @@ class _DanhSachKhachTimMbPageState extends State<DanhSachKhachTimMbPage> {
     final currentScroll = _scrollController.position.pixels;
 
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _khachTimMbBloc.add(LoadMoreDsKhachTimMb(type: type));
+      Future.delayed(
+        const Duration(seconds: 1),
+            (){
+              _khachTimMbBloc.add(LoadMoreDsKhachTimMb(type: type));
+        },
+      );
     }
   }
 
@@ -211,7 +216,7 @@ class _DanhSachKhachTimMbPageState extends State<DanhSachKhachTimMbPage> {
     return ListView.separated(
       controller: _scrollController,
       physics: BouncingScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 10),
       itemCount: state.hasReachedMax ? state.khachTimMbListModel.length : state.khachTimMbListModel.length + 1,
       separatorBuilder: (BuildContext context, int index) {
         return SizedBox(

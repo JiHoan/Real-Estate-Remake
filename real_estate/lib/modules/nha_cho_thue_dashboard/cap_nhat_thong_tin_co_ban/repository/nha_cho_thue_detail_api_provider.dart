@@ -100,6 +100,8 @@ class NhaChoThueDetailApiProvider extends ApiProvider {
   }
 
   Future<bool> updateVAT({@required NhaChoThueDetailModel model, @required int id}) async {
+    print('a');
+    print(model.gia);
     Map<String, dynamic> _requestBody = {
       'info_id': id,
       'gia': model.gia,

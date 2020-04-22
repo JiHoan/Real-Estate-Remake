@@ -179,11 +179,11 @@ class KhachTimMbListModel extends ListMixin<KhachTimMbModel> {
   }
 }
 
-class KhachCommenModel extends Equatable{
+class KhachCommonModel extends Equatable{
   final KhachTimMbListModel khachTimMbListModel;
   final int count;
 
-  KhachCommenModel({@required this.khachTimMbListModel,@required this.count});
+  KhachCommonModel({@required this.khachTimMbListModel,@required this.count});
 
   @override
   List<Object> get props => null;

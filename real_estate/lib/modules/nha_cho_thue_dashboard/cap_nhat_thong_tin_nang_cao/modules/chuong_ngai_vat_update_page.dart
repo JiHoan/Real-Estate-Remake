@@ -200,7 +200,7 @@ class _ChuongNgaiVatUpdatePageState extends State<ChuongNgaiVatUpdatePage> {
       children: _checkListModel.map((element) {
         final index = _checkListModel.indexOf(element);
         return ConstrainedBox(
-          constraints: BoxConstraints(minWidth: 160),
+          constraints: BoxConstraints(minWidth: 130),
           child: Wrap(
             spacing: 7,
             crossAxisAlignment: WrapCrossAlignment.center,

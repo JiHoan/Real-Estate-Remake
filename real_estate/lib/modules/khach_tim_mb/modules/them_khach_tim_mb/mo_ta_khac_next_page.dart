@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:real_estate/modules/khach_tim_mb/bloc/khach_tim_mb.dart';
 import 'package:real_estate/modules/khach_tim_mb/model/khach_tim_mb_model.dart';
 import 'package:real_estate/utils/button.dart';
@@ -145,6 +144,8 @@ class _MoTaKhacNextPageState extends State<MoTaKhacNextPage> {
                     style: TextStyle(color: Colors.black87),
                     maxLines: 3,
                     controller: ctlMoTaKhac,
+                    textCapitalization: TextCapitalization.sentences,
+                    toolbarOptions: ToolbarOptions(cut: false, copy: true, paste: true, selectAll: true),
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                       filled: true,

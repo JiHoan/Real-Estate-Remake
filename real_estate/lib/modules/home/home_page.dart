@@ -63,7 +63,52 @@ class _HomePageState extends State<HomePage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      _authenticationBloc.add(LoggedOut());
+                      showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(7),
+                              ),
+                              elevation: 0.0,
+                              backgroundColor: Colors.white,
+                              content: Container(
+                                height: 100,
+                                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Thông báo",
+                                      style: TextStyle(color: Colors.black87, fontSize: 18),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      "Bạn muốn đăng xuất khỏi tài khoản?",
+                                      style: TextStyle(color: Colors.black87, fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: Text("Đồng ý"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    _authenticationBloc.add(LoggedOut());
+                                  },
+                                ),
+                                FlatButton(
+                                  child: Text("Hủy"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          });
                     },
                     child: Text(
                       'Đăng xuất',
@@ -180,11 +225,16 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Image.asset(imgUrl, height: 50,),
+                Image.asset(
+                  imgUrl,
+                  height: 50,
+                ),
                 SizedBox(height: 8),
                 Text(
                   text,
-                  style: TextStyle(fontFamily: 'helveticaneue',),
+                  style: TextStyle(
+                    fontFamily: 'helveticaneue',
+                  ),
                 ),
               ],
             ),

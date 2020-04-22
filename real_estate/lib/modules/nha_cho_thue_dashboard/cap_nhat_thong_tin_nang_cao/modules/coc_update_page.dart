@@ -38,7 +38,10 @@ class _CocUpdatePageState extends State<CocUpdatePage> {
     super.initState();
 
     _capNhatTtncBloc = CapNhatTtncBloc();
-    ctlCocBaoNhieuThang.text = widget.conBaoNhieuThang.toString();
+
+    if(widget.conBaoNhieuThang != null){
+      ctlCocBaoNhieuThang.text = widget.conBaoNhieuThang.toString();
+    }
   }
 
   @override
@@ -75,6 +78,7 @@ class _CocUpdatePageState extends State<CocUpdatePage> {
                   color: Color(0xffEBEBEB),
                   lines: 1,
                   controller: ctlCocBaoNhieuThang,
+                  type: TextInputType.number,
                   onChanged: (value) {
                     setState(() {
                       _onChanged = true;

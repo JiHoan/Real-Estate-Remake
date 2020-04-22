@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:intl/intl.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/bloc/thong_tin_co_ban.dart';
 import 'package:real_estate/modules/thong_tin_co_ban/model/thong_tin_co_ban_model.dart';
 import 'package:real_estate/utils/button.dart';
+import 'package:real_estate/utils/currency_textfield.dart';
 import 'package:real_estate/utils/input_field.dart';
 import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
@@ -58,9 +60,10 @@ class VATNextPage extends StatefulWidget {
 }
 
 class _VATNextPageState extends State<VATNextPage> {
-  var ctlGia = new MaskedTextController(mask: '000000000000');
-  var ctlVAT = new MaskedTextController(mask: '000000000000');
-  var ctlHoaHong = new MaskedTextController(mask: '000000000000');
+  TextEditingController ctlGia = TextEditingController();
+  TextEditingController ctlHoaHong = TextEditingController();
+  TextEditingController ctlVAT = TextEditingController();
+  final formatter = NumberFormat("#,###", "vi_VN");
 
   ThongTinCoBanBloc _thongTinCoBanBloc;
 
@@ -87,10 +90,10 @@ class _VATNextPageState extends State<VATNextPage> {
         wccNumber: widget.wccNumber,
         balcony: widget.balcony,
         window: widget.window,
-        gia: double.parse(ctlGia.text),
+        gia: int.tryParse(ctlGia.text.replaceAll('.', '')) ?? 0,
         floorNumber: widget.floorNumber,
-        hoaHong: double.parse(ctlHoaHong.text),
-        vat: int.parse(ctlVAT.text),
+        hoaHong: int.tryParse(ctlHoaHong.text.replaceAll('.', '')) ?? 0,
+        vat: int.tryParse(ctlVAT.text.replaceAll('.', '')) ?? 0,
       );
       _thongTinCoBanBloc.add(ThongTinCoBanSave(thongTinCoBanModel: _thongTinCoBanModel)); // bloc
     } catch (error, s) {
@@ -146,30 +149,18 @@ class _VATNextPageState extends State<VATNextPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               children: <Widget>[
                 MyTopTitle(text: 'Giá'),
-                MyInput(
-                  hintText: '',
-                  color: Color(0xffEBEBEB),
-                  lines: 1,
-                  controller: ctlGia,
-                  type: TextInputType.number,
+                MyCurrencyTextField(
+                  ctl: ctlGia,
                 ),
                 SizedBox(height: 20),
                 MyTopTitle(text: 'Hoa hồng'),
-                MyInput(
-                  hintText: '',
-                  color: Color(0xffEBEBEB),
-                  lines: 1,
-                  controller: ctlHoaHong,
-                  type: TextInputType.number,
+                MyCurrencyTextField(
+                  ctl: ctlHoaHong,
                 ),
                 SizedBox(height: 20),
                 MyTopTitle(text: 'VAT'),
-                MyInput(
-                  hintText: '',
-                  color: Color(0xffEBEBEB),
-                  lines: 1,
-                  controller: ctlVAT,
-                  type: TextInputType.number,
+                MyCurrencyTextField(
+                  ctl: ctlVAT,
                 ),
               ],
             ),
@@ -201,12 +192,7 @@ class _VATNextPageState extends State<VATNextPage> {
                       _handleSubmit(context);
                     } else {
                       Scaffold.of(context).removeCurrentSnackBar();
-                      Scaffold.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Hãy nhập đầy đủ thông tin !'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
+                      Dialogs.showMissingTextField(context);
                     }
                   },
                 ),

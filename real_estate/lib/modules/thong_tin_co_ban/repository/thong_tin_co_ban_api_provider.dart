@@ -18,7 +18,7 @@ class ThongTinCoBanApiProvider extends ApiProvider {
       'co_san_thuong_khong': model.terrace,
       'san_thuong_cai_tao_duoc_khong': model.terraceUpgrated,
       'co_bao_nhieu_lung': model.mezzanine,
-      'co_bao_nhieu_phong': model.roomNumber,
+      'bao_nhieu_phong': model.roomNumber,
       'bao_nhieu_wc_rieng': model.wcrNumber,
       'bao_nhieu_wc_chung': model.wccNumber,
       'phong_co_ban_cong_khong': model.balcony,

@@ -655,7 +655,7 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                   height: 62,
                   width: 62,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Image.asset('assets/camera (1).png'),
+                  child: Image.asset('assets/camera01.png', height: 20),
                 ),
               ),
             ),
@@ -668,10 +668,6 @@ class _DienTichUpdatePageState extends State<DienTichUpdatePage> {
                   children: _listImg.map((item){
                     return Container(
                       margin: const EdgeInsets.only(left: 7),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black12),
-                        borderRadius: BorderRadius.circular(7),
-                      ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(7),
                         child: Image.file(item, height: 60, width: 60, fit: BoxFit.cover,),

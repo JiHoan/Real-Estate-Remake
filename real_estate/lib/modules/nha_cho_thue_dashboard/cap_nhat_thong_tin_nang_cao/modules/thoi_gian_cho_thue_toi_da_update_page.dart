@@ -38,7 +38,10 @@ class _ThoiGianChoThueToiDaUpdatePageState extends State<ThoiGianChoThueToiDaUpd
     super.initState();
 
     _capNhatTtncBloc = CapNhatTtncBloc();
-    ctlSoNamThueToiDa.text = widget.soNamThueToiDa.toString();
+
+    if(widget.soNamThueToiDa != null){
+      ctlSoNamThueToiDa.text = widget.soNamThueToiDa.toString();
+    }
   }
 
   @override

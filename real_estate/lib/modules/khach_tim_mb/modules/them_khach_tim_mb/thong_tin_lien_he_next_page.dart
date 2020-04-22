@@ -75,6 +75,7 @@ class _ThongTinLienHeNextPageState extends State<ThongTinLienHeNextPage> {
                     textCapitalization: TextCapitalization.words,
                     style: TextStyle(color: Colors.black87),
                     controller: ctlTen,
+                    toolbarOptions: ToolbarOptions(cut: false, copy: true, paste: true, selectAll: true),
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
                       filled: true,

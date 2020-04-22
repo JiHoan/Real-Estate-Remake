@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_nang_cao/bloc/cap_nhat_ttnc.dart';
 import 'package:real_estate/utils/button.dart';
+import 'package:real_estate/utils/currency_textfield.dart';
 import 'package:real_estate/utils/input_field.dart';
 import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_text.dart';
@@ -43,8 +45,8 @@ class _GiaChaoChotUpdatePageState extends State<GiaChaoChotUpdatePage> {
       Dialogs.showProgressDialog(context, _keyLoader);
       _capNhatTtncBloc.add(UpdateGiaChaoGiaChot(
         id: widget.id,
-        giaChao: int.tryParse(ctlGiaChao.text),
-        giaChot: int.tryParse(ctlGiaChot.text),
+        giaChao: int.tryParse(ctlGiaChao.text.replaceAll('.', '')) ?? 0,
+        giaChot: int.tryParse(ctlGiaChot.text.replaceAll('.', '')) ?? 0,
         nam: int.tryParse(ctlBnndktg.text),
         phanTram: double.tryParse(ctlBnnctbnpt.text),
       ));
@@ -53,15 +55,28 @@ class _GiaChaoChotUpdatePageState extends State<GiaChaoChotUpdatePage> {
     }
   }
 
+  final formatter = NumberFormat("#,###", "vi_VN");
+
+  String giaChao = '';
+  String giaChot = '';
+
   @override
   void initState() {
     super.initState();
     _capNhatTtncBloc = CapNhatTtncBloc();
 
-    ctlGiaChao.text = widget.giaChao.toString();
-    ctlGiaChot.text = widget.giaChot.toString();
-    ctlBnndktg.text = widget.baoNhieuNamDauKhongTangGia.toString();
-    ctlBnnctbnpt.text = widget.baoNhieuNamCuoiTangBaoNhieuPhanTram.toString();
+    if (widget.giaChao != null) {
+      ctlGiaChao.text = formatter.format(widget.giaChao);
+    }
+    if (widget.giaChot != null) {
+      ctlGiaChot.text = formatter.format(widget.giaChot);
+    }
+    if (widget.baoNhieuNamDauKhongTangGia != null) {
+      ctlBnndktg.text = widget.baoNhieuNamDauKhongTangGia.toString();
+    }
+    if (widget.baoNhieuNamCuoiTangBaoNhieuPhanTram != null) {
+      ctlBnnctbnpt.text = widget.baoNhieuNamCuoiTangBaoNhieuPhanTram.toString();
+    }
   }
 
   @override
@@ -93,13 +108,9 @@ class _GiaChaoChotUpdatePageState extends State<GiaChaoChotUpdatePage> {
               children: <Widget>[
                 // body
                 MyTopTitle(text: 'Giá chào'),
-                MyInput(
-                  hintText: '',
-                  color: Color(0xffEBEBEB),
-                  lines: 1,
-                  controller: ctlGiaChao,
-                  type: TextInputType.number,
-                  onChanged: (value) {
+                MyCurrencyTextField(
+                  ctl: ctlGiaChao,
+                  onChanged: () {
                     setState(() {
                       _onChanged = true;
                     });
@@ -107,13 +118,9 @@ class _GiaChaoChotUpdatePageState extends State<GiaChaoChotUpdatePage> {
                 ),
                 const SizedBox(height: 20),
                 MyTopTitle(text: 'Giá chốt'),
-                MyInput(
-                  hintText: '',
-                  color: Color(0xffEBEBEB),
-                  lines: 1,
-                  controller: ctlGiaChot,
-                  type: TextInputType.number,
-                  onChanged: (value) {
+                MyCurrencyTextField(
+                  ctl: ctlGiaChot,
+                  onChanged: () {
                     setState(() {
                       _onChanged = true;
                     });

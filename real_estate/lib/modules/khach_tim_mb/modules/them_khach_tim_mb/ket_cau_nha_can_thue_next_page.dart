@@ -284,13 +284,14 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               children: <Widget>[
                 MyTopTitle(text: 'Diện tích'),
-                MyInput(
+                MyDienTichInput(controller: ctlDienTich),
+                /*MyInput(
                   hintText: '',
                   color: Color(0xffEBEBEB),
                   lines: 1,
                   controller: ctlDienTich,
                   type: TextInputType.number,
-                ),
+                ),*/
                 SizedBox(height: 20),
                 MyTopTitle(text: 'Nhà bao nhiêu lầu?'),
                 Row(
@@ -378,43 +379,43 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
                 ),
                 event: () {
                   if (ctlDienTich.text != '' && _huongNhaSelection != null) {
-                    Scaffold.of(context).removeCurrentSnackBar();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => GiaCanThueNextPage(
-                              moTa: widget.moTa,
-                              sdt: widget.sdt,
-                              ten: widget.ten,
-                              mucDich: widget.mucDich,
-                              thanhPho: widget.thanhPho,
-                              quan: widget.quan,
-                              phuong: widget.phuong,
-                              tenDuong: widget.tenDuong,
-                              dienTich: ctlDienTich.text,
-                              soLau: valFloorNum,
-                              lung: mezzanineValue,
-                              ham: basementValue,
-                              sanThuong: terraceValue,
-                              sanThuongCaiTao: terraceUpgratedValue,
-                              soPhong: valRoomNum,
-                              soWCR: valWCR,
-                              soWCC: valWCC,
-                              banCong: balconyValue,
-                              cuaSo: windowValue,
-                              thangBo: rdViTriCauThangValue,
-                              soThangThoatHiem: valExitStairNum,
-                              soThangMay: valElevatorNum,
-                              huongNha: _huongNhaSelection,
-                                )));
+                    if (double.tryParse(ctlDienTich.text) != null){
+                      Scaffold.of(context).removeCurrentSnackBar();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => GiaCanThueNextPage(
+                                moTa: widget.moTa,
+                                sdt: widget.sdt,
+                                ten: widget.ten,
+                                mucDich: widget.mucDich,
+                                thanhPho: widget.thanhPho,
+                                quan: widget.quan,
+                                phuong: widget.phuong,
+                                tenDuong: widget.tenDuong,
+                                dienTich: ctlDienTich.text,
+                                soLau: valFloorNum,
+                                lung: mezzanineValue,
+                                ham: basementValue,
+                                sanThuong: terraceValue,
+                                sanThuongCaiTao: terraceUpgratedValue,
+                                soPhong: valRoomNum,
+                                soWCR: valWCR,
+                                soWCC: valWCC,
+                                banCong: balconyValue,
+                                cuaSo: windowValue,
+                                thangBo: rdViTriCauThangValue,
+                                soThangThoatHiem: valExitStairNum,
+                                soThangMay: valElevatorNum,
+                                huongNha: _huongNhaSelection,
+                              )));
+                    } else {
+                      Scaffold.of(context).removeCurrentSnackBar();
+                      Dialogs.showWrongFormatTextField(context);
+                    }
                   } else {
                     Scaffold.of(context).removeCurrentSnackBar();
-                    Scaffold.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Hãy nhập đầy đủ thông tin.'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                    Dialogs.showMissingTextField(context);
                   }
                 },
               ),
@@ -877,7 +878,7 @@ class _KetCauNhaCanThueNextPageState extends State<KetCauNhaCanThueNextPage> {
           .map(
             (data) => ConstrainedBox(
               constraints: BoxConstraints(
-                minWidth: 160,
+                minWidth: 120,
               ),
               child: Wrap(
                 spacing: 7,

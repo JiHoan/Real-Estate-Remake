@@ -138,7 +138,8 @@ class _LoaiKhachNextPageState extends State<LoaiKhachNextPage> {
                 buildRowNguoiChoThue(),
                 const SizedBox(height: 20),
                 MyTopTitle(text: 'Tên thương hiệu'),
-                Container(
+                MyInput(color: Color(0xffEBEBEB), controller: ctlTenThuongHieu),
+                /*Container(
                   height: 45,
                   child: TextFormField(
                     textCapitalization: TextCapitalization.words,
@@ -154,7 +155,7 @@ class _LoaiKhachNextPageState extends State<LoaiKhachNextPage> {
                       ),
                     ),
                   ),
-                ),
+                ),*/
                 // bottom
               ],
             ),

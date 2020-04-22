@@ -708,7 +708,7 @@ class _KetCauNhaCanThueUpdatePageState extends State<KetCauNhaCanThueUpdatePage>
           .map(
             (data) => ConstrainedBox(
               constraints: BoxConstraints(
-                minWidth: 160,
+                minWidth: 120,
               ),
               child: Wrap(
                 spacing: 7,
