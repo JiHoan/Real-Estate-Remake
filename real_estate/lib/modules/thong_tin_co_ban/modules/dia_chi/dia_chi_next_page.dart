@@ -85,7 +85,9 @@ class _DiaChiNextPageState extends State<DiaChiNextPage> {
 
                       if (_tinhTpModel != null) {
                         _tinhThanhPhoBloc.add(QuanHuyenFetch(id: _tinhTpModel.id)); //fetch quận/huyện mới theo tỉnh/tp
+                        setState(() {});
                       } else {
+                        setState(() {});
                         _quanHuyenSelection = null;
                         _phuongXaSelection = null;
                       }

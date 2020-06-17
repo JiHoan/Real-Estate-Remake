@@ -127,7 +127,7 @@ class _GiaChaoChotUpdatePageState extends State<GiaChaoChotUpdatePage> {
                   },
                 ),
                 const SizedBox(height: 20),
-                MyTopTitle(text: 'Bao nhiêu năm đầu không tăng giá'),
+                MyTopTitle(text: 'Bao nhiêu tháng đầu không tăng giá'),
                 MyInput(
                   hintText: '',
                   color: Color(0xffEBEBEB),
@@ -141,7 +141,7 @@ class _GiaChaoChotUpdatePageState extends State<GiaChaoChotUpdatePage> {
                   },
                 ),
                 const SizedBox(height: 20),
-                MyTopTitle(text: 'Bao nhiêu năm cuối tăng bao nhiêu %'),
+                MyTopTitle(text: 'Bao nhiêu tháng cuối tăng bao nhiêu %'),
                 MyInput(
                   hintText: '',
                   color: Color(0xffEBEBEB),

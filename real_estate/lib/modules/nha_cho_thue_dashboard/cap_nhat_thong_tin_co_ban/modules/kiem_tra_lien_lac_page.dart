@@ -67,138 +67,147 @@ class _KiemTraLienLacState extends State<KiemTraLienLac> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text('Liên hệ'),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, size: 20),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: <Widget>[
-          FloatingActionButton(
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      onPanDown: (_) {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        resizeToAvoidBottomPadding: false,
+        appBar: AppBar(
+          title: Text('Liên hệ'),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios, size: 20),
             onPressed: () {
-              launch("tel:$phoneNumber");
-//              launch("tel:$phoneNumber");
+              Navigator.pop(context);
             },
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/phone.png', height: 20),
           ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            MyTopTitle(text: 'Mô tả'),
-            Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              children: list.map((element){
-                return Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: 20,
-                      child: Radio(
-                        groupValue: rdGroup,
-                        value: element.index,
-                        activeColor: Color(0xff3FBF55),
-                        onChanged: (val) {
-                          setState(
-                                () {
-//                              _onChanged = true;
-                              rdValue = element.value;
-                              rdGroup = element.index;
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(width: 7),
-                    Expanded(child: Text(element.title, overflow: TextOverflow.ellipsis)),
-                  ],
-                );
-              }).toList(),
+          actions: <Widget>[
+            FloatingActionButton(
+              onPressed: () {
+                launch("tel:$phoneNumber");
+//              launch("tel:$phoneNumber");
+              },
+              elevation: 0.0,
+              backgroundColor: Colors.white,
+              child: Image.asset('assets/phone.png', height: 20),
             ),
-            SizedBox(height: 20),
-            MyTopTitle(text: 'Ghi chú'),
-            TextFormField(
-              style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
-              maxLines: 2,
-              controller: ctlGhiChu,
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                filled: true,
-                fillColor: Color(0xffEBEBEB),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(7),
-                  borderSide: BorderSide.none,
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              MyTopTitle(text: 'Mô tả'),
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                children: list.map((element){
+                  return Row(
+                    children: <Widget>[
+                      SizedBox(
+                        width: 20,
+                        child: Radio(
+                          groupValue: rdGroup,
+                          value: element.index,
+                          activeColor: Color(0xff3FBF55),
+                          onChanged: (val) {
+                            setState(
+                                  () {
+//                              _onChanged = true;
+                                rdValue = element.value;
+                                rdGroup = element.index;
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 7),
+                      Expanded(child: Text(element.title, overflow: TextOverflow.ellipsis)),
+                    ],
+                  );
+                }).toList(),
+              ),
+              SizedBox(height: 20),
+              MyTopTitle(text: 'Ghi chú'),
+              TextFormField(
+                style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87),
+                maxLines: 2,
+                controller: ctlGhiChu,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  filled: true,
+                  fillColor: Color(0xffEBEBEB),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(7),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
-            ),
-            BlocListener(
-              bloc: _capNhatTtcbBloc,
-              listener: (context, state) {
-                if (state is UpdateSuccess) {
-                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
-                  Navigator.pop(context, _changed); // pop về dashboard
-                  Dialogs.showUpdateSuccessToast();
-                }
-                if (state is UpdateFailure) {
-                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
-                  Dialogs.showFailureToast();
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 15, bottom: 15),
-                child: MyButton(
-                  color: Color(0xff3FBF55),
-                  text: Text(
-                    'Lưu',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              BlocListener(
+                bloc: _capNhatTtcbBloc,
+                listener: (context, state) {
+                  if (state is UpdateSuccess) {
+                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                    Navigator.pop(context, _changed); // pop về dashboard
+                    Dialogs.showUpdateSuccessToast();
+                  }
+                  if (state is UpdateFailure) {
+                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop(); // close dialog
+                    Dialogs.showFailureToast();
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 15, bottom: 15),
+                  child: MyButton(
+                    color: Color(0xff3FBF55),
+                    text: Text(
+                      'Lưu',
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                    ),
+                    event: () {
+                      _changed = true;
+                      _handleSubmit(context);
+                    },
                   ),
-                  event: () {
-                    _changed = true;
-                    _handleSubmit(context);
+                ),
+              ),
+              Divider(
+                color: Colors.black12,
+              ),
+              SizedBox(height: 10),
+              Text('Lịch sử liên lạc'.toUpperCase(), style: MyAppStyle.price),
+              SizedBox(height: 15),
+              Expanded(
+                child: BlocBuilder(
+                  bloc: _callLogsBloc,
+                  builder: (context, state){
+                    if(state is FetchLoading){
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    if(state is FetchEmpty){
+                      return Center(
+                        child: Text('Chưa có lịch sử cuộc gọi.'),
+                      );
+                    }
+                    if(state is CallLogsLoaded){
+                      final listModel = state.callLogsListModel;
+                      return Center(
+                        child: danhSachLichSuCuocGoi(listModel),
+                      );
+                    }
+                    return SizedBox();
                   },
                 ),
               ),
-            ),
-            Divider(
-              color: Colors.black12,
-            ),
-            SizedBox(height: 10),
-            Text('Lịch sử liên lạc'.toUpperCase(), style: MyAppStyle.price),
-            SizedBox(height: 15),
-            Expanded(
-              child: BlocBuilder(
-                bloc: _callLogsBloc,
-                builder: (context, state){
-                  if(state is FetchLoading){
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  if(state is FetchEmpty){
-                    return Center(
-                      child: Text('Chưa có lịch sử cuộc gọi.'),
-                    );
-                  }
-                  if(state is CallLogsLoaded){
-                    final listModel = state.callLogsListModel;
-                    return Center(
-                      child: danhSachLichSuCuocGoi(listModel),
-                    );
-                  }
-                  return SizedBox();
-                },
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -4,6 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:real_estate/modules/lo_trinh/bloc/lo_trinh.dart';
+import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/check_model.dart';
+import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/nha_cho_thue_detail_model.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_nang_cao/bloc/cap_nhat_ttnc.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_nang_cao/bloc/cap_nhat_ttnc_bloc.dart';
 import 'package:real_estate/utils/my_dialog.dart';
@@ -36,7 +38,8 @@ class NhaChoThueDashboardPage extends StatefulWidget {
   final String type;
   final String diaChi;
 
-  const NhaChoThueDashboardPage({Key key, @required this.nhaChoThueModelId, @required this.type, @required this.diaChi}) : super(key: key);
+  const NhaChoThueDashboardPage({Key key, @required this.nhaChoThueModelId, @required this.type, @required this.diaChi})
+      : super(key: key);
 
   @override
   _NhaChoThueDashboardPageState createState() => _NhaChoThueDashboardPageState();
@@ -50,6 +53,8 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
 
   bool _isUpdateHienTrang = false;
   bool _isUpdateLienLacChuNha = false;
+
+  final formatter = NumberFormat("#,##0", "vi_VN");
 
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   Future<void> _handleSubmit(BuildContext context) async {
@@ -124,11 +129,69 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
   }
 
   _launchMap() async {
-    try{
+    try {
       MapsLauncher.launchQuery(widget.diaChi);
-    } catch(e, s){
+    } catch (e, s) {
+      print(e);
+      print(s);
       throw 'Could not launch map';
     }
+  }
+
+  String getChuongNgaiVat(CheckListModel list, String chuongNgaiVatKhac) {
+    List<String> listStr = [];
+    String str = '';
+
+    for (int i = 0; i < list.length; i++) {
+      if (list[i].isChecked) {
+        listStr.add(list[i].title);
+      }
+    }
+
+    if (listStr.isEmpty) {
+      str = 'chưa có dữ liệu';
+      return str;
+    }
+
+    for (int i = 0; i < listStr.length; i++) {
+      if (listStr[i] == listStr.last && chuongNgaiVatKhac != ' ') {
+        str = str + listStr[i] + ' - ' + chuongNgaiVatKhac;
+      } else if (listStr[i] == listStr.last) {
+        str = str + listStr[i];
+      } else {
+        str = str + listStr[i] + ' - ';
+      }
+    }
+
+    return str;
+  }
+
+  String getGiaChaoGiaChot(int giaChao, int giaChot, int khongTangGia, double tangPhanTram) {
+    String str = '';
+
+    str = giaChao == null ? str + 'Giá chào không có - ' : str + giaChao.toString();
+    str = giaChot == null ? str + 'Giá chốt không có - ' : str + giaChot.toString();
+    str = khongTangGia == null ? str + 'Giá chốt không có - ' : str + giaChot.toString();
+    str = tangPhanTram == null ? str + 'Giá chốt không có' : str + giaChot.toString();
+
+    return str;
+  }
+
+  String getViTriCauThang(NhaChoThueDetailModel model) {
+    String vttb = 'Vị trí thang bộ ${model.viTriThangBo.value == 'TRUOC' ? 'trước nhà - ' : model.viTriThangBo.value == '2/3' ? '2/3 nhà - ' : model.viTriThangBo.value == 'GIUA_NHA' ? 'giữa nhà - ' : model.viTriThangBo.value == 'CUOI_NHA' ? 'cuối nhà - ' : 'không có - '}';
+    String stth = '${model.soThangThoatHiem} thang thoát hiểm - ';
+    String stm = '${model.soThangMay} thang máy - ';
+    String hn = 'nhà hướng ${model.nhaHuongGi.value == 'KHONG_XAC_DINH' ? 'chưa xác định' : model.nhaHuongGi.value == 'DONG' ? 'đông' : model.nhaHuongGi.value == 'TAY' ? 'tây' : model.nhaHuongGi.value == 'NAM' ? 'nam' : model.nhaHuongGi.value == 'BAC' ? 'bắc' : model.nhaHuongGi.value == 'DONG_NAM' ? 'đông nam' : model.nhaHuongGi.value == 'TAY_NAM' ? 'tây nam' : model.nhaHuongGi.value == 'DONG_BAC' ? 'đông bắc' : model.nhaHuongGi.value == 'TAY_BAC' ? 'tây bắc' : model.nhaHuongGi.value}';
+
+    return vttb + stth + stm + hn;
+  }
+
+  String getThongTinNguoiChoThue(NhaChoThueDetailModel model) {
+    String nct = 'Người cho thuê là ${model.chuNhaChoThue.value == 'CHU_NHA' ? 'chủ nhà - ' : model.chuNhaChoThue.value == 'MOI_GIOI' ? 'môi giới - ' : 'chưa xác định - '}';
+    String pmg = model.chuNhaChoThue.value == 'MOI_GIOI' ? 'phí môi giới ${formatter.format(model.phiMoiGioi)} - ' : '';
+    String ntc = 'nhà ${model.nhaTheChap.value == 'CO' ? 'có' : 'không'} thế chấp';
+
+    return nct + pmg + ntc;
   }
 
   @override
@@ -179,7 +242,7 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                 children: <Widget>[
                   Image.asset('assets/location.png', height: 15),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       _launchMap();
                     },
                     child: Text(
@@ -316,11 +379,10 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                     );
                   },
                   child: Container(
-                    height: 30,
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     child: Row(
                       children: <Widget>[
-                        Text('Hiện trạng: ', style: MyAppStyle.text),
+                        Text('Hiện trạng: ', style: MyAppStyle.text01),
                         Expanded(
                           child: Text(
                             state.model.hienTrang.value == 'KHONG_CO_THONG_TIN_NANG_CAO'
@@ -331,10 +393,6 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                           ),
                         ),
                         SizedBox(width: 20),
-                        const Icon(
-                          Icons.navigate_next,
-                          color: Colors.black26,
-                        ),
                       ],
                     ),
                   ),
@@ -358,11 +416,10 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                     );
                   },
                   child: Container(
-                    height: 30,
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     child: Row(
                       children: <Widget>[
-                        Text('Ghi chú: ', style: MyAppStyle.text),
+                        Text('Ghi chú: ', style: MyAppStyle.text01),
                         Expanded(
                           child: Text(
                             state.model.ghiChu == null ? 'Chưa có ghi chú' : state.model.ghiChu,
@@ -371,34 +428,56 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                           ),
                         ),
                         SizedBox(width: 20),
-                        const Icon(
-                          Icons.navigate_next,
-                          color: Colors.black26,
-                        ),
                       ],
                     ),
                   ),
                 ),
               ),
-              _buildItemRow(
-                'Thông tin liên hệ',
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ThongTinLienHeUpdatePage(
-                        thongTinLienHe: state.model.thongTinLienHe,
-                        id: widget.nhaChoThueModelId,
+              Material(
+                color: Colors.white,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ThongTinLienHeUpdatePage(
+                          thongTinLienHe: state.model.thongTinLienHe,
+                          id: widget.nhaChoThueModelId,
+                        ),
                       ),
+                    ).then(
+                      (value) {
+                        if (value == true) {
+                          _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
+                        }
+                      },
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Thông tin liên hệ',
+                          style: MyAppStyle.text,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Người liên hệ: ' + state.model.thongTinLienHe.name,
+                          style: MyAppStyle.text01,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          'Số điện thoại: ' + state.model.thongTinLienHe.phone,
+                          style: MyAppStyle.text01,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
-                  ).then(
-                    (value) {
-                      if (value == true) {
-                        _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
-                      }
-                    },
-                  );
-                },
+                  ),
+                ),
               ),
               Material(
                 color: Colors.white,
@@ -419,41 +498,49 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                       },
                     );
                   },
-                  child: Container(
-                    height: 30,
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Row(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text('Liên lạc với chủ nhà: ', style: MyAppStyle.text),
-                        Expanded(
-                          child: BlocBuilder(
-                            bloc: _callLogsBloc,
-                            builder: (context, state) {
-                              if (state is CallLogsLoading) {
-                                return Text(
-                                  'Đang cập nhật',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                  overflow: TextOverflow.ellipsis,
-                                );
-                              }
-                              if (state is CallLogsLoaded) {
-                                int lastIndex = state.callLogsListModel.length - 1;
-                                return Text(
-                                  '(' + DateFormat("dd/MM/yyyy hh:mm").format(state.callLogsListModel[lastIndex].createdAt) + ')',
-                                  overflow: TextOverflow.ellipsis,
-                                );
-                              }
+                        SizedBox(height: 5),
+                        BlocBuilder(
+                          bloc: _callLogsBloc,
+                          builder: (context, state) {
+                            if (state is CallLogsLoading) {
                               return Text(
-                                'Chưa có dữ liệu',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                                overflow: TextOverflow.ellipsis,
+                                'Đang cập nhật',
+                                style: MyAppStyle.text01,
                               );
-                            },
-                          ),
-                        ),
-                        const Icon(
-                          Icons.navigate_next,
-                          color: Colors.black26,
+                            }
+                            if (state is CallLogsLoaded) {
+                              int lastIndex = state.callLogsListModel.length - 1;
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    'Liên lạc gần nhất: ' +
+                                        DateFormat("dd/MM/yyyy hh:mm").format(state.callLogsListModel[lastIndex].createdAt),
+                                    style: MyAppStyle.text01,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 20),
+                                    child: Text(
+                                      'Ghi chú: ' + state.callLogsListModel[lastIndex].note,
+                                      style: MyAppStyle.text01,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                            return Text(
+                              'Chưa có dữ liệu',
+                              style: MyAppStyle.text01,
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -462,6 +549,15 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
               ),
               _buildItemRow(
                 'Địa chỉ',
+                state.model.soNha +
+                    ' ' +
+                    state.model.tenDuong +
+                    ', ' +
+                    state.model.phuongXa.name +
+                    ', ' +
+                    state.model.quanHuyen.name +
+                    ', ' +
+                    state.model.thanhPho.name,
                 () {
                   Navigator.push(
                     context,
@@ -484,54 +580,87 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                   );
                 },
               ),
-              _buildItemRow('Diện tích, kết cấu, nội thất, bản vẽ', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DienTichUpdatePage(
-                      id: widget.nhaChoThueModelId,
-                      ngang: state.model.ngang,
-                      dai: state.model.dai,
-                      lau: state.model.soLau,
-                      lung: state.model.lung,
-                      ham: state.model.ham,
-                      sanThuong: state.model.sanThuong,
-                      sanThuongCaiTao: state.model.sanThuongCaiTao,
-                      soPhong: state.model.soPhong,
-                      soWcc: state.model.soWcc,
-                      soWcr: state.model.soWcr,
-                      banCong: state.model.banCong,
-                      cuaSo: state.model.cuaSo,
-                      listHinhAnh: state.model.hinhAnhBanVe,
+              _buildItemRow(
+                'Diện tích, kết cấu, nội thất, bản vẽ',
+                state.model.soLau.toString() +
+                    ' lầu - ' +
+                    state.model.lung.value +
+                    ' lửng - ' +
+                    (state.model.ham.value == 'CO' ? 'có' : 'không có') +
+                    ' hầm - ' +
+                    (state.model.sanThuong.value == 'CO' ? 'có' : 'không có') +
+                    ' sân thượng - ' +
+                    (state.model.sanThuongCaiTao.value == 'CO'
+                        ? 'sân thượng cải tạo được - '
+                        : 'sân thượng cải tạo không được - ') +
+                    state.model.soPhong.toString() +
+                    ' phòng - ' +
+                    state.model.soWcr.toString() +
+                    ' WCR - ' +
+                    state.model.soWcc.toString() +
+                    ' WCC - ' +
+                    (state.model.banCong.value == 'CO' ? 'có' : 'không có') +
+                    ' ban công - ' +
+                    (state.model.cuaSo.value == 'CO' ? 'có' : 'không có') +
+                    ' cửa sổ',
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DienTichUpdatePage(
+                        id: widget.nhaChoThueModelId,
+                        ngang: state.model.ngang,
+                        dai: state.model.dai,
+                        lau: state.model.soLau,
+                        lung: state.model.lung,
+                        ham: state.model.ham,
+                        sanThuong: state.model.sanThuong,
+                        sanThuongCaiTao: state.model.sanThuongCaiTao,
+                        soPhong: state.model.soPhong,
+                        soWcc: state.model.soWcc,
+                        soWcr: state.model.soWcr,
+                        banCong: state.model.banCong,
+                        cuaSo: state.model.cuaSo,
+                        listHinhAnh: state.model.hinhAnhBanVe,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
-                    }
-                  },
-                );
-              }),
-              _buildItemRow('Giá, hoa hồng, VAT', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => VATUpdatePage(
-                      id: widget.nhaChoThueModelId,
-                      gia: state.model.gia,
-                      hoaHong: state.model.hoaHong,
-                      vat: state.model.vat,
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
+                      }
+                    },
+                  );
+                },
+              ),
+              _buildItemRow(
+                'Giá, hoa hồng, VAT',
+                'Giá ' +
+                    formatter.format(state.model.gia) +
+                    ' - hoa hồng ' +
+                    formatter.format(state.model.hoaHong) +
+                    ' - VAT ' +
+                    formatter.format(state.model.vat),
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VATUpdatePage(
+                        id: widget.nhaChoThueModelId,
+                        gia: state.model.gia,
+                        hoaHong: state.model.hoaHong,
+                        vat: state.model.vat,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
-                    }
-                  },
-                );
-              }),
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
+                      }
+                    },
+                  );
+                },
+              ),
               // thong tin nang cao
               SizedBox(height: 20),
               Padding(
@@ -540,6 +669,9 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
               ),
               _buildItemRow(
                 'Pháp lý chủ nhà',
+                (state.model.phapLy.value == 'KHONG_XAC_DINH'
+                    ? 'chưa có dữ liệu'
+                    : state.model.phapLy.value == 'CO' ? 'có pháp lý chủ nhà' : 'không có pháp lý chủ nhà'),
                 () {
                   Navigator.push(
                     context,
@@ -558,57 +690,72 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                   );
                 },
               ),
-              _buildItemRow('Nhà hẻm hay mặt tiền', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HemHayMatTienUpdatePage(
-                      id: widget.nhaChoThueModelId,
-                      matTien: state.model.matTien,
-                      leDuong: state.model.leDuong,
-                      duongMotChieu: state.model.duongMotChieu,
-                      hemBaoNhieuMet: state.model.hemBaoNhieuMet,
-                      loaiHem: state.model.loaiHem,
-                      kichThuocHem: state.model.kichThuocHem,
-                      soXet: state.model.soXet,
-                      type: state.model.matTien.value == 'NHA_MAT_TIEN' ? 0 : 1,
+              _buildItemRow(
+                'Nhà hẻm hay mặt tiền',
+                (state.model.matTien.value == 'KHONG_XAC_DINH'
+                    ? 'chưa có dữ liệu'
+                    : state.model.matTien.value == 'NHA_MAT_TIEN'
+                        ? 'Nhà mặt tiền - ${(state.model.duongMotChieu.value == 'DUONG_2_CHIEU' ? 'đường 2 chiều' : 'đường 1 chiều')} - lề đường ${state.model.leDuong}m'
+                        : 'Nhà hẻm - ${state.model.soXet} xẹt - ${(state.model.loaiHem.value == 'HEM_NHO' ? 'hẻm nhỏ' : state.model.loaiHem.value == 'HEM_XE_HOI' ? 'hẻm xe hơi' : 'hẻm xe tải')} - ${(state.model.kichThuocHem.value == 'HEM_THONG' ? 'hẻm thông' : 'hẻm cụt')} - hẻm rộng ${state.model.hemBaoNhieuMet}m'),
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HemHayMatTienUpdatePage(
+                        id: widget.nhaChoThueModelId,
+                        matTien: state.model.matTien,
+                        leDuong: state.model.leDuong,
+                        duongMotChieu: state.model.duongMotChieu,
+                        hemBaoNhieuMet: state.model.hemBaoNhieuMet,
+                        loaiHem: state.model.loaiHem,
+                        kichThuocHem: state.model.kichThuocHem,
+                        soXet: state.model.soXet,
+                        type: state.model.matTien.value == 'NHA_MAT_TIEN' ? 0 : 1,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
-                    }
-                  },
-                );
-              }),
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
+                      }
+                    },
+                  );
+                },
+              ),
 
-              _buildItemRow('Chướng ngại vật trước nhà', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChuongNgaiVatUpdatePage(
-                      id: widget.nhaChoThueModelId,
-                      chuongNgaiVat: state.model.chuongNgaiVat,
-                      chungNgaiVatKhac: state.model.chuongNgaiVatKhac == 'KHONG_XAC_DINH' ? '' : state.model.chuongNgaiVatKhac,
+              _buildItemRow(
+                'Chướng ngại vật trước nhà',
+                getChuongNgaiVat(state.model.chuongNgaiVat, state.model.chuongNgaiVatKhac),
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChuongNgaiVatUpdatePage(
+                        id: widget.nhaChoThueModelId,
+                        chuongNgaiVat: state.model.chuongNgaiVat,
+                        chungNgaiVatKhac: state.model.chuongNgaiVatKhac == 'KHONG_XAC_DINH' ? '' : state.model.chuongNgaiVatKhac,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
-                    }
-                  },
-                );
-              }),
-              _buildItemRow('Thời gian cho thuê tối đa', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ThoiGianChoThueToiDaUpdatePage(
-                      id: widget.nhaChoThueModelId,
-                      soNamThueToiDa: state.model.soNamThueToiDa,
-                      /*id: widget.nhaChoThueModelId,
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
+                      }
+                    },
+                  );
+                },
+              ),
+              _buildItemRow(
+                'Thời gian cho thuê tối đa',
+                state.model.soNamThueToiDa == null ? 'chưa có dữ liệu' : '${state.model.soNamThueToiDa.toString()} năm',
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ThoiGianChoThueToiDaUpdatePage(
+                        id: widget.nhaChoThueModelId,
+                        soNamThueToiDa: state.model.soNamThueToiDa,
+                        /*id: widget.nhaChoThueModelId,
                       matTien: state.model.matTien,
                       leDuong: state.model.leDuong,
                       duongMotChieu: state.model.duongMotChieu,
@@ -617,92 +764,111 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
                       loaiHem: state.model.loaiHem,
                       kichThuocHem: state.model.kichThuocHem,
                       soXet: state.model.soXet,*/
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
-                    }
-                  },
-                );
-              }),
-              _buildItemRow('Cọc bao nhiêu tháng', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CocUpdatePage(
-                      id: widget.nhaChoThueModelId,
-                      conBaoNhieuThang: state.model.cocBaoNhieuThang,
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
+                      }
+                    },
+                  );
+                },
+              ),
+              _buildItemRow(
+                'Cọc bao nhiêu tháng',
+                state.model.cocBaoNhieuThang == null ? 'chưa có dữ liệu' : '${state.model.cocBaoNhieuThang.toString()} tháng',
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CocUpdatePage(
+                        id: widget.nhaChoThueModelId,
+                        conBaoNhieuThang: state.model.cocBaoNhieuThang,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
-                    }
-                  },
-                );
-              }),
-              _buildItemRow('Giá chào, giá chốt', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => GiaChaoChotUpdatePage(
-                      id: widget.nhaChoThueModelId,
-                      giaChao: state.model.giaChao,
-                      giaChot: state.model.giaChot,
-                      baoNhieuNamDauKhongTangGia: state.model.baoNhieuNamDauKhongTangGia,
-                      baoNhieuNamCuoiTangBaoNhieuPhanTram: state.model.baoNhieuNamCuoiTangBaoNhieuPhanTram,
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
+                      }
+                    },
+                  );
+                },
+              ),
+              _buildItemRow(
+                'Giá chào, giá chốt',
+                getGiaChaoGiaChot(state.model.giaChao, state.model.giaChot, state.model.baoNhieuNamDauKhongTangGia,
+                    state.model.baoNhieuNamCuoiTangBaoNhieuPhanTram),
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GiaChaoChotUpdatePage(
+                        id: widget.nhaChoThueModelId,
+                        giaChao: state.model.giaChao,
+                        giaChot: state.model.giaChot,
+                        baoNhieuNamDauKhongTangGia: state.model.baoNhieuNamDauKhongTangGia,
+                        baoNhieuNamCuoiTangBaoNhieuPhanTram: state.model.baoNhieuNamCuoiTangBaoNhieuPhanTram,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
-                    }
-                  },
-                );
-              }),
-              _buildItemRow('Vị trí cầu thang', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ViTriCauThangUpdatePage(
-                      id: widget.nhaChoThueModelId,
-                      viTriThangBo: state.model.viTriThangBo,
-                      soThangThoatHiem: state.model.soThangThoatHiem,
-                      soThangMay: state.model.soThangMay,
-                      nhaHuongGi: state.model.nhaHuongGi,
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
+                      }
+                    },
+                  );
+                },
+              ),
+              _buildItemRow(
+                'Vị trí cầu thang',
+                getViTriCauThang(state.model),
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ViTriCauThangUpdatePage(
+                        id: widget.nhaChoThueModelId,
+                        viTriThangBo: state.model.viTriThangBo,
+                        soThangThoatHiem: state.model.soThangThoatHiem,
+                        soThangMay: state.model.soThangMay,
+                        nhaHuongGi: state.model.nhaHuongGi,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
-                    }
-                  },
-                );
-              }),
-              _buildItemRow('Thông tin người cho thuê', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ThongTinNguoiChoThueUpdatePage(
-                      id: widget.nhaChoThueModelId,
-                      chuNhaChoThue: state.model.chuNhaChoThue,
-                      phiMoiGioi: state.model.phiMoiGioi,
-                      nhaTheChap: state.model.nhaTheChap,
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
+                      }
+                    },
+                  );
+                },
+              ),
+
+              _buildItemRow(
+                'Thông tin người cho thuê',
+                getThongTinNguoiChoThue(state.model),
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ThongTinNguoiChoThueUpdatePage(
+                        id: widget.nhaChoThueModelId,
+                        chuNhaChoThue: state.model.chuNhaChoThue,
+                        phiMoiGioi: state.model.phiMoiGioi,
+                        nhaTheChap: state.model.nhaTheChap,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
-                    }
-                  },
-                );
-              }),
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _choThueDetailBloc.add(FetchDetail(id: widget.nhaChoThueModelId));
+                      }
+                    },
+                  );
+                },
+              ),
               SizedBox(height: 15),
               BlocListener(
                 bloc: _capNhatTtncBloc,
@@ -882,7 +1048,9 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
           ),
         ),
         Positioned(
-          bottom: 10, left: 10, right: 10,
+          bottom: 10,
+          left: 10,
+          right: 10,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: _buildPageIndicator(),
@@ -892,26 +1060,25 @@ class _NhaChoThueDashboardPageState extends State<NhaChoThueDashboardPage> {
     );
   }
 
-  Widget _buildItemRow(String text, Function onTap) {
+  Widget _buildItemRow(String text, String text01, Function onTap) {
     return Material(
       color: Colors.white,
       child: InkWell(
         onTap: onTap,
-        child: Container(
-          height: 30,
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Row(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Expanded(
-                child: Text(
-                  text,
-                  style: MyAppStyle.text,
-                  overflow: TextOverflow.ellipsis,
-                ),
+              Text(
+                text,
+                style: MyAppStyle.text,
+                overflow: TextOverflow.ellipsis,
               ),
-              const Icon(
-                Icons.navigate_next,
-                color: Colors.black26,
+              SizedBox(height: 5),
+              Text(
+                text01,
+                style: MyAppStyle.text01,
               ),
             ],
           ),

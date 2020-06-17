@@ -156,6 +156,7 @@ class _KhachLauNamTabViewState extends State<KhachLauNamTabView> {
                         () {
                       radioValue = data.value;
                       radioGroup = data.index;
+                      _onChanged = true;
                     },
                   );
                 },
@@ -166,6 +167,7 @@ class _KhachLauNamTabViewState extends State<KhachLauNamTabView> {
                 setState(() {
                   radioValue = data.value;
                   radioGroup = data.index;
+                  _onChanged = true;
                 });
               },
               child: Text(data.title),

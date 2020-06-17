@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:intl/intl.dart';
 import 'package:real_estate/modules/khach_tim_mb/bloc/khach_tim_mb.dart';
 import 'package:real_estate/modules/khach_tim_mb/model/detail_ktmb_model.dart';
 import 'package:real_estate/modules/khach_tim_mb/model/khach_tim_mb_model.dart';
@@ -34,6 +35,8 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
   KhachTimMbBloc _khachTimMbBloc;
   bool _isUpdateTinhTrang = false;
   String nguoiNhan;
+
+  final formatter = NumberFormat("#,##0", "vi_VN");
 
   @override
   void initState() {
@@ -79,6 +82,25 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
   }
 
   // page controller
+  getKetCauNhaCanThue(DetailKtmbModel model){
+    String dt = '${model.dienTich} - ';
+    String lau = '${model.soLau} lầu - ';
+    String lung = '${model.lung.value == 'CO' ? 'có' : model.lung.value == 'KHONG' ? 'không có' : model.lung.value == 'TAT_CA' ? 'không bắt buộc' : 'chưa có dữ liệu'} lửng - ';
+    String ham = '${model.ham.value == 'CO' ? 'có' : model.ham.value == 'KHONG' ? 'không có' : model.ham.value == 'TAT_CA' ? 'không bắt buộc' : 'chưa có dữ liệu'} hầm - ';
+    String sanThuong = '${model.sanThuong.value == 'CO' ? 'có' : model.sanThuong.value == 'KHONG' ? 'không có' : model.sanThuong.value == 'TAT_CA' ? 'không bắt buộc' : 'chưa có dữ liệu'} sân thượng - ';
+    String sanThuongCaiTao = 'sân thượng cải tạo ${model.sanThuongCaiTao.value == 'CO' ? 'được' : model.sanThuongCaiTao.value == 'KHONG' ? 'không được' : model.sanThuongCaiTao.value == 'TAT_CA' ? 'không bắt buộc' : 'chưa có dữ liệu'} - ';
+    String phong = '${model.soPhong} phòng - ';
+    String wcr = '${model.soWCR} WCR - ';
+    String wcc = '${model.soWCC} WCC - ';
+    String banCong = 'phòng ${model.banCong.value == 'CO' ? 'có' : model.banCong.value == 'KHONG' ? 'không có' : model.banCong.value == 'TAT_CA' ? 'không bắt buộc' : 'chưa có dữ liệu'} ban công - ';
+    String cuaSo = 'phòng ${model.cuaSo.value == 'CO' ? 'có' : model.cuaSo.value == 'KHONG' ? 'không có' : model.cuaSo.value == 'TAT_CA' ? 'không bắt buộc' : 'chưa có dữ liệu'} cửa sổ - ';
+    String thangBo = 'vị trí thang bộ ${model.viTriThangBo.value == 'KHONG_CO' ? 'không có' : model.viTriThangBo.value == 'TRUOC' ? 'trước nhà' : model.viTriThangBo.value == '2/3' ? '2/3 nhà' : model.viTriThangBo.value == 'GIUA_NHA' ? 'giữa nhà' : model.viTriThangBo.value == 'CUOI_NHA' ? 'cuối nhà' : model.viTriThangBo.value == 'TAT_CA' ? 'không bắt buộc' : 'chưa có dữ liệu'} - ';
+    String thangThoatHiem = '${model.soThangThoatHiem} thang thoát hiểm - ';
+    String thangMay = '${model.soThangMay} thang máy - ';
+    String huongNha = 'nhà hướng ${model.huongNha.value == 'KHONG_XAC_DINH' ? 'chưa xác định' : model.huongNha.value == 'DONG' ? 'đông' : model.huongNha.value == 'TAY' ? 'tây' : model.huongNha.value == 'NAM' ? 'nam' : model.huongNha.value == 'BAC' ? 'bắc' : model.huongNha.value == 'DONG_NAM' ? 'đông nam' : model.huongNha.value == 'TAY_NAM' ? 'tây nam' : model.huongNha.value == 'DONG_BAC' ? 'đông bắc' : model.huongNha.value == 'TAY_BAC' ? 'tây bắc' : model.huongNha.value}';
+
+    return dt + lau + lung + ham + sanThuong + sanThuongCaiTao + phong + wcr + wcc + banCong + cuaSo + thangBo + thangThoatHiem + thangMay + huongNha;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -160,12 +182,11 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
                       },
                     );
                   },
-                  child: Container(
-                    height: 30,
-                    padding: const EdgeInsets.only(left: 15, right: 15),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     child: Row(
                       children: <Widget>[
-                        Text('Tình trạng: ', style: MyAppStyle.text),
+                        Text('Tình trạng: ', style: MyAppStyle.text01),
                         Expanded(
                           child: Text(
                             model.tinhTrang.value == 'CAN_GAP' ? 'Cần gấp' : 'Bình thường',
@@ -173,16 +194,60 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const Icon(
-                          Icons.navigate_next,
-                          color: Colors.black26,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Material(
+                color: Colors.white,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ThongTinLienHeUpdatePage(
+                          id: widget.id,
+                          sdt: model.khachHang.phone,
+                          ten: model.khachHang.name,
+                        ),
+                      ),
+                    ).then(
+                          (value) {
+                        if (value == true) {
+                          _khachTimMbBloc.add(FetchDetail(id: widget.id));
+                        }
+                      },
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Thông tin liên hệ',
+                          style: MyAppStyle.text,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Người liên hệ: ' + model.khachHang.name,
+                          style: MyAppStyle.text01,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          'Số điện thoại: ' + model.khachHang.phone,
+                          style: MyAppStyle.text01,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
                   ),
                 ),
               ),
-              _buildItemRow(
+              /*_buildItemRow(
+                'Thông tin liên hệ',
                 'Thông tin liên hệ',
                 () {
                   Navigator.push(
@@ -202,9 +267,10 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
                     },
                   );
                 },
-              ),
+              ),*/
               _buildItemRow(
                 'Mục đích thuê',
+                model.mucDich == '' ? 'chưa có dữ liệu' : model.mucDich,
                 () {
                   Navigator.push(
                     context,
@@ -223,145 +289,173 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
                   );
                 },
               ),
-              _buildItemRow('Khu vực cần thuê', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => KhuVucCanThueUpdatePage(
-                      id: widget.id,
-                      thanhPho: model.thanhPho,
-                      quanHuyen: model.quanHuyen,
-                      phuongXa: model.phuongXa,
-                      tenDuong: model.tenDuong,
+              _buildItemRow(
+                'Khu vực cần thuê',
+                '${model.phuongXa.name}, ${model.quanHuyen.name}, ${model.thanhPho.name}',
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => KhuVucCanThueUpdatePage(
+                        id: widget.id,
+                        thanhPho: model.thanhPho,
+                        quanHuyen: model.quanHuyen,
+                        phuongXa: model.phuongXa,
+                        tenDuong: model.tenDuong,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _khachTimMbBloc.add(FetchDetail(id: widget.id));
-                    }
-                  },
-                );
-              }),
-              _buildItemRow('Kết cấu nhà cần thuê', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => KetCauNhaCanThueUpdatePage(
-                      id: widget.id,
-                      dienTich: model.dienTich,
-                      soLau: model.soLau,
-                      lung: model.lung,
-                      ham: model.ham,
-                      sanThuong: model.sanThuong,
-                      sanThuongCaiTao: model.sanThuongCaiTao,
-                      soPhong: model.soPhong,
-                      soWCR: model.soWCR,
-                      soWCC: model.soWCC,
-                      banCong: model.banCong,
-                      cuaSo: model.cuaSo,
-                      viTriThangBo: model.viTriThangBo,
-                      soThangThoatHiem: model.soThangThoatHiem,
-                      soThangMay: model.soThangMay,
-                      huongNha: model.huongNha,
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _khachTimMbBloc.add(FetchDetail(id: widget.id));
+                      }
+                    },
+                  );
+                },
+              ),
+              _buildItemRow(
+                'Kết cấu nhà cần thuê',
+                getKetCauNhaCanThue(model),
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => KetCauNhaCanThueUpdatePage(
+                        id: widget.id,
+                        dienTich: model.dienTich,
+                        soLau: model.soLau,
+                        lung: model.lung,
+                        ham: model.ham,
+                        sanThuong: model.sanThuong,
+                        sanThuongCaiTao: model.sanThuongCaiTao,
+                        soPhong: model.soPhong,
+                        soWCR: model.soWCR,
+                        soWCC: model.soWCC,
+                        banCong: model.banCong,
+                        cuaSo: model.cuaSo,
+                        viTriThangBo: model.viTriThangBo,
+                        soThangThoatHiem: model.soThangThoatHiem,
+                        soThangMay: model.soThangMay,
+                        huongNha: model.huongNha,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _khachTimMbBloc.add(FetchDetail(id: widget.id));
-                    }
-                  },
-                );
-              }),
-              _buildItemRow('Giá cần thuê', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => GiaCanThueUpdatePage(
-                      id: widget.id,
-                      giaMin: model.giaMin,
-                      giaMax: model.giaMax,
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _khachTimMbBloc.add(FetchDetail(id: widget.id));
+                      }
+                    },
+                  );
+                },
+              ),
+              _buildItemRow(
+                'Giá cần thuê',
+                '${formatter.format(model.giaMin)} - ${formatter.format(model.giaMax)}',
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GiaCanThueUpdatePage(
+                        id: widget.id,
+                        giaMin: model.giaMin,
+                        giaMax: model.giaMax,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _khachTimMbBloc.add(FetchDetail(id: widget.id));
-                    }
-                  },
-                );
-              }),
-              _buildItemRow('Thời gian thuê', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ThoiGianThueUpdatePage(
-                      id: widget.id,
-                      thoiGianThue: model.thoiGianThue,
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _khachTimMbBloc.add(FetchDetail(id: widget.id));
+                      }
+                    },
+                  );
+                },
+              ),
+              _buildItemRow(
+                'Thời gian thuê',
+                '${model.thoiGianThue} tháng',
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ThoiGianThueUpdatePage(
+                        id: widget.id,
+                        thoiGianThue: model.thoiGianThue,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _khachTimMbBloc.add(FetchDetail(id: widget.id));
-                    }
-                  },
-                );
-              }),
-              _buildItemRow('Khách lâu năm hay khách mới', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => KhachLauNamHayMoiUpdatePage(
-                      id: widget.id,
-                      khachLauNam: model.khachLauNam,
-                      loaiHinh: model.loaiHinh,
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _khachTimMbBloc.add(FetchDetail(id: widget.id));
+                      }
+                    },
+                  );
+                },
+              ),
+              _buildItemRow(
+                'Khách lâu năm hay khách mới',
+                model.khachLauNam.value == 'CO' ? 'khách lâu năm - ${model.loaiHinh.value == 'MO_CUA_HANG_MB_MOI' ? 'mở cửa hàng/ mặt bằng mới' : model.loaiHinh.value == 'DOI_VI_TRI_KINH_DOANH' ? 'đổi vị trí kinh doanh' : 'chưa có dữ liệu'}' : 'khách mới - mở cửa hàng/ mặt bằng mới',
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => KhachLauNamHayMoiUpdatePage(
+                        id: widget.id,
+                        khachLauNam: model.khachLauNam,
+                        loaiHinh: model.loaiHinh,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _khachTimMbBloc.add(FetchDetail(id: widget.id));
-                    }
-                  },
-                );
-              }),
-              _buildItemRow('Loại khách hàng', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LoaiKhachUpdatePage(
-                      id: widget.id,
-                      loaiKhachHang: model.loaiKhachHang,
-                      tenThuongHieu: model.tenThuongHieu,
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _khachTimMbBloc.add(FetchDetail(id: widget.id));
+                      }
+                    },
+                  );
+                },
+              ),
+              _buildItemRow(
+                'Loại khách hàng',
+                '${model.loaiKhachHang.value == 'CONG_TY' ? 'Công ty - ' : model.loaiKhachHang.value == 'CA_NHAN' ? 'Cá nhân - ' : 'Chưa có dữ liệu - '} ${model.tenThuongHieu}',
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoaiKhachUpdatePage(
+                        id: widget.id,
+                        loaiKhachHang: model.loaiKhachHang,
+                        tenThuongHieu: model.tenThuongHieu,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _khachTimMbBloc.add(FetchDetail(id: widget.id));
-                    }
-                  },
-                );
-              }),
-              _buildItemRow('Mô tả khác', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MoTaKhacUpdatePage(
-                      id: widget.id,
-                      moTaKhac: model.moTaKhac,
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _khachTimMbBloc.add(FetchDetail(id: widget.id));
+                      }
+                    },
+                  );
+                },
+              ),
+              _buildItemRow(
+                'Mô tả khác',
+                model.moTaKhac != '' ? model.moTaKhac : 'Chưa có dữ liệu',
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MoTaKhacUpdatePage(
+                        id: widget.id,
+                        moTaKhac: model.moTaKhac,
+                      ),
                     ),
-                  ),
-                ).then(
-                  (value) {
-                    if (value == true) {
-                      _khachTimMbBloc.add(FetchDetail(id: widget.id));
-                    }
-                  },
-                );
-              }),
+                  ).then(
+                    (value) {
+                      if (value == true) {
+                        _khachTimMbBloc.add(FetchDetail(id: widget.id));
+                      }
+                    },
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -477,7 +571,9 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
           ),
         ),
         Positioned(
-          bottom: 10, left: 10, right: 10,
+          bottom: 10,
+          left: 10,
+          right: 10,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: _buildPageIndicator(),
@@ -487,26 +583,25 @@ class _KhachTimMbDashboardPageState extends State<KhachTimMbDashboardPage> {
     );
   }
 
-  Widget _buildItemRow(String text, Function onTap) {
+  Widget _buildItemRow(String text, String text01, Function onTap) {
     return Material(
       color: Colors.white,
       child: InkWell(
         onTap: onTap,
-        child: Container(
-          height: 30,
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Row(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Expanded(
-                child: Text(
-                  text,
-                  style: MyAppStyle.text,
-                  overflow: TextOverflow.ellipsis,
-                ),
+              Text(
+                text,
+                style: MyAppStyle.text,
+                overflow: TextOverflow.ellipsis,
               ),
-              const Icon(
-                Icons.navigate_next,
-                color: Colors.black26,
+              SizedBox(height: 5),
+              Text(
+                text01,
+                style: MyAppStyle.text01,
               ),
             ],
           ),

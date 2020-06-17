@@ -129,6 +129,10 @@ class _KhuVucCanThueUpdatePageState extends State<KhuVucCanThueUpdatePage> {
                         _quanHuyenUpdated = true; // state quan huyen duoc cap nhat khi chon tp khac
                         _onChanged = true;
 
+                        setState(() {
+
+                        });
+
                         _tinhThanhPhoBloc.add(QuanHuyenFetch(id: _tinhTpModel.id)); //fetch quan theo tp moi chon
                       }
                     },

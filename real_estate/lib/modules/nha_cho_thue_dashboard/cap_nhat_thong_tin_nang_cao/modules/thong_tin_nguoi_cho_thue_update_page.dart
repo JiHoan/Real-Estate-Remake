@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_co_ban/model/common_model.dart';
 import 'package:real_estate/modules/nha_cho_thue_dashboard/cap_nhat_thong_tin_nang_cao/bloc/cap_nhat_ttnc.dart';
 import 'package:real_estate/utils/button.dart';
+import 'package:real_estate/utils/currency_textfield.dart';
 import 'package:real_estate/utils/input_field.dart';
 import 'package:real_estate/utils/my_dialog.dart';
 import 'package:real_estate/utils/my_radio_button.dart';
@@ -61,23 +63,30 @@ class _ThongTinNguoiChoThueUpdatePageState extends State<ThongTinNguoiChoThueUpd
   bool _changed = false;
 
   TextEditingController ctlPhiMoiGioi = TextEditingController();
+  final formatter = NumberFormat("#,###", "vi_VN");
 
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   Future<void> _handleSubmit(BuildContext context, String type) async {
     try {
       Dialogs.showProgressDialog(context, _keyLoader);
-      if(rdNguoiChoThueValue == type){
-        _capNhatTtncBloc.add(UpdateThongTinNguoiChoThue(
-          id: widget.id,
-          nguoiChoThue: rdNguoiChoThueValue,
-          phiMoiGioi: 0,
-          nhaTheChap: rdTheChapValue));
-      } else{
-        _capNhatTtncBloc.add(UpdateThongTinNguoiChoThue(
-          id: widget.id,
-          nguoiChoThue: rdNguoiChoThueValue,
-          phiMoiGioi: int.tryParse(ctlPhiMoiGioi.text),
-          nhaTheChap: rdTheChapValue));
+      if (rdNguoiChoThueValue == type) {
+        _capNhatTtncBloc.add(
+          UpdateThongTinNguoiChoThue(
+            id: widget.id,
+            nguoiChoThue: rdNguoiChoThueValue,
+            phiMoiGioi: 0,
+            nhaTheChap: rdTheChapValue,
+          ),
+        );
+      } else {
+        _capNhatTtncBloc.add(
+          UpdateThongTinNguoiChoThue(
+            id: widget.id,
+            nguoiChoThue: rdNguoiChoThueValue,
+            phiMoiGioi: int.tryParse(ctlPhiMoiGioi.text.replaceAll('.', '')) ?? 0,
+            nhaTheChap: rdTheChapValue,
+          ),
+        );
       }
     } catch (error) {
       print(error);
@@ -90,7 +99,7 @@ class _ThongTinNguoiChoThueUpdatePageState extends State<ThongTinNguoiChoThueUpd
 
     _capNhatTtncBloc = CapNhatTtncBloc();
 
-    ctlPhiMoiGioi.text = widget.phiMoiGioi.toString();
+    ctlPhiMoiGioi.text = formatter.format(widget.phiMoiGioi);
 
     if (widget.chuNhaChoThue.value == 'KHONG_XAC_DINH') {
       rdNguoiChoThueGroup = 1;
@@ -143,18 +152,14 @@ class _ThongTinNguoiChoThueUpdatePageState extends State<ThongTinNguoiChoThueUpd
                 rdNguoiChoThueValue == 'CHU_NHA' ? SizedBox() : MyTopTitle(text: 'Phí môi giới'),
                 rdNguoiChoThueValue == 'CHU_NHA'
                     ? SizedBox()
-                    : MyInput(
-                        hintText: '',
-                        color: Color(0xffEBEBEB),
-                        lines: 1,
-                        controller: ctlPhiMoiGioi,
-                        type: TextInputType.number,
-                        onChanged: (value) {
-                          setState(() {
-                            _onChanged = true;
-                          });
-                        },
-                      ),
+                    : MyCurrencyTextField(
+                  ctl: ctlPhiMoiGioi,
+                  onChanged: (){
+                    setState(() {
+                      _onChanged = true;
+                    });
+                  },
+                ),
                 const SizedBox(height: 20),
                 MyTopTitle(text: 'Nhà có đang thế chấp hay không?'),
                 buildRowTheChap(),
